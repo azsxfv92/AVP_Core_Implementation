@@ -11,12 +11,12 @@ int main(){
     auto start = std::chrono::high_resolution_clock::now();
     
     for(int i = 0; i < 100; i++){
-        auto frame = framePool.acquire();
-        frame->id = i;
-
-        processData(std::move(frame));
-
-        framePool.release(std::move(frame));   
+        {
+            PoolGuard guard(framePool);
+            guard->id = i;
+            std::cout << "Processing frame..." << guard->id << std::endl;
+        }
+        // if gaurd is out of 
     }
 
     auto end = std::chrono::high_resolution_clock::now();

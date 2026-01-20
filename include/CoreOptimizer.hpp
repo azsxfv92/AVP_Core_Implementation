@@ -42,4 +42,25 @@ public:
     }
 };
 
+class PoolGuard{
+private:
+    ObjectPool& pool_;
+    std::unique_ptr<Frame> frame_;
+
+public:
+    PoolGuard(ObjectPool& p) : pool_(p), frame_(pool_.acquire()){}
+
+    ~PoolGuard(){
+        if (frame_){
+            pool_.release(std::move(frame_));
+        }
+    }
+
+    Frame* operator->() { return frame_.get();}
+    Frame& operator*() {return *frame_;}
+
+    PoolGuard(const PoolGuard&) = delete;
+    PoolGuard& operator = (const PoolGuard&) = delete;
+};
+
 #endif

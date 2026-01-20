@@ -7,5 +7,5 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # for week01
 find_package(Threads REQUIRED)
 
-add_executable(${PROJECT_NAME} src/week01_mordern_cpp/main.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
