@@ -16,7 +16,6 @@ int main(){
             guard->id = i;
             std::cout << "Processing frame..." << guard->id << std::endl;
         }
-        // if gaurd is out of 
     }
 
     auto end = std::chrono::high_resolution_clock::now();
