@@ -58,6 +58,13 @@ source install/setup.bash
 ros2 run AVP_Core_Implementation week1_perf_test
 ros2 run AVP_Core_Implementation avp_main_node
 
+# week 2. register alias for build and run
+echo "alias cba='colcon build --symlink-install --packages-select avp_core_implementation && source install/setup.bash && echo \"Build Done\"'" >> ~/.bashrc
+source ~/.bashrc
+cba # use registered alias
+
+
+
 
 
 

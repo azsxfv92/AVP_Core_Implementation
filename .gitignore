@@ -18,6 +18,9 @@ Makefile
 # Log files
 *.log
 
+# ROS 2 install directory
+install/
+
 # OS generated files
 .DS_Store
 .DS_Store?

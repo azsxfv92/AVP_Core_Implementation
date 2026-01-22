@@ -1,8 +1,0 @@
-source;share/AVP_Core_Implementation/hook/cmake_prefix_path.ps1
-source;share/AVP_Core_Implementation/hook/cmake_prefix_path.dsv
-source;share/AVP_Core_Implementation/hook/cmake_prefix_path.sh
-source;share/AVP_Core_Implementation/local_setup.bash
-source;share/AVP_Core_Implementation/local_setup.dsv
-source;share/AVP_Core_Implementation/local_setup.ps1
-source;share/AVP_Core_Implementation/local_setup.sh
-source;share/AVP_Core_Implementation/local_setup.zsh

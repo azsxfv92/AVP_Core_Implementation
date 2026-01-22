@@ -1,1 +1,0 @@
-/home/minhyuk/AVP_Core_Implementation/build/AVP_Core_Implementation/ament_cmake_environment_hooks/local_setup.sh
