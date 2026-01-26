@@ -63,7 +63,10 @@ echo "alias cba='colcon build --symlink-install --packages-select avp_core_imple
 source ~/.bashrc
 cba # use registered alias
 
-
+# week 2. register alias for AVP_main and AVP_controller node
+echo "alias run_main='~/avp_core_implementation/install/avp_core_implementation/lib/avp_core_implementation/avp_main_node'" >> ~/.bashrc
+echo "alias run_ctrl='~/avp_core_implementation/install/avp_core_implementation/lib/avp_core_implementation/avp_controller_node'" >> ~/.bashrc
+source ~/.bashrc
 
 
 

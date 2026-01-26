@@ -6,6 +6,7 @@
 
 using std::placeholders::_1;
 
+// register a name of ROS node and connect to ROS network
 class AVPController : public rclcpp::Node
 {
 public:
