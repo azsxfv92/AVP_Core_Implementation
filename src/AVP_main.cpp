@@ -1,6 +1,7 @@
 #include <chrono>
 #include <memory>
 #include <string>
+#include <random>
 #include "rclcpp/rclcpp.hpp"
 #include "avp_core_implementation/msg/vehicle_state.hpp"
 #include "avp_core_implementation/msg/parking_slot.hpp"
@@ -20,6 +21,13 @@ public:
             "avp/parking_slot", 10
         );
 
+        // init seed
+        std::random_device rd;
+        // initialize an random number generator engine using seed
+        gen_ = std::mt19937(rd());
+        
+        dist_ = std::normal_distribution<float>(15.0, 2.0);
+
         timer_ = this->create_wall_timer(std::chrono::milliseconds(TIMER_PERIOD), std::bind(&AVPMainNode::timer_callback, this));
     }
 
@@ -31,7 +39,8 @@ private:
         vehicle_msg.header.stamp = current_time;
         vehicle_msg.header.frame_id = "base_link";
         vehicle_msg.mode = avp_core_implementation::msg::VehicleState::MODE_AUTO;
-        vehicle_msg.velocity = 15.5;
+        // random sensor value include noise
+        vehicle_msg.velocity = dist_(gen_);
         vehicle_msg.battery = 88.0;
 
         RCLCPP_INFO(this->get_logger(), 
@@ -60,6 +69,9 @@ private:
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<avp_core_implementation::msg::VehicleState>::SharedPtr pub_vehecleState;
     rclcpp::Publisher<avp_core_implementation::msg::ParkingSlot>::SharedPtr pub_parkingSlot;   
+
+    std::mt19937 gen_;
+    std::normal_distribution<float> dist_;
 };
 
 int main(int argc, char * argv[]){
