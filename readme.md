@@ -28,6 +28,11 @@
   - **Implementation**: Set up ROS 2 Humble environment and initialized workspace.
   - **Archive**: Configured DDS for high-speed communication and integrated Week 1 core logic.
 
+#### **week 3: Virtual sensor and Signal processing**
+  - **Implementation**: Generate sensor data including noise and outlier, and implement Moving Average and Median Filter.
+  - **Archive**: Implement virtual sensors and apply filtering techniques to resolve noise and outliers that may occur in real-world sensor data.
+
+
 ---
 
 ## 🚀 Setup & Execution Guide
@@ -68,7 +73,14 @@ echo "alias run_main='~/avp_core_implementation/install/avp_core_implementation/
 echo "alias run_ctrl='~/avp_core_implementation/install/avp_core_implementation/lib/avp_core_implementation/avp_controller_node'" >> ~/.bashrc
 source ~/.bashrc
 
+# week 3. install rqt_plot
+sudo apt update
+# install rqt_plot and related plug-in  (it's installed according to the current ROS version)
+sudo apt install ros-$ROS_DISTRO-rqt-plot ros-$ROS_DISTRO-rqt-common-plugins
 
+# week 3. how to chagne window size parameter
+ros2 param get /avp_controller_node <param_name>          # check current window size
+ros2 param set /avp_controller_node <param_name> <value> # change parameter 
 
 
 

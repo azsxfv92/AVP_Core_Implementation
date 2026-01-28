@@ -25,8 +25,9 @@ public:
         std::random_device rd;
         // initialize an random number generator engine using seed
         gen_ = std::mt19937(rd());
-        
         dist_ = std::normal_distribution<float>(15.0, 2.0);
+
+        prob_dist_ = std::uniform_real_distribution<float>(0.0, 1.0);
 
         timer_ = this->create_wall_timer(std::chrono::milliseconds(TIMER_PERIOD), std::bind(&AVPMainNode::timer_callback, this));
     }
@@ -56,6 +57,20 @@ private:
         slot_msg.is_occupied = false;
         slot_msg.id = 101;
         
+        // create probability
+        float proba = prob_dist_(gen_);
+        // if probability is lower than 10%, insert large value 
+        // to simulate faulty sensors or transient sensor spikes
+        if(proba < 0.1){
+            slot_msg.width = 100.0;
+        }
+        else{
+            // add some noise
+            slot_msg.width = 2.5 + proba;
+        }
+
+
+
         RCLCPP_INFO(this->get_logger(), 
                     "Current time: %.2f, Width: %.1f, Is_occupied: %d, ID: %d",
                     current_time.seconds(), 
@@ -72,6 +87,7 @@ private:
 
     std::mt19937 gen_;
     std::normal_distribution<float> dist_;
+    std::uniform_real_distribution<float> prob_dist_;
 };
 
 int main(int argc, char * argv[]){
