@@ -39,6 +39,10 @@ chmod +x ./scripts/install_ROS2.sh
 chmod +x ./scripts/run_local.sh
 ./scripts/run_local.sh
 ```
+### Option) Run with logging (DDS baseline) 
+```bash
+DDS_BASELINE=1 TOPIC=/avp/vehicle_state ./scripts/run_local.sh
+```
 
 ## 🚀 Setup & Execution Guide
 
