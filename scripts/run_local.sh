@@ -55,13 +55,26 @@ STARTUP_WAIT="${STARTUP_WAIT:-2}"           # seconds
 echo "[INFO] logging to ${RUN_LOG}"
 echo "[INFO] DDS_BASELINE=${DDS_BASELINE} TOPIC=${TOPIC} DURATION=${DURATION}s STARTUP_WAIT=${STARTUP_WAIT}s"
 
+RUN_PID=""
+
+cleanup() {
+  if [[ -n "${RUN_PID}" ]]; then
+    echo "[INFO] cleanup: stopping process group (pgid=${RUN_PID})"
+    kill -TERM -- -"${RUN_PID}" >/dev/null 2>&1 || true
+    sleep 1
+    kill -KILL -- -"${RUN_PID}" >/dev/null 2>&1 || true
+  fi
+}
+trap cleanup EXIT INT TERM
+
 echo "[INFO] Run"
-# Run in background so we can optionally measure DDS in the same script.
-# We keep terminal output AND store it to a log file.
+
 set +e
-bash -lc "${RUN_CMD}" 2>&1 | tee "${RUN_LOG}" &
+setsid bash -lc "${RUN_CMD}" > >(tee -a "${RUN_LOG}") 2>&1 &
 RUN_PID=$!
 set -e
+
+echo "[INFO] RUN_PID=${RUN_PID}"
 
 # Wait a bit for nodes to come up and start publishing
 sleep "${STARTUP_WAIT}"
@@ -73,20 +86,22 @@ if [ "${DDS_BASELINE}" = "1" ]; then
   # Save baseline results with timestamp to avoid overwrite
   HZ_OUT="${LOG_DIR}/dds_$(echo "${TOPIC}" | tr '/' '_' | sed 's/^_//')_${TS}_hz.txt"
   BW_OUT="${LOG_DIR}/dds_$(echo "${TOPIC}" | tr '/' '_' | sed 's/^_//')_${TS}_bw.txt"
+
   set +e
   timeout "${DURATION}" ros2 topic hz "${TOPIC}" | tee "${HZ_OUT}"
   timeout "${DURATION}" ros2 topic bw "${TOPIC}" | tee "${BW_OUT}"
   set -e
+
   echo "[INFO] DDS baseline done:"
   echo "       - ${HZ_OUT}"
   echo "       - ${BW_OUT}"
 
-  echo "[INFO] stopping RUN_CMD (pid=${RUN_PID})"
-  kill "${RUN_PID}" >/dev/null 2>&1 || true
+  echo "[INFO] stopping RUN_CMD (process group pgid=${RUN_PID})"
+  kill -TERM -- -"${RUN_PID}" >/dev/null 2>&1 || true
   sleep 1
-  kill -9 "${RUN_PID}" >/dev/null 2>&1 || true
+  kill -KILL -- -"${RUN_PID}" >/dev/null 2>&1 || true
 fi
 
 # Normal mode: keep running until user Ctrl+C.
-# Baseline mode: process was killed above; wait will return immediately.
+# Baseline mode: process group was killed above; wait will return.
 wait "${RUN_PID}" 2>/dev/null || true

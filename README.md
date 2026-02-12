@@ -29,16 +29,26 @@
 git clone https://github.com/azsxfv92/AVP_Core_Implementation
 cd AVP_Core_Implementation
 ```
-### 1) Install dependencies (ROS2 + common build tools)
+### 2) Install dependencies (ROS2 + common build tools)
 ```bash
 chmod +x ./scripts/install_ROS2.sh
 ./scripts/install_ROS2.sh
 ```
-### 2) Build & Run (One-command)
+### 3) Build & Run (One-command)
 ```bash
 chmod +x ./scripts/run_local.sh
 ./scripts/run_local.sh
 ```
+
+### 4) Week 5 - Baseline Measurement
+#### Official Hz = Count / Duration_sec from the bag info output. (Details: docs/sync_policy.md)
+#### In a new terminal (while ./scripts/run_local.sh is running), run following commands:
+```bash
+rm -rf /tmp/w5_rate30 && rm -f /dev/shm/fastrtps_* /dev/shm/sem.fastrtps* 2>/dev/null || true
+timeout --signal=SIGINT 30 ros2 bag record -o /tmp/w5_rate30 /avp/vehicle_state /avp/parking_slot
+ros2 bag info /tmp/w5_rate30
+```
+
 ### Option) Run with logging (DDS baseline) 
 ```bash
 DDS_BASELINE=1 TOPIC=/avp/vehicle_state ./scripts/run_local.sh

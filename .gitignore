@@ -40,3 +40,4 @@ results/
 *.bag
 *.db3
 *.sqlite3
+bags/
