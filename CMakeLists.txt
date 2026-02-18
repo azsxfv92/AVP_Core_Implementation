@@ -6,15 +6,15 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Load dependency package
+find_package(ament_cmake REQUIRED)
+find_package(message_filters REQUIRED)
 find_package(Threads REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
-
 # Packages for creating messages
 find_package(rosidl_default_generators REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-
 
 rosidl_generate_interfaces(${PROJECT_NAME}
     "msg/VehicleState.msg"
@@ -41,24 +41,29 @@ ament_target_dependencies(avp_main_node
 
 # set avp_controller_node
 add_executable(avp_controller_node src/AVP_controller.cpp)
-
+target_link_libraries(avp_controller_node "${PROJECT_NAME}__rosidl_typesupport_cpp")
 ament_target_dependencies(avp_controller_node
     rclcpp
     std_msgs
     sensor_msgs
     geometry_msgs
 )
-target_link_libraries(avp_controller_node "${PROJECT_NAME}__rosidl_typesupport_cpp")
+
+
+add_executable(sync_harness_node src/sync_harness_node.cpp)
+target_link_libraries(sync_harness_node "${PROJECT_NAME}__rosidl_typesupport_cpp")
+ament_target_dependencies(sync_harness_node
+    rclcpp
+    message_filters
+)
+
 
 install(TARGETS
     week1_perf_test
     avp_main_node
     avp_controller_node
+    sync_harness_node
     DESTINATION lib/${PROJECT_NAME}
-)
-
-install(DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}
 )
 
 install(DIRECTORY launch config

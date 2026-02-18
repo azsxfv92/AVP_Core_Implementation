@@ -48,6 +48,13 @@ rm -rf /tmp/w5_rate30 && rm -f /dev/shm/fastrtps_* /dev/shm/sem.fastrtps* 2>/dev
 timeout --signal=SIGINT 30 ros2 bag record -o /tmp/w5_rate30 /avp/vehicle_state /avp/parking_slot
 ros2 bag info /tmp/w5_rate30
 ```
+#### Sync Harness (Approx / Exact)
+```bash
+source install/setup.bash
+ros2 run avp_core_implementation sync_harness_node --ros-args -p policy:=approx -p queue_size:=10 -p slop_ms:=100 -p report_sec:=2.0
+# (optional) exact
+ros2 run avp_core_implementation sync_harness_node --ros-args -p policy:=exact -p queue_size:=10 -p report_sec:=2.0
+```
 
 ### Option) Run with logging (DDS baseline) 
 ```bash
