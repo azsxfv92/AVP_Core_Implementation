@@ -50,3 +50,22 @@
   - Official Hz is derived from 30s rosbag recording: Hz = Count/30.
   - ros2 topic hz is sanity-check only (startup/transport can bias).
   - Pre-check: ensure no duplicated runs (pgrep -af "ros2 launch" must be empty).
+
+## 8) Results (Exact vs Approx)
+  
+### Run Setup
+- Node: sync_harness_node (message_filters Synchronizer)
+- queue_size: 10
+- slop_ms (Approx): 100ms
+- Duration: ~60s
+- Output: results/week5/sync_metrics_*.csv
+
+### Summary (lasg row of CSV)
+| Policy | sync_count | sync_rate_hz | skew_p50_ms | skew_p95_ms | Notes |
+| ApproximateTime | 115 | 1.983 | 0.146 | 0.188 | synced near 2Hz |
+| ExactTime | 0 | 0.000 | N/A | N/A | no matched pairs |
+
+### Interpretation
+- ExactTime requires identical header.stamp between the two topics; with non-zero skew it can produce zero matches.
+- ApproximateTime matches within slop_ms and keeps sync_rate near the slower topic rate (~2Hz here).
+- Trade-off: increasing slop_ms can increase match rate but may increase skew_p95; choose slop_ms based on acceptable time misalignment.
