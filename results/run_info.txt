@@ -1,0 +1,36 @@
+[Build Environment]
+DL_DIR=/data/yocto/downloads
+SSTATE_DIR=/data/yocto/sstate-cache
+
+[Platform]
+Host machine: Ubuntu desktop
+Target device: QEMU / x86_64 baseline image(temporary)
+Target architecture: x86_64(temporary)
+Actual project hardware target: Jetson Orin Nano Developer Kit
+OS: Ubuntu 22.04.5 LTS
+Host kernel: 6.8.0-101-generic
+Target image kernel : 5.15.199-yocto-standard
+
+[Software Versions]
+Yocto branch: kirkstone
+Image target: core-image-minimal
+ROS2: N/A (not integrated yet)
+JetPack: N/A (Jetson not used yet)
+CUDA: N/A (Jetson/CUDA not used yet)
+TensorRT: N/A (TRT stage not used yet)
+Python: 3.10.12
+GCC: (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0
+
+[Build Environment]
+YOCTO_ROOT: ~/yocto/poky
+Build directory: ~/yocto/poky/build
+DL_DIR: ~/yocto_cache/downloads
+SSTATE_DIR: ~/yocto_cache/sstate-cache
+Manifest file: tmp/deploy/images/qemux86-64/core-image-minimal-qemux86-64-20260316063410.rootfs.manifest
+Build log: ~/yocto_build_logs/build_20260316_153406.log
+
+[Minimal Runtime Package Set]
+python3: added
+openssh: added
+iproute2: added
+procps: added

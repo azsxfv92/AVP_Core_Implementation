@@ -1,0 +1,101 @@
+Loading cache...done.
+Loaded 0 entries from dependency cache.
+Parsing recipes...done.
+Parsing of 883 .bb files complete (0 cached, 883 parsed). 1644 targets, 45 skipped, 0 masked, 0 errors.
+NOTE: Resolving any missing task queue dependencies
+
+Build Configuration:
+BB_VERSION           = "2.0.0"
+BUILD_SYS            = "x86_64-linux"
+NATIVELSBSTRING      = "universal"
+TARGET_SYS           = "x86_64-poky-linux"
+MACHINE              = "qemux86-64"
+DISTRO               = "poky"
+DISTRO_VERSION       = "4.0.34"
+TUNE_FEATURES        = "m64 core2"
+TARGET_FPU           = ""
+meta                 
+meta-poky            
+meta-yocto-bsp       = "kirkstone:8334e82e1d85e50557bd3da64054fc9e3eafc495"
+
+Initialising tasks...done.
+Sstate summary: Wanted 8 Local 0 Mirrors 0 Missed 8 Current 1395 (0% match, 99% complete)
+Removing 2 stale sstate objects for arch qemux86_64...done.
+NOTE: Executing Tasks
+NOTE: Running task 1826 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_fetch)
+NOTE: recipe openssh-8.9p1-r0: task do_fetch: Started
+NOTE: recipe openssh-8.9p1-r0: task do_fetch: Succeeded
+NOTE: Running task 3587 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_unpack)
+NOTE: Running task 3588 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_prepare_recipe_sysroot)
+NOTE: recipe openssh-8.9p1-r0: task do_unpack: Started
+NOTE: recipe openssh-8.9p1-r0: task do_prepare_recipe_sysroot: Started
+NOTE: recipe openssh-8.9p1-r0: task do_unpack: Succeeded
+NOTE: Running task 3589 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_patch)
+NOTE: recipe openssh-8.9p1-r0: task do_prepare_recipe_sysroot: Succeeded
+NOTE: recipe openssh-8.9p1-r0: task do_patch: Started
+NOTE: recipe openssh-8.9p1-r0: task do_patch: Succeeded
+NOTE: Running task 3590 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_deploy_source_date_epoch)
+NOTE: Running task 3591 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_populate_lic)
+NOTE: recipe openssh-8.9p1-r0: task do_populate_lic: Started
+NOTE: recipe openssh-8.9p1-r0: task do_deploy_source_date_epoch: Started
+NOTE: recipe openssh-8.9p1-r0: task do_deploy_source_date_epoch: Succeeded
+NOTE: recipe openssh-8.9p1-r0: task do_populate_lic: Succeeded
+NOTE: Running task 3592 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_configure)
+NOTE: recipe openssh-8.9p1-r0: task do_configure: Started
+NOTE: recipe openssh-8.9p1-r0: task do_configure: Succeeded
+NOTE: Running task 3593 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_configure_ptest_base)
+NOTE: recipe openssh-8.9p1-r0: task do_configure_ptest_base: Started
+NOTE: recipe openssh-8.9p1-r0: task do_configure_ptest_base: Succeeded
+NOTE: Running task 3594 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_compile)
+NOTE: recipe openssh-8.9p1-r0: task do_compile: Started
+NOTE: recipe openssh-8.9p1-r0: task do_compile: Succeeded
+NOTE: Running task 3595 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_compile_ptest_base)
+NOTE: recipe openssh-8.9p1-r0: task do_compile_ptest_base: Started
+NOTE: recipe openssh-8.9p1-r0: task do_compile_ptest_base: Succeeded
+NOTE: Running task 3596 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_install)
+NOTE: recipe openssh-8.9p1-r0: task do_install: Started
+NOTE: recipe openssh-8.9p1-r0: task do_install: Succeeded
+NOTE: Running task 3597 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_install_ptest_base)
+NOTE: recipe openssh-8.9p1-r0: task do_install_ptest_base: Started
+NOTE: recipe openssh-8.9p1-r0: task do_install_ptest_base: Succeeded
+NOTE: Running task 3598 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_package)
+NOTE: recipe openssh-8.9p1-r0: task do_package: Started
+NOTE: recipe openssh-8.9p1-r0: task do_package: Succeeded
+NOTE: Running task 3599 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_packagedata)
+NOTE: recipe openssh-8.9p1-r0: task do_packagedata: Started
+NOTE: recipe openssh-8.9p1-r0: task do_packagedata: Succeeded
+NOTE: Running task 3600 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_package_write_rpm)
+NOTE: Running task 3601 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-connectivity/openssh/openssh_8.9p1.bb:do_package_qa)
+NOTE: recipe openssh-8.9p1-r0: task do_package_write_rpm: Started
+NOTE: recipe openssh-8.9p1-r0: task do_package_qa: Started
+NOTE: recipe openssh-8.9p1-r0: task do_package_qa: Succeeded
+NOTE: recipe openssh-8.9p1-r0: task do_package_write_rpm: Succeeded
+NOTE: Running task 3602 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-core/images/core-image-minimal.bb:do_rootfs)
+NOTE: recipe core-image-minimal-1.0-r0: task do_rootfs: Started
+NOTE: recipe core-image-minimal-1.0-r0: task do_rootfs: Succeeded
+NOTE: Running task 3603 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-core/images/core-image-minimal.bb:do_flush_pseudodb)
+NOTE: Running task 3604 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-core/images/core-image-minimal.bb:do_write_qemuboot_conf)
+NOTE: recipe core-image-minimal-1.0-r0: task do_flush_pseudodb: Started
+NOTE: recipe core-image-minimal-1.0-r0: task do_flush_pseudodb: Succeeded
+NOTE: Running task 3605 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-core/images/core-image-minimal.bb:do_image_qa)
+NOTE: recipe core-image-minimal-1.0-r0: task do_write_qemuboot_conf: Started
+NOTE: recipe core-image-minimal-1.0-r0: task do_write_qemuboot_conf: Succeeded
+NOTE: recipe core-image-minimal-1.0-r0: task do_image_qa: Started
+NOTE: recipe core-image-minimal-1.0-r0: task do_image_qa: Succeeded
+NOTE: Running task 3606 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-core/images/core-image-minimal.bb:do_image)
+NOTE: recipe core-image-minimal-1.0-r0: task do_image: Started
+NOTE: recipe core-image-minimal-1.0-r0: task do_image: Succeeded
+NOTE: Running task 3607 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-core/images/core-image-minimal.bb:do_image_ext4)
+NOTE: Running task 3608 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-core/images/core-image-minimal.bb:do_image_tar)
+NOTE: recipe core-image-minimal-1.0-r0: task do_image_ext4: Started
+NOTE: recipe core-image-minimal-1.0-r0: task do_image_tar: Started
+NOTE: recipe core-image-minimal-1.0-r0: task do_image_tar: Succeeded
+NOTE: recipe core-image-minimal-1.0-r0: task do_image_ext4: Succeeded
+NOTE: Running task 3609 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-core/images/core-image-minimal.bb:do_image_complete)
+NOTE: recipe core-image-minimal-1.0-r0: task do_image_complete: Started
+NOTE: recipe core-image-minimal-1.0-r0: task do_image_complete: Succeeded
+NOTE: Running task 3610 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-core/images/core-image-minimal.bb:do_populate_lic_deploy)
+NOTE: recipe core-image-minimal-1.0-r0: task do_populate_lic_deploy: Started
+NOTE: recipe core-image-minimal-1.0-r0: task do_populate_lic_deploy: Succeeded
+NOTE: Running noexec task 3611 of 3611 (/home/minhyuk/yocto/poky/meta/recipes-core/images/core-image-minimal.bb:do_build)
+NOTE: Tasks Summary: Attempted 3611 tasks of which 3585 didn't need to be rerun and all succeeded.

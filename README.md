@@ -55,7 +55,6 @@ ros2 run avp_core_implementation sync_harness_node --ros-args -p policy:=approx 
 # (optional) exact
 ros2 run avp_core_implementation sync_harness_node --ros-args -p policy:=exact -p queue_size:=10 -p report_sec:=2.0
 ```
-
 #### One-command (Recommended): Run Approx/Exact and save CSV
 ```bash
 chmod +x ./scripts/run_sync_test.sh
@@ -67,6 +66,20 @@ SLOP_MS=1 ./scripts/run_sync_test.sh
 ```bash
 DDS_BASELINE=1 TOPIC=/avp/vehicle_state ./scripts/run_local.sh
 ```
+
+### 5) Week 6 - Yocto Baseline Reproduction
+1. Prepare cache directories
+2. Clone `poky` and checkout `kirkstone`
+3. Initialize build environment
+4. Configure `DL_DIR` and `SSTATE_DIR`
+5. Build `core-image-minimal`
+6. Extend minimal runtime package set
+7. Rebuild and save logs
+
+Detailed notes:
+- `docs/yocto_build_notes.md`
+- `results/run_info.txt`
+
 
 ## 🚀 Setup & Execution Guide
 
