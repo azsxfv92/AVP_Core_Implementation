@@ -5,6 +5,11 @@
 #include <random>
 #include <vector>
 #include <algorithm>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <atomic>
+
 #include "rclcpp/rclcpp.hpp"
 #include "avp_core_implementation/msg/vehicle_state.hpp"
 #include "avp_core_implementation/msg/parking_slot.hpp"
@@ -17,7 +22,7 @@ using std::placeholders::_1;
 class AVPController : public rclcpp::Node
 {
 public:
-    AVPController() : Node("avp_controller_node")
+    AVPController() : Node("avp_controller_node"), running_(true)
     {
         // create subscription for vehicle state information message
         sub_vehicleState = this->create_subscription<avp_core_implementation::msg::VehicleState>(
@@ -43,16 +48,78 @@ public:
             std::bind(&AVPController::param_callback, this, std::placeholders::_1)
         );
 
+        vehicle_queue_max_size = 5;
+        vehicle_drop_count_ = 0;
+        // add worker thread
+        vehicle_worker_ = std::thread(&AVPController::vehicle_worker_loop, this);
+
         RCLCPP_INFO(this->get_logger(), "AVP Controller Node Started.");
-        RCLCPP_INFO(this->get_logger(), "Controller Initialized with Window Size: %d", median_window_size_);
+        RCLCPP_INFO(this->get_logger(), "Worker Thread Started");
+    }
+
+    ~AVPController(){
+        // finish worker thread
+        running_ = false;
+        // to wake up the worker thread
+        vehicle_cv_.notify_all();
+        
+        if(vehicle_worker_.joinable()){
+            // wait for worker thread
+            vehicle_worker_.join();
+        }
     }
 
 private:
   // vehicle state process callback function
   void vehicle_callback(const avp_core_implementation::msg::VehicleState::SharedPtr msg)
   {
+    {
+        std::lock_guard<std::mutex> lock(vehicle_queue_mtx_);
+        // check whether the queue is full 
+        if(vehicle_msg_queue_.size() > vehicle_queue_max_size){
+            // drop the oldest msg
+            vehicle_msg_queue_.pop_front();
+            vehicle_drop_count_++;
+            RCLCPP_INFO(this->get_logger(), "======== The oldest msg is dropped, drop count is %d ========", vehicle_drop_count_ );
+        }
+        RCLCPP_INFO(this->get_logger(), "========PUSH======");
+        vehicle_msg_queue_.push_back(msg);
+        RCLCPP_INFO(this->get_logger(), "msg is pushed in vehicle_callback funcion");
+    }
+    vehicle_cv_.notify_one();
+  }
+
+  void vehicle_worker_loop()
+  {
+    while(running_){
+        avp_core_implementation::msg::VehicleState::SharedPtr msg;
+        {
+            std::unique_lock<std::mutex> lock(vehicle_queue_mtx_);
+
+            // wait for finish signal or message 
+            vehicle_cv_.wait(lock, [this](){
+                return !vehicle_msg_queue_.empty() || !running_;
+
+            });
+            
+            if(!running_){
+                break;
+            }
+
+            // pop msg from queue
+            msg = vehicle_msg_queue_.front();
+            vehicle_msg_queue_.pop_front();
+            RCLCPP_INFO(this->get_logger(), "msg is poped in vehicle_worker_loop funcion");
+        }
+        process_vehicle_message(msg);
+    }
+  }
+
+  void process_vehicle_message(const avp_core_implementation::msg::VehicleState::SharedPtr msg)
+  {
     float raw_vel = msg->velocity;
     float filtered_vel = 0.0;
+
     //add recent velocity to velocity_buffer
     velocity_buffer_.push_back(raw_vel);
     // check the velocity_buffer size 
@@ -78,6 +145,9 @@ private:
     RCLCPP_INFO(this->get_logger(), 
                 "Recv Vehicle: [Mode: %d] [Vel: %.1f] [Bat: %.1f] [Raw: %.2f] [Filtered: %.2f]", 
                 msg->mode, msg->velocity, msg->battery, raw_vel, filtered_vel);
+
+    // for message drop test
+    // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
 
   // parking slot process callback function
@@ -148,12 +218,19 @@ private:
   rclcpp::Subscription<avp_core_implementation::msg::VehicleState>::SharedPtr sub_vehicleState;
   rclcpp::Subscription<avp_core_implementation::msg::ParkingSlot>::SharedPtr sub_parkingSlot;
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr pub_filtered_vel;
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr params_callback_handle_;
 
   std::deque<float> velocity_buffer_;
   std::deque<float> width_buffer_;
   int filter_window_size_;
   int median_window_size_;
-  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr params_callback_handle_;
+  int vehicle_queue_max_size;
+  int vehicle_drop_count_;
+  std::deque<avp_core_implementation::msg::VehicleState::SharedPtr> vehicle_msg_queue_;
+  std::mutex vehicle_queue_mtx_;
+  std::condition_variable vehicle_cv_;
+  std::thread vehicle_worker_;
+  std::atomic<bool> running_;
 };
 
 int main(int argc, char * argv[])
