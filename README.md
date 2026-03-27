@@ -80,6 +80,11 @@ Detailed notes:
 - `docs/yocto_build_notes.md`
 - `results/run_info.txt`
 
+### 6) Week 8 - Backpressure and Queue Policy
+- worker-thread queue pipeline
+- bounded queue + drop-oldest
+- warning/critical watermark
+- runtime observability metrics
 
 ## 🚀 Setup & Execution Guide
 
