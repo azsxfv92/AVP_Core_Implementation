@@ -86,6 +86,61 @@ Detailed notes:
 - warning/critical watermark
 - runtime observability metrics
 
+### 7) week 9 - CARLA Camera Input + ROS2 Bridge Validation
+#### Camera input spec
+- Vehicle: `vehicle.tesla.model3`
+- Role name: `hero`
+- Sensor: `sensor.camera.rgb`
+- Attach position: `x=1.5, z=2.4`
+- Resolution: `1280x720`
+- Sensor tick: `0.1`
+- Raw bytes/frame: `3686400`
+- Image encoding on ROS 2: `bgra8`
+
+#### What was verified
+- CARLA server startup and port readiness (`2000/2001`)
+- Python client connection to CARLA (`carla==0.9.15`)
+- Hero vehicle spawn and front RGB camera attach
+- Camera callback frame reception in Python
+- PNG export and metadata save
+- ROS 2 bridge launch success
+- ROS 2 image topic creation:
+  - `/carla/hero/front/image`
+  - `/carla/hero/front/camera_info`
+- ROS 2 topic echo / info verification
+
+### Week 9 execution flow
+
+#### 1. Start CARLA server
+```bash
+cd ~/AVP_Core_Implementation
+./scripts/run_carla_remote.sh
+```
+#### 2. Launch ROS2 bridge
+```bash
+source /opt/ros/humble/setup.bash
+source ~/carla_ros2_bridge_ws/install/setup.bash
+export CARLA_ROOT=$HOME/sim
+ros2 launch carla_ros_bridge carla_ros_bridge.launch.py
+```
+#### 3. Spawn vehicle and front camera
+```bash
+conda activate carla-python37
+export PYTHONPATH=/home/<user>/sim/PythonAPI/carla/dist/carla-0.9.15-py3.7-linux-x86_64.egg:$PYTHONPATH
+cd ~/AVP_Core_Implementation
+./scripts/run_camera_check.sh
+```
+#### 4. Verify ROS2 image topic
+```bash 
+source /opt/ros/humble/setup.bash
+source ~/carla_ros2_bridge_ws/install/setup.bash
+ros2 topic list | grep -E 'image|camera'
+ros2 topic info -v /carla/hero/front/image
+ros2 topic echo --once /carla/hero/front/image
+```
+
+
+
 ## 🚀 Setup & Execution Guide
 
 ### 1) Basic build tool: Update and install build tools (GCC 11+, CMake 3.22+)
