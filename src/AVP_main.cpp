@@ -85,54 +85,7 @@ private:
         pub_parkingSlot->publish(slot_msg);
         RCLCPP_INFO(this->get_logger(), "Publishing Parking Slot Data...");
     }
-    
-    // void timer_callback(){
-    //     auto current_time = this->now();
-    //     // create VehicleState message and send it
-    //     auto vehicle_msg = avp_core_implementation::msg::VehicleState();
-    //     vehicle_msg.header.stamp = current_time;
-    //     vehicle_msg.header.frame_id = "base_link";
-    //     vehicle_msg.mode = avp_core_implementation::msg::VehicleState::MODE_AUTO;
-    //     // random sensor value include noise
-    //     vehicle_msg.velocity = dist_(gen_);
-    //     vehicle_msg.battery = 88.0;
 
-    //     RCLCPP_INFO(this->get_logger(), 
-    //                 "Current time: %.2f, velocity : %.1f, battery : %.1f", 
-    //                 current_time.seconds(),   
-    //                 vehicle_msg.velocity, 
-    //                 vehicle_msg.battery);
-    //     pub_vehecleState->publish(vehicle_msg);
-
-    //     auto slot_msg = avp_core_implementation::msg::ParkingSlot();
-    //     slot_msg.header.stamp = current_time;
-    //     slot_msg.width = 2.5;
-    //     slot_msg.is_occupied = false;
-    //     slot_msg.id = 101;
-        
-    //     // create probability
-    //     float proba = prob_dist_(gen_);
-    //     // if probability is lower than 10%, insert large value 
-    //     // to simulate faulty sensors or transient sensor spikes
-    //     if(proba < 0.1){
-    //         slot_msg.width = 100.0;
-    //     }
-    //     else{
-    //         // add some noise
-    //         slot_msg.width = 2.5 + proba;
-    //     }
-
-    //     RCLCPP_INFO(this->get_logger(), 
-    //                 "Current time: %.2f, Width: %.1f, Is_occupied: %d, ID: %d",
-    //                 current_time.seconds(), 
-    //                 slot_msg.width, 
-    //                 slot_msg.is_occupied, 
-    //                 slot_msg.id);
-    //     pub_parkingSlot->publish(slot_msg);
-
-    //     RCLCPP_INFO(this->get_logger(), "Publishing Data...");
-    // }   
-    // rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::TimerBase::SharedPtr timer_vehicle_;
     rclcpp::TimerBase::SharedPtr timer_parking_;
 
