@@ -13,6 +13,7 @@ def generate_launch_description():
                     "engine_path": "models/trt/yolov5n_fp16.engine",
                     "image_topic": "/avp/camera/front",
                     "overlay_topic": "/avp/infer/overlay",
+                    "csv_path": "results/week10/stage_metrics/stage_times.csv",
                 }
             ]
             )

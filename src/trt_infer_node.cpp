@@ -12,6 +12,8 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <filesystem>
+#include <iomanip>
 
 namespace avp{
     void TrtLogger::log(Severity severity, const char* msg) noexcept
@@ -251,13 +253,6 @@ namespace avp{
             return false;
         }
 
-        std::cout << "[INFO] output sample: ";
-        const size_t print_count = std::min<size_t>(10, h_output_.size());
-        for(size_t i = 0; i < print_count; ++i){
-            std::cout << h_output_[i] << " ";
-        }
-        std::cout << std::endl;
-
         return true;
     }
 
@@ -277,17 +272,24 @@ namespace avp{
             "overlay_topic",
             "/avp/infer/overlay"
         );
+        this->declare_parameter<std::string>(
+            "csv_path",
+            "results/week10/day5_stage_metrics/stage_times.csv"
+        );
         const auto engine_path = 
             this->get_parameter("engine_path").as_string();
         const auto image_topic = 
             this->get_parameter("image_topic").as_string();
         const auto overlay_topic =
             this->get_parameter("overlay_topic").as_string();
+        const auto csv_path =
+            this->get_parameter("csv_path").as_string();
 
         RCLCPP_INFO(this->get_logger(), "Engine path: %s", engine_path.c_str());
         RCLCPP_INFO(this->get_logger(), "Image topic: %s", image_topic.c_str());
         RCLCPP_INFO(this->get_logger(), "overlay topic: %s", overlay_topic.c_str());
-
+        RCLCPP_INFO(this->get_logger(), "csv path: %s", csv_path.c_str());
+        
         // to ready engine before images are comming 
         if(!infer_.loadEngine(engine_path)){
             RCLCPP_ERROR(this->get_logger(), "Failed to load TensorRT Engine");
@@ -312,18 +314,39 @@ namespace avp{
             10
         );
 
+        csv_path_ = csv_path;
+        std::filesystem::path csv_fs_path(csv_path_);
+        std::filesystem::create_directories(csv_fs_path.parent_path());
+
+        csv_.open(csv_path_, std::ios::out | std::ios::app);
+        if(!csv_.is_open()){
+            RCLCPP_ERROR(this->get_logger(), "Failed to open CSV file: %s", csv_path_.c_str());
+            rclcpp::shutdown();
+            return;
+        }
+
+        if(std::filesystem::exists(csv_fs_path) && std::filesystem::file_size(csv_fs_path) == 0){
+            csv_ << "frame,pre_ms,infer_ms,post_ms,total_ms\n";
+            csv_.flush();
+            csv_header_written_ = true;
+        }
+        else{
+            csv_header_written_ = true;
+        }
+
         start_time_ = std::chrono::steady_clock::now();
     }
 
 
     private:
         void onImage(const sensor_msgs::msg::Image::SharedPtr msg){
-            //TODO1:
             frameCnt++;
 
-            //TODO2:
-            cv_bridge::CvImageConstPtr cv_ptr;
+            const auto t_total_start = std::chrono::steady_clock::now();
 
+            const auto t_pre_start = std::chrono::steady_clock::now();
+
+            cv_bridge::CvImageConstPtr cv_ptr;
             try{
                 cv_ptr = cv_bridge::toCvShare(msg, "bgr8");
             } catch(const cv_bridge::Exception& e){
@@ -332,14 +355,12 @@ namespace avp{
                 return;
             }
 
-            //TODO3:
             cv::Mat resized_bgr;
             cv::resize(cv_ptr->image, resized_bgr, cv::Size(640, 640));
-            //TODO4:
+
             cv::Mat rgb;
             cv::cvtColor(resized_bgr, rgb, cv::COLOR_BGR2RGB);
 
-            //TODO5:
             std::vector<float> input_data(3*640*640, 0.0f);
             for (int y = 0; y < 640; ++y) {
                 for (int x = 0; x < 640; ++x) {
@@ -351,53 +372,75 @@ namespace avp{
                 }
             }
 
+            const auto t_pre_end = std::chrono::steady_clock::now();
 
-            //TODO6:
-            const auto t0 = std::chrono::steady_clock::now();
+            const auto t_infer_start = std::chrono::steady_clock::now();
             if(!infer_.runInference(input_data)){
                 RCLCPP_ERROR(this->get_logger(), "Image inference failed");
                 rclcpp::shutdown();
                 return;
             }
-            const auto t1 = std::chrono::steady_clock::now();
-            const auto elapsed_ms = 
-            std::chrono::duration_cast<std::chrono::milliseconds>(t1-t0).count();
+            const auto t_infer_end = std::chrono::steady_clock::now();
 
-            //TODO7: 
+            const auto t_post_start = std::chrono::steady_clock::now();
             //copy the original image to keep the original image
             cv::Mat overlay = cv_ptr->image.clone();
 
+            const auto infer_ms_for_text =
+                std::chrono::duration_cast<std::chrono::milliseconds>(t_infer_end - t_infer_start).count();
             const std::string line1 = "infer=ok";
             const std::string line2 = "frame=" + std::to_string(frameCnt);
-            const std::string line3 = "infer_ms=" + std::to_string(elapsed_ms);
+            const std::string line3 = "infer_ms=" + std::to_string(infer_ms_for_text);
             
             //write text on the image
             cv::putText(overlay, line1, cv::Point(30, 40), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
             cv::putText(overlay, line2, cv::Point(30, 80), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
             cv::putText(overlay, line3, cv::Point(30, 120), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
 
-            //TODO8:
             // convert the OpenCV image to ROS2 image message 
             auto overlay_msg = cv_bridge::CvImage(msg->header, "bgr8", overlay).toImageMsg();
             overlayPub_->publish(*overlay_msg);
 
-            //TODO9:
+            const auto t_post_end = std::chrono::steady_clock::now();
+            const auto t_total_end = std::chrono::steady_clock::now();
+
+
+            const double pre_ms =
+                std::chrono::duration_cast<std::chrono::microseconds>(t_pre_end - t_pre_start).count() / 1000.0;
+            const double infer_ms =
+                std::chrono::duration_cast<std::chrono::microseconds>(t_infer_end - t_infer_start).count() / 1000.0;        
+            const double post_ms =
+                std::chrono::duration_cast<std::chrono::microseconds>(t_post_end - t_post_start).count() / 1000.0;
+            const double total_ms =
+                std::chrono::duration_cast<std::chrono::microseconds>(t_total_end - t_total_start).count() / 1000.0;
+            if (csv_.is_open()) {
+                csv_ << frameCnt << ","
+                << std::fixed << std::setprecision(3)
+                << pre_ms << ","
+                << infer_ms << ","
+                << post_ms << ","
+                << total_ms << "\n";
+                csv_.flush();
+            }
+
             if((frameCnt % 10) == 0)
             {
                 const auto now = std::chrono::steady_clock::now();
                 const double elapsed_sec = std::chrono::duration_cast<std::chrono::milliseconds>(now-start_time_).count() / 1000.0;
                 const double fps = (elapsed_sec > 0.0) ? (static_cast<double>(frameCnt) / elapsed_sec) : 0.0;
                 RCLCPP_INFO(this->get_logger(), 
-                "Total Frame = %zu, Elapsed Time = %.2f, average FPS = %.2f", 
-                frameCnt, elapsed_sec, fps);
+                    "frames=%zu elapsed=%.2f sec avg_fps=%.2f pre=%.3f ms infer=%.3f ms post=%.3f ms total=%.3f ms",
+                    frameCnt, elapsed_sec, fps, pre_ms, infer_ms, post_ms, total_ms);
             }
-            
         }
         TrtInfer infer_;
         rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
         rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr overlayPub_; 
         uint32_t frameCnt = 0;
         std::chrono::steady_clock::time_point start_time_;
+        std::ofstream csv_;
+        bool csv_header_written_{false};
+        std::string csv_path_;
     };
 }
 
