@@ -19,7 +19,7 @@
 ## 📈 Roadmap & Progress
 
 ### Roadmap : ./docs/Roadmap.md
-### Current : Week 4 — Repo Hygiene Sprint + ROS2 Advanced (Zero-copy/DDS)
+### Current : Week 10 — One-frame image inference on Jetson
 
 ---
 
@@ -113,8 +113,8 @@ Detailed notes:
 
 #### 1. Start CARLA server
 ```bash
-cd ~/AVP_Core_Implementation
-./scripts/run_carla_remote.sh
+cd ~/avp_core_implementation
+./scripts/run_CARLA_remote.sh
 ```
 #### 2. Launch ROS2 bridge
 ```bash
@@ -138,6 +138,44 @@ ros2 topic list | grep -E 'image|camera'
 ros2 topic info -v /carla/hero/front/image
 ros2 topic echo --once /carla/hero/front/image
 ```
+  
+### 8) week 10 - TensorRT Bring-up + Image inference on Jetson
+### Week 10 execution flow
+
+#### 1. Start CARLA server(On PC)
+```bash
+cd ~/avp_core_implementation
+./scripts/run_CARLA_remote.sh
+```
+
+#### 2. Publish ROS2 image topic from CARLA callback(On PC)
+```bash
+source /opt/ros/humble/setup.bash
+python3 ./tools/week10_carla_image_pub.py
+```
+
+#### 3. Source environment(On Jetson)
+```bash
+cd ~/avp_core_implementation
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+```
+
+#### 4. Verify incoming image topic(On Jetson)
+``` bash
+source /opt/ros/humble/setup.bash
+ros2 topic list | grep avp
+ros2 topic hz /avp/camera/front
+```
+
+#### 5. Run TensorRT image stream inference(On Jetson)
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+ros2 launch avp_core_implementation trt_stream_infer.launch.py
+```
+
+
 
 
 

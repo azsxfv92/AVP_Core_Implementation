@@ -16,6 +16,9 @@ find_package(rosidl_default_generators REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 
+find_package(cv_bridge REQUIRED)
+find_package(OpenCV REQUIRED)
+
 rosidl_generate_interfaces(${PROJECT_NAME}
     "msg/VehicleState.msg"
     "msg/ParkingSlot.msg"
@@ -68,6 +71,35 @@ install(TARGETS
 
 install(DIRECTORY launch config
   DESTINATION share/${PROJECT_NAME}
+)
+
+# add trt_infer_node
+add_executable(trt_infer_node
+  src/trt_infer_node.cpp
+)
+
+ament_target_dependencies(trt_infer_node
+  rclcpp
+  sensor_msgs
+  cv_bridge
+)
+
+target_include_directories(trt_infer_node PRIVATE
+  include
+  ${CUDAToolkit_INCLUDE_DIRS}
+)
+
+find_package(CUDAToolkit REQUIRED)
+
+target_link_libraries(trt_infer_node
+  nvinfer
+  CUDA::cudart
+  ${OpenCV_LIBS}
+)
+
+install(TARGETS
+  trt_infer_node
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_package()
