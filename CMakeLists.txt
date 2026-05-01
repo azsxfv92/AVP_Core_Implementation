@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 project(avp_core_implementation VERSION 1.0)
 
+enable_language(CUDA)
+
 # C++ Standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -94,6 +96,7 @@ find_package(CUDAToolkit REQUIRED)
 target_link_libraries(trt_infer_node
   nvinfer
   CUDA::cudart
+  avp_preprocess
   ${OpenCV_LIBS}
 )
 
@@ -101,5 +104,26 @@ install(TARGETS
   trt_infer_node
   DESTINATION lib/${PROJECT_NAME}
 )
+
+
+add_library(avp_preprocess
+  src/preprocess/preprocess_cpu.cpp
+  src/preprocess/preprocess.cu
+)
+
+target_include_directories(avp_preprocess PUBLIC include)
+target_link_libraries(avp_preprocess PUBLIC 
+  ${OpenCV_LIBS}
+  CUDA::cudart
+)
+ 
+install(TARGETS
+  avp_preprocess
+  DESTINATION lib
+)
+
+add_executable(test_preprocess_compare src/tools/test_preprocess_compare.cpp)
+target_link_libraries(test_preprocess_compare PRIVATE avp_preprocess ${OpenCV_LIBS})
+
 
 ament_package()

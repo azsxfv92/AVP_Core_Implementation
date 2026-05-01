@@ -7,6 +7,10 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <fstream>
+#include <chrono>
+
+#include "preprocess.hpp"
 
 namespace avp{
 class TrtLogger : public nvinfer1::ILogger
@@ -31,7 +35,7 @@ private:
     TrtLogger logger_;
     // a buffer including .engine file as binary format
     std::vector<char> engine_data_;
-    // 
+    
     nvinfer1::IRuntime* runtime_{nullptr};
     nvinfer1::ICudaEngine* engine_{nullptr};
     nvinfer1::IExecutionContext* context_{nullptr};
@@ -56,5 +60,17 @@ private:
     bool createStream();
     void destroyBuffers();
     size_t calcNumElements(const std::vector<int64_t>& dims) const;
+
+    // to select "cpu" or "cuda"
+    std::string preprocess_backend_ = "cpu";
+    int64_t frame_id_ = 0;
+    
+    //stroed result file
+    std::ofstream pre_metrics_ofs_;
+    // preprocessing rule
+    avp::PreprocessConfig preprocess_cfg_;
+
+    // host buffer to add the preprocessing result
+    std::vector<float> host_preprocess_buffer_;
 };
 }

@@ -1,4 +1,5 @@
 #include "trt_infer.hpp"
+#include "preprocess.hpp"
 
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/imgproc.hpp>
@@ -276,6 +277,10 @@ namespace avp{
             "csv_path",
             "results/week10/day5_stage_metrics/stage_times.csv"
         );
+        this->declare_parameter<std::string>(
+            "preprocess_backend", "cpu"
+        );
+        
         const auto engine_path = 
             this->get_parameter("engine_path").as_string();
         const auto image_topic = 
@@ -284,6 +289,8 @@ namespace avp{
             this->get_parameter("overlay_topic").as_string();
         const auto csv_path =
             this->get_parameter("csv_path").as_string();
+        preprocess_backend_ = 
+            this->get_parameter("preprocess_backend").as_string();
 
         RCLCPP_INFO(this->get_logger(), "Engine path: %s", engine_path.c_str());
         RCLCPP_INFO(this->get_logger(), "Image topic: %s", image_topic.c_str());
@@ -334,6 +341,24 @@ namespace avp{
             csv_header_written_ = true;
         }
 
+        preprocess_cfg_.output_width = 640;
+        preprocess_cfg_.output_height = 640;
+        preprocess_cfg_.output_channels = 3;
+
+        preprocess_cfg_.input_color_order = avp::ColorOrder::BGR;
+        preprocess_cfg_.model_color_order = avp::ColorOrder::RGB;
+        preprocess_cfg_.output_layout = avp::TensorLayout::CHW;
+        preprocess_cfg_.normalize_to_unit = true;
+        preprocess_cfg_.use_mean_std = false;
+
+        const size_t preprocess_tensor_count = 
+            static_cast<size_t>(preprocess_cfg_.output_width) *
+            static_cast<size_t>(preprocess_cfg_.output_height) *
+            static_cast<size_t>(preprocess_cfg_.output_channels);
+
+        preprocess_buffer_.resize(preprocess_tensor_count, 0.0f);
+        RCLCPP_INFO(this->get_logger(), "preprocess_backend: %s", preprocess_backend_.c_str());
+
         start_time_ = std::chrono::steady_clock::now();
     }
 
@@ -355,27 +380,42 @@ namespace avp{
                 return;
             }
 
-            cv::Mat resized_bgr;
-            cv::resize(cv_ptr->image, resized_bgr, cv::Size(640, 640));
+            preprocess_cfg_.input_width = cv_ptr->image.cols;
+            preprocess_cfg_.input_height = cv_ptr->image.rows;
+            preprocess_cfg_.input_channels = cv_ptr->image.channels();
+            
+            avp::ImageView input_view;
+            input_view.data = cv_ptr->image.data;
+            input_view.width = cv_ptr->image.cols;
+            input_view.height = cv_ptr->image.rows;
+            input_view.channels = cv_ptr->image.channels();
+            input_view.step = static_cast<int>(cv_ptr->image.step);
 
-            cv::Mat rgb;
-            cv::cvtColor(resized_bgr, rgb, cv::COLOR_BGR2RGB);
+            avp::TensorView tensor_view;
+            tensor_view.data = preprocess_buffer_.data();
+            tensor_view.n = 1;
+            tensor_view.c = preprocess_cfg_.output_channels;
+            tensor_view.h = preprocess_cfg_.output_height;
+            tensor_view.w = preprocess_cfg_.output_width;
+            
+            bool ok = false;
+            if(preprocess_backend_ == "cuda"){
+                ok = avp::preprocess_cuda(input_view, preprocess_cfg_, tensor_view);
+            }
+            else{
+                ok = avp::preprocess_cpu(input_view, preprocess_cfg_, tensor_view);
+            }
 
-            std::vector<float> input_data(3*640*640, 0.0f);
-            for (int y = 0; y < 640; ++y) {
-                for (int x = 0; x < 640; ++x) {
-                    const auto& pixel = rgb.at<cv::Vec3b>(y, x);
-
-                    input_data[0 * 640 * 640 + y * 640 + x] = static_cast<float>(pixel[0]) / 255.0f;
-                    input_data[1 * 640 * 640 + y * 640 + x] = static_cast<float>(pixel[1]) / 255.0f;
-                    input_data[2 * 640 * 640 + y * 640 + x] = static_cast<float>(pixel[2]) / 255.0f;
-                }
+            if(!ok){
+                RCLCPP_ERROR(this->get_logger(), "preprocess failed. frame=%u backend=%s",
+                            frameCnt, preprocess_backend_.c_str());
+                return;
             }
 
             const auto t_pre_end = std::chrono::steady_clock::now();
 
             const auto t_infer_start = std::chrono::steady_clock::now();
-            if(!infer_.runInference(input_data)){
+            if(!infer_.runInference(preprocess_buffer_)){
                 RCLCPP_ERROR(this->get_logger(), "Image inference failed");
                 rclcpp::shutdown();
                 return;
@@ -441,6 +481,9 @@ namespace avp{
         std::ofstream csv_;
         bool csv_header_written_{false};
         std::string csv_path_;
+        std::string preprocess_backend_{"cpu"};
+        avp::PreprocessConfig preprocess_cfg_;
+        std::vector<float> preprocess_buffer_;
     };
 }
 
