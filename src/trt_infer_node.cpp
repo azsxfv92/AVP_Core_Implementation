@@ -257,9 +257,9 @@ namespace avp{
         return true;
     }
 
-    class TrtStreamInferNode : public rclcpp::Node
-    {
-    public:
+class TrtStreamInferNode : public rclcpp::Node
+{
+public:
     TrtStreamInferNode() : Node("trt_stream_infer_node"){
         this->declare_parameter<std::string>(
             "engine_path",
@@ -296,7 +296,8 @@ namespace avp{
         RCLCPP_INFO(this->get_logger(), "Image topic: %s", image_topic.c_str());
         RCLCPP_INFO(this->get_logger(), "overlay topic: %s", overlay_topic.c_str());
         RCLCPP_INFO(this->get_logger(), "csv path: %s", csv_path.c_str());
-        
+        RCLCPP_INFO(this->get_logger(), "preprocess_backend: %s", preprocess_backend_.c_str());
+
         // to ready engine before images are comming 
         if(!infer_.loadEngine(engine_path)){
             RCLCPP_ERROR(this->get_logger(), "Failed to load TensorRT Engine");
@@ -333,7 +334,7 @@ namespace avp{
         }
 
         if(std::filesystem::exists(csv_fs_path) && std::filesystem::file_size(csv_fs_path) == 0){
-            csv_ << "frame,pre_ms,infer_ms,post_ms,total_ms\n";
+            csv_ << "frame,backend,pre_ms,h2d_ms,kernel_ms,d2h_ms,infer_ms,post_ms,total_ms\n";
             csv_.flush();
             csv_header_written_ = true;
         }
@@ -344,7 +345,6 @@ namespace avp{
         preprocess_cfg_.output_width = 640;
         preprocess_cfg_.output_height = 640;
         preprocess_cfg_.output_channels = 3;
-
         preprocess_cfg_.input_color_order = avp::ColorOrder::BGR;
         preprocess_cfg_.model_color_order = avp::ColorOrder::RGB;
         preprocess_cfg_.output_layout = avp::TensorLayout::CHW;
@@ -357,134 +357,181 @@ namespace avp{
             static_cast<size_t>(preprocess_cfg_.output_channels);
 
         preprocess_buffer_.resize(preprocess_tensor_count, 0.0f);
-        RCLCPP_INFO(this->get_logger(), "preprocess_backend: %s", preprocess_backend_.c_str());
 
         start_time_ = std::chrono::steady_clock::now();
     }
+    ~TrtStreamInferNode()
+    {
+        avp::release_cuda_preprocess_context(cuda_pre_ctx_);
+    }
 
+private:
+    void onImage(const sensor_msgs::msg::Image::SharedPtr msg){
+        frameCnt++;
 
-    private:
-        void onImage(const sensor_msgs::msg::Image::SharedPtr msg){
-            frameCnt++;
+        const auto t_total_start = std::chrono::steady_clock::now();
+        const auto t_pre_start = std::chrono::steady_clock::now();
 
-            const auto t_total_start = std::chrono::steady_clock::now();
-
-            const auto t_pre_start = std::chrono::steady_clock::now();
-
-            cv_bridge::CvImageConstPtr cv_ptr;
-            try{
-                cv_ptr = cv_bridge::toCvShare(msg, "bgr8");
-            } catch(const cv_bridge::Exception& e){
-                RCLCPP_ERROR(this->get_logger(), "cv_bridge conversion failed: %s", e.what());
-                rclcpp::shutdown();
-                return;
-            }
-
-            preprocess_cfg_.input_width = cv_ptr->image.cols;
-            preprocess_cfg_.input_height = cv_ptr->image.rows;
-            preprocess_cfg_.input_channels = cv_ptr->image.channels();
-            
-            avp::ImageView input_view;
-            input_view.data = cv_ptr->image.data;
-            input_view.width = cv_ptr->image.cols;
-            input_view.height = cv_ptr->image.rows;
-            input_view.channels = cv_ptr->image.channels();
-            input_view.step = static_cast<int>(cv_ptr->image.step);
-
-            avp::TensorView tensor_view;
-            tensor_view.data = preprocess_buffer_.data();
-            tensor_view.n = 1;
-            tensor_view.c = preprocess_cfg_.output_channels;
-            tensor_view.h = preprocess_cfg_.output_height;
-            tensor_view.w = preprocess_cfg_.output_width;
-            
-            bool ok = false;
-            if(preprocess_backend_ == "cuda"){
-                ok = avp::preprocess_cuda(input_view, preprocess_cfg_, tensor_view);
-            }
-            else{
-                ok = avp::preprocess_cpu(input_view, preprocess_cfg_, tensor_view);
-            }
-
-            if(!ok){
-                RCLCPP_ERROR(this->get_logger(), "preprocess failed. frame=%u backend=%s",
-                            frameCnt, preprocess_backend_.c_str());
-                return;
-            }
-
-            const auto t_pre_end = std::chrono::steady_clock::now();
-
-            const auto t_infer_start = std::chrono::steady_clock::now();
-            if(!infer_.runInference(preprocess_buffer_)){
-                RCLCPP_ERROR(this->get_logger(), "Image inference failed");
-                rclcpp::shutdown();
-                return;
-            }
-            const auto t_infer_end = std::chrono::steady_clock::now();
-
-            const auto t_post_start = std::chrono::steady_clock::now();
-            //copy the original image to keep the original image
-            cv::Mat overlay = cv_ptr->image.clone();
-
-            const auto infer_ms_for_text =
-                std::chrono::duration_cast<std::chrono::milliseconds>(t_infer_end - t_infer_start).count();
-            const std::string line1 = "infer=ok";
-            const std::string line2 = "frame=" + std::to_string(frameCnt);
-            const std::string line3 = "infer_ms=" + std::to_string(infer_ms_for_text);
-            
-            //write text on the image
-            cv::putText(overlay, line1, cv::Point(30, 40), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
-            cv::putText(overlay, line2, cv::Point(30, 80), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
-            cv::putText(overlay, line3, cv::Point(30, 120), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
-
-            // convert the OpenCV image to ROS2 image message 
-            auto overlay_msg = cv_bridge::CvImage(msg->header, "bgr8", overlay).toImageMsg();
-            overlayPub_->publish(*overlay_msg);
-
-            const auto t_post_end = std::chrono::steady_clock::now();
-            const auto t_total_end = std::chrono::steady_clock::now();
-
-
-            const double pre_ms =
-                std::chrono::duration_cast<std::chrono::microseconds>(t_pre_end - t_pre_start).count() / 1000.0;
-            const double infer_ms =
-                std::chrono::duration_cast<std::chrono::microseconds>(t_infer_end - t_infer_start).count() / 1000.0;        
-            const double post_ms =
-                std::chrono::duration_cast<std::chrono::microseconds>(t_post_end - t_post_start).count() / 1000.0;
-            const double total_ms =
-                std::chrono::duration_cast<std::chrono::microseconds>(t_total_end - t_total_start).count() / 1000.0;
-            if (csv_.is_open()) {
-                csv_ << frameCnt << ","
-                << std::fixed << std::setprecision(3)
-                << pre_ms << ","
-                << infer_ms << ","
-                << post_ms << ","
-                << total_ms << "\n";
-                csv_.flush();
-            }
-
-            if((frameCnt % 10) == 0)
-            {
-                const auto now = std::chrono::steady_clock::now();
-                const double elapsed_sec = std::chrono::duration_cast<std::chrono::milliseconds>(now-start_time_).count() / 1000.0;
-                const double fps = (elapsed_sec > 0.0) ? (static_cast<double>(frameCnt) / elapsed_sec) : 0.0;
-                RCLCPP_INFO(this->get_logger(), 
-                    "frames=%zu elapsed=%.2f sec avg_fps=%.2f pre=%.3f ms infer=%.3f ms post=%.3f ms total=%.3f ms",
-                    frameCnt, elapsed_sec, fps, pre_ms, infer_ms, post_ms, total_ms);
-            }
+        cv_bridge::CvImageConstPtr cv_ptr;
+        try{
+            cv_ptr = cv_bridge::toCvShare(msg, "bgr8");
+        } catch(const cv_bridge::Exception& e){
+            RCLCPP_ERROR(this->get_logger(), "cv_bridge conversion failed: %s", e.what());
+            rclcpp::shutdown();
+            return;
         }
-        TrtInfer infer_;
-        rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
-        rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr overlayPub_; 
-        uint32_t frameCnt = 0;
-        std::chrono::steady_clock::time_point start_time_;
-        std::ofstream csv_;
-        bool csv_header_written_{false};
-        std::string csv_path_;
-        std::string preprocess_backend_{"cpu"};
-        avp::PreprocessConfig preprocess_cfg_;
-        std::vector<float> preprocess_buffer_;
-    };
+
+        preprocess_cfg_.input_width = cv_ptr->image.cols;
+        preprocess_cfg_.input_height = cv_ptr->image.rows;
+        preprocess_cfg_.input_channels = cv_ptr->image.channels();
+        
+        avp::ImageView input_view;
+        input_view.data = cv_ptr->image.data;
+        input_view.width = cv_ptr->image.cols;
+        input_view.height = cv_ptr->image.rows;
+        input_view.channels = cv_ptr->image.channels();
+        input_view.step = static_cast<int>(cv_ptr->image.step);
+
+        avp::TensorView tensor_view;
+        tensor_view.data = preprocess_buffer_.data();
+        tensor_view.n = 1;
+        tensor_view.c = preprocess_cfg_.output_channels;
+        tensor_view.h = preprocess_cfg_.output_height;
+        tensor_view.w = preprocess_cfg_.output_width;
+        
+        avp::PreprocessTimingBreakdown pre_breakdown{};
+        bool ok = false;
+
+        if(preprocess_backend_ == "cuda"){
+            if (!avp::ensure_cuda_preprocess_context(
+                    cuda_pre_ctx_,
+                    input_view.width,
+                    input_view.height,
+                    input_view.channels,
+                    input_view.step,
+                    preprocess_cfg_))
+            {
+                RCLCPP_ERROR(this->get_logger(),
+                             "ensure_cuda_preprocess_context failed. frame=%u",
+                             frameCnt);
+                return;
+            }
+
+            ok = avp::preprocess_cuda_reuse(
+                input_view,
+                preprocess_cfg_,
+                tensor_view,
+                cuda_pre_ctx_,
+                pre_breakdown);
+        }
+        else{
+            const auto cpu_pre_start = std::chrono::steady_clock::now();
+            ok = avp::preprocess_cpu(input_view, preprocess_cfg_, tensor_view);
+            const auto cpu_pre_end = std::chrono::steady_clock::now();
+            pre_breakdown.total_ms =
+                std::chrono::duration_cast<std::chrono::microseconds>(cpu_pre_end - cpu_pre_start).count() / 1000.0;
+
+            pre_breakdown.h2d_ms = 0.0;
+            pre_breakdown.kernel_ms = 0.0;
+            pre_breakdown.d2h_ms = 0.0;
+        }
+
+        if(!ok){
+            RCLCPP_ERROR(this->get_logger(), "preprocess failed. frame=%u backend=%s",
+                        frameCnt, preprocess_backend_.c_str());
+            return;
+        }
+
+        const auto t_pre_end = std::chrono::steady_clock::now();
+
+        const auto t_infer_start = std::chrono::steady_clock::now();
+        if(!infer_.runInference(preprocess_buffer_)){
+            RCLCPP_ERROR(this->get_logger(), "Image inference failed");
+            rclcpp::shutdown();
+            return;
+        }
+        const auto t_infer_end = std::chrono::steady_clock::now();
+
+        const auto t_post_start = std::chrono::steady_clock::now();
+        //copy the original image to keep the original image
+        cv::Mat overlay = cv_ptr->image.clone();
+
+        const auto infer_ms_for_text =
+            std::chrono::duration_cast<std::chrono::milliseconds>(t_infer_end - t_infer_start).count();
+        const std::string line1 = "infer=ok";
+        const std::string line2 = "frame=" + std::to_string(frameCnt);
+        const std::string line3 = "infer_ms=" + std::to_string(infer_ms_for_text);
+        
+        //write text on the image
+        cv::putText(overlay, line1, cv::Point(30, 40), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
+        cv::putText(overlay, line2, cv::Point(30, 80), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
+        cv::putText(overlay, line3, cv::Point(30, 120), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
+
+        // convert the OpenCV image to ROS2 image message 
+        auto overlay_msg = cv_bridge::CvImage(msg->header, "bgr8", overlay).toImageMsg();
+        overlayPub_->publish(*overlay_msg);
+
+        const auto t_post_end = std::chrono::steady_clock::now();
+        const auto t_total_end = std::chrono::steady_clock::now();
+
+        const double pre_ms = (preprocess_backend_ == "cuda")
+                ? pre_breakdown.total_ms : std::chrono::duration_cast<std::chrono::microseconds>(t_pre_end - t_pre_start).count() / 1000.0;
+
+        const double infer_ms = std::chrono::duration_cast<std::chrono::microseconds>(t_infer_end - t_infer_start).count() / 1000.0;
+        const double post_ms = std::chrono::duration_cast<std::chrono::microseconds>(t_post_end - t_post_start).count() / 1000.0;
+        const double total_ms = std::chrono::duration_cast<std::chrono::microseconds>(t_total_end - t_total_start).count() / 1000.0;
+
+        if (csv_.is_open())
+        {
+            csv_ << frameCnt << ","
+                 << preprocess_backend_ << ","
+                 << std::fixed << std::setprecision(3)
+                 << pre_ms << ","
+                 << pre_breakdown.h2d_ms << ","
+                 << pre_breakdown.kernel_ms << ","
+                 << pre_breakdown.d2h_ms << ","
+                 << infer_ms << ","
+                 << post_ms << ","
+                 << total_ms << "\n";
+            csv_.flush();
+        }
+
+        if ((frameCnt % 10) == 0)
+        {
+            const auto now = std::chrono::steady_clock::now();
+            const double elapsed_sec = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time_).count() / 1000.0;
+            const double fps = (elapsed_sec > 0.0) ? (static_cast<double>(frameCnt) / elapsed_sec) : 0.0;
+
+            RCLCPP_INFO(
+                this->get_logger(),
+                "frames=%u elapsed=%.2f sec avg_fps=%.2f backend=%s pre=%.3f ms (h2d=%.3f kernel=%.3f d2h=%.3f) infer=%.3f ms post=%.3f ms total=%.3f ms",
+                frameCnt,
+                elapsed_sec,
+                fps,
+                preprocess_backend_.c_str(),
+                pre_ms,
+                pre_breakdown.h2d_ms,
+                pre_breakdown.kernel_ms,
+                pre_breakdown.d2h_ms,
+                infer_ms,
+                post_ms,
+                total_ms);
+        }
+
+    }
+    TrtInfer infer_;
+    rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
+    rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr overlayPub_; 
+    uint32_t frameCnt = 0;
+    std::chrono::steady_clock::time_point start_time_;
+    std::ofstream csv_;
+    bool csv_header_written_{false};
+    std::string csv_path_;
+    std::string preprocess_backend_{"cpu"};
+    avp::PreprocessConfig preprocess_cfg_;
+    std::vector<float> preprocess_buffer_;
+    avp::CudaPreprocessContext cuda_pre_ctx_;
+};
 }
 
 

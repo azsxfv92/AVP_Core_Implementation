@@ -19,7 +19,7 @@
 ## 📈 Roadmap & Progress
 
 ### Roadmap : ./docs/Roadmap.md
-### Current : Week 10 — One-frame image inference on Jetson
+### Current : Week 11 — Compare cpu to cuda kernel to improve preprocessing time
 
 ---
 
@@ -176,46 +176,46 @@ ros2 launch avp_core_implementation trt_stream_infer.launch.py
 ```
 
 
+### 9) week 11 - Compare cpu to cuda kernel to improve preprocessing time
+### Week 11 Execution flow 
 
-
-
-## 🚀 Setup & Execution Guide
-
-### 1) Basic build tool: Update and install build tools (GCC 11+, CMake 3.22+)
+#### 1. Start CARLA server(On PC)
 ```bash
-sudo apt update
-sudo apt install build-essential cmake gdb valgrind libbenchmark-dev -y
+cd ~/avp_core_implementation
+./scripts/run_CARLA_remote.sh
 ```
 
-### 2) ROS humble: ROS2 humble Installation and verify ROS2
-```bash
-chmod +x install_ROS2.sh       
-./scripts/install_ROS2.sh               #Run ROS2 installation script
-# verify ROS2
-source /opt/ros/humble/setup.bash
-printenv | grep ROS             #Check ROS2 version
-ros2 run demo_nodes_cpp talker  #Check if ROS2 is working - Send message_terminal_1
-ros2 run demo_nodes_py listener #Check if ROS2 is working - Receive message_terminal_2
-``` 
-
-### 3) ROS path: Register ROS2 environment variable path
-```bash
-source ~/.bashrc   #Adopt changed setting
-```
-
-### 4) Install rqt_plot
+#### 2. Publish ROS2 image topic from CARLA callback(On PC)
 ```bash
 source /opt/ros/humble/setup.bash
-sudo apt update
-# install rqt_plot and related plug-in  (it's installed according to the current ROS version)
-sudo apt install -y ros-$ROS_DISTRO-rqt-plot ros-$ROS_DISTRO-rqt-common-plugins
+python3 ./tools/week10_carla_image_pub.py
 ```
 
-### 5) Run
+#### 3. Source environment(On Jetson)
 ```bash
-chmod +x ./scripts/run_local.sh
-./scripts/run_local.sh
+cd ~/avp_core_implementation
+source /opt/ros/humble/setup.bash
+source install/setup.bash
 ```
+
+#### 4. Verify incoming image topic(On Jetson)
+``` bash
+source /opt/ros/humble/setup.bash
+ros2 topic list | grep avp
+ros2 topic hz /avp/camera/front
+```
+
+#### 5. Run TensorRT image stream inference(On Jetson)
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+ros2 launch avp_core_implementation trt_stream_infer.launch.py preprocess_backend:=cpu csv_path:=results/week11/stage_metrics/stage_times_cpu.csv
+ros2 launch avp_core_implementation trt_stream_infer.launch.py preprocess_backend:=cuda csv_path:=results/week11/stage_metrics/stage_times_cuda.csv
+```
+### week11 result
+| Backend | pre_ms   | h2d_ms   | kernel_ms | d2h_ms   | Notes                |
+| CPU     | ~4.2-5.2 | 0        | 0         | 0        | OpenCV baseline      |
+| CUDA    | ~3.0-3.4 | ~0.6-0.7 | ~0.9      | ~1.2-1.7 | reusable CUDA buffer |
 
 
 ## DDS Baseline
