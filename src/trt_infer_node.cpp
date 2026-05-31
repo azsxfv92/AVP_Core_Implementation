@@ -1,5 +1,6 @@
 #include "trt_infer.hpp"
 #include "preprocess.hpp"
+#include "video_encoder.hpp"
 
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/imgproc.hpp>
@@ -275,11 +276,25 @@ public:
         );
         this->declare_parameter<std::string>(
             "csv_path",
-            "results/week10/day5_stage_metrics/stage_times.csv"
+            "results/week10/day5_stage_enable_encode_"
         );
         this->declare_parameter<std::string>(
-            "preprocess_backend", "cpu"
+            "preprocess_backend", 
+            "cpu"
         );
+        this->declare_parameter<bool>(
+            "enable_encode", 
+            false
+        );
+        output_video_path_ = this->declare_parameter<std::string>(
+            "output_video_path", 
+            "results/week12/output/week12_overlay.mp4"
+        );
+        encode_fps_ = this->declare_parameter<int>("encode_fps", 30);
+        encode_width_ = this->declare_parameter<int>("encode_width", 1280);
+        encode_height_ = this->declare_parameter<int>("encode_height", 720);
+        encode_queue_size_ = this->declare_parameter<int>("encode_queue_size", 4);        
+        
         
         const auto engine_path = 
             this->get_parameter("engine_path").as_string();
@@ -291,13 +306,27 @@ public:
             this->get_parameter("csv_path").as_string();
         preprocess_backend_ = 
             this->get_parameter("preprocess_backend").as_string();
+        enable_encode_ =
+            this->get_parameter("enable_encode").as_bool();
 
         RCLCPP_INFO(this->get_logger(), "Engine path: %s", engine_path.c_str());
         RCLCPP_INFO(this->get_logger(), "Image topic: %s", image_topic.c_str());
         RCLCPP_INFO(this->get_logger(), "overlay topic: %s", overlay_topic.c_str());
         RCLCPP_INFO(this->get_logger(), "csv path: %s", csv_path.c_str());
         RCLCPP_INFO(this->get_logger(), "preprocess_backend: %s", preprocess_backend_.c_str());
+        RCLCPP_INFO(this->get_logger(), "encode enabled: %s", enable_encode_ ? "true" : "false");
+        RCLCPP_INFO(this->get_logger(), "output video path: %s", output_video_path_.c_str());
+        RCLCPP_INFO(this->get_logger(), "encode fps: %d", encode_fps_);
+        RCLCPP_INFO(this->get_logger(), "encode size: %dx%d", encode_width_, encode_height_);
+        RCLCPP_INFO(this->get_logger(), "encode queue size: %d", encode_queue_size_);
 
+
+        if(enable_encode_){
+            video_encoder_ = std::make_unique<avp_core_implementation::VideoEncoder>();
+
+            RCLCPP_INFO(this->get_logger(), "Week12 encoder is enabled. output=%s size=%dx%d fps=%d",
+                        output_video_path_.c_str(), encode_width_, encode_height_, encode_fps_);
+        }
         // to ready engine before images are comming 
         if(!infer_.loadEngine(engine_path)){
             RCLCPP_ERROR(this->get_logger(), "Failed to load TensorRT Engine");
@@ -334,8 +363,20 @@ public:
         }
 
         if(std::filesystem::exists(csv_fs_path) && std::filesystem::file_size(csv_fs_path) == 0){
-            csv_ << "frame,backend,pre_ms,h2d_ms,kernel_ms,d2h_ms,infer_ms,post_ms,total_ms\n";
-            csv_.flush();
+            csv_ << "frame_id,"
+                 << "preprocess_backend,"
+                 << "pre_ms,"
+                 << "pre_h2d_ms,"
+                 << "pre_kernel_ms,"
+                 << "pre_d2h_ms,"
+                 << "infer_ms,"
+                 << "post_ms,"
+                 << "encode_ms,"
+                 << "encode_queue_depth,"
+                 << "drop_count,"
+                 << "drop_reason,"
+                 << "total_ms\n";
+                 csv_.flush();
             csv_header_written_ = true;
         }
         else{
@@ -479,7 +520,53 @@ private:
 
         const double infer_ms = std::chrono::duration_cast<std::chrono::microseconds>(t_infer_end - t_infer_start).count() / 1000.0;
         const double post_ms = std::chrono::duration_cast<std::chrono::microseconds>(t_post_end - t_post_start).count() / 1000.0;
-        const double total_ms = std::chrono::duration_cast<std::chrono::microseconds>(t_total_end - t_total_start).count() / 1000.0;
+
+        encode_ms_ = 0.0;
+        encode_queue_depth_ = 0;
+        drop_reason_ = "NONE";
+        bool encode_ok = false; 
+
+        // encoding process
+        if (enable_encode_) {
+            const auto encode_start = std::chrono::steady_clock::now();
+            
+            // check if encoder open 
+            if (!encoder_opened_) {
+                // open encoder
+                encoder_opened_ = video_encoder_->open(output_video_path_, encode_width_, encode_height_, encode_fps_);
+
+                if (!encoder_opened_) {
+                    drop_reason_ = "ENCODER_OPEN_FAILED";
+                    RCLCPP_ERROR(this->get_logger(), "Failed to open video encoder: %s",output_video_path_.c_str());
+                }
+            }
+
+            if (encoder_opened_) {
+                cv::Mat encode_frame_bgr;
+                if(overlay.cols != encode_width_ || overlay.rows != encode_height_){
+                    cv::resize(overlay, encode_frame_bgr, cv::Size(encode_width_, encode_height_));
+                }
+                else{
+                    encode_frame_bgr = overlay;
+                }
+
+                encode_ok = video_encoder_->write_bgr(encode_frame_bgr);
+                
+                if (!encode_ok) {
+                    drop_reason_ = "ENCODE_WRITE_FAILED";
+                    drop_count_++;
+                    RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Video encoder write failed");
+                }
+            }
+
+            const auto encode_end = std::chrono::steady_clock::now();
+            encode_ms_ = std::chrono::duration<double, std::milli>(encode_end - encode_start).count();
+        }
+
+        
+        const double total_ms_pre = std::chrono::duration_cast<std::chrono::microseconds>(t_total_end - t_total_start).count() / 1000.0;
+        const double total_ms = total_ms_pre + encode_ms_;
+
 
         if (csv_.is_open())
         {
@@ -492,6 +579,10 @@ private:
                  << pre_breakdown.d2h_ms << ","
                  << infer_ms << ","
                  << post_ms << ","
+                 << encode_ms_ << ","
+                 << encode_queue_depth_ << ","
+                 << drop_count_ << ","
+                 << drop_reason_ << ","
                  << total_ms << "\n";
             csv_.flush();
         }
@@ -504,7 +595,8 @@ private:
 
             RCLCPP_INFO(
                 this->get_logger(),
-                "frames=%u elapsed=%.2f sec avg_fps=%.2f backend=%s pre=%.3f ms (h2d=%.3f kernel=%.3f d2h=%.3f) infer=%.3f ms post=%.3f ms total=%.3f ms",
+                "frames=%u elapsed=%.2f sec avg_fps=%.2f backend=%s pre=%.3f ms (h2d=%.3f kernel=%.3f d2h=%.3f) \
+                infer=%.3f ms post=%.3f ms encode_ms = %.3f ms encode_queue_depth = %d drop_count = %d drop_reason = %s total=%.3f ms",
                 frameCnt,
                 elapsed_sec,
                 fps,
@@ -515,6 +607,10 @@ private:
                 pre_breakdown.d2h_ms,
                 infer_ms,
                 post_ms,
+                encode_ms_,
+                encode_queue_depth_,
+                drop_count_,
+                drop_reason_.c_str(),
                 total_ms);
         }
 
@@ -531,6 +627,22 @@ private:
     avp::PreprocessConfig preprocess_cfg_;
     std::vector<float> preprocess_buffer_;
     avp::CudaPreprocessContext cuda_pre_ctx_;
+    // switch for encode/save
+    bool enable_encode_{false};
+    // record video path
+    std::string output_video_path_{"results/week12/output/week12_overlay.mp4"};
+    int encode_fps_{30};
+    int encode_width_{1280};
+    int encode_height_{720};
+    // the number of frame queued when encode/save delay
+    int encode_queue_size_{4};
+    double encode_ms_ = 0.0;
+    int encode_queue_depth_ = 0;
+    int drop_count_ = 0;
+    std::string drop_reason_ = "NONE";
+    std::unique_ptr<avp_core_implementation::VideoEncoder> video_encoder_;
+    bool encoder_opened_{false};
+    
 };
 }
 

@@ -78,6 +78,7 @@ install(DIRECTORY launch config
 # add trt_infer_node
 add_executable(trt_infer_node
   src/trt_infer_node.cpp
+  src/video_encoder.cpp
 )
 
 ament_target_dependencies(trt_infer_node
@@ -86,25 +87,33 @@ ament_target_dependencies(trt_infer_node
   cv_bridge
 )
 
+find_package(CUDAToolkit REQUIRED)
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0)
+pkg_check_modules(GSTREAMER_APP REQUIRED gstreamer-app-1.0)
+
 target_include_directories(trt_infer_node PRIVATE
   include
   ${CUDAToolkit_INCLUDE_DIRS}
+  ${GSTREAMER_INCLUDE_DIRS}
+  ${GSTREAMER_APP_INCLUDE_DIRS}
 )
 
-find_package(CUDAToolkit REQUIRED)
 
 target_link_libraries(trt_infer_node
   nvinfer
   CUDA::cudart
   avp_preprocess
   ${OpenCV_LIBS}
+  ${GSTREAMER_LIBRARIES}
+  ${GSTREAMER_APP_LIBRARIES}
 )
 
 install(TARGETS
   trt_infer_node
   DESTINATION lib/${PROJECT_NAME}
 )
-
 
 add_library(avp_preprocess
   src/preprocess/preprocess_cpu.cpp
@@ -121,6 +130,7 @@ install(TARGETS
   avp_preprocess
   DESTINATION lib
 )
+
 
 add_executable(test_preprocess_compare src/tools/test_preprocess_compare.cpp)
 target_link_libraries(test_preprocess_compare PRIVATE avp_preprocess ${OpenCV_LIBS})
