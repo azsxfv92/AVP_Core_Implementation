@@ -8,6 +8,8 @@ import cv2
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
+from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPolicy
+
 
 try:
     import carla
@@ -18,9 +20,17 @@ except ImportError as e:
 
 class CarlaImagePublisher(Node):
     def __init__(self):
+        
+        # change Relialility to BestEffort
         super().__init__("week10_carla_image_pub")
-
-        self.pub_ = self.create_publisher(Image, "/avp/camera/front", 10)
+        camera_qos = QoSProfile(
+            history=HistoryPolicy.KEEP_LAST,
+            depth=1,
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            durability=DurabilityPolicy.VOLATILE,
+        )
+        # self.pub_ = self.create_publisher(Image, "/avp/camera/front", 10)
+        self.pub_ = self.create_publisher(Image, "/avp/camera/front", camera_qos)
 
         self.output_dir = Path("results/week10/carla_image_pub")
         self.output_dir.mkdir(parents=True, exist_ok=True)
