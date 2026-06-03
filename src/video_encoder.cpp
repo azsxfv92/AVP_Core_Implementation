@@ -55,18 +55,25 @@ bool VideoEncoder::open(
     << "! video/x-raw,format=I420 "
     << "! x264enc tune=zerolatency speed-preset=ultrafast bitrate=4000 "
     << "! h264parse "
-    << "! mp4mux "
-    << "! filesink location=" << output_path << " sync=false";
+    << "! mp4mux faststart=true "
+    << "! filesink location=" << output_path << " sync=false async=false";
 
   GError * error = nullptr;
   pipeline_ = gst_parse_launch(pipeline_desc.str().c_str(), &error);
 
+  if (error) {
+    std::cerr << "[VideoEncoder] Failed to create pipeline: "
+              << error->message << std::endl;
+    g_error_free(error);
+    if (pipeline_) {
+      gst_object_unref(pipeline_);
+      pipeline_ = nullptr;
+    }
+    return false;
+  }
+
   if (!pipeline_) {
     std::cerr << "[VideoEncoder] Failed to create pipeline" << std::endl;
-    if (error) {
-      std::cerr << "[VideoEncoder] GStreamer error: " << error->message << std::endl;
-      g_error_free(error);
-    }
     return false;
   }
 
@@ -190,8 +197,10 @@ void VideoEncoder::close()
 
   gst_object_unref(pipeline_);
   pipeline_ = nullptr;
-  opened_ = false;  
+  opened_ = false;
 }
+
+
 
 bool VideoEncoder::is_open() const
 {

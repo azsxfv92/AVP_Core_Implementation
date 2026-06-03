@@ -66,6 +66,15 @@ def generate_launch_description():
             default_value="4",
             description="Bounded queue size for encode/save stage",
         ),
+        DeclareLaunchArgument(
+            "input_transport",
+            default_value="raw",
+        ),
+
+        DeclareLaunchArgument(
+            "compressed_image_topic",
+            default_value="/avp/camera/front/compressed",
+        ),
 
         Node(
             package="avp_core_implementation",
@@ -85,6 +94,8 @@ def generate_launch_description():
                     "encode_width": LaunchConfiguration("encode_width"),
                     "encode_height": LaunchConfiguration("encode_height"),
                     "encode_queue_size": LaunchConfiguration("encode_queue_size"),
+                    "input_transport": LaunchConfiguration("input_transport"),
+                    "compressed_image_topic": LaunchConfiguration("compressed_image_topic"),
                 }
             ]
             )
