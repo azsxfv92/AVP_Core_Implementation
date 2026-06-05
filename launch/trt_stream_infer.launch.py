@@ -27,11 +27,6 @@ def generate_launch_description():
             description="TensorRT engine path"
         ),
         DeclareLaunchArgument(
-            "image_topic",
-            default_value="/avp/camera/front",
-            description="Input image topic"
-        ),
-        DeclareLaunchArgument(
             "overlay_topic",
             default_value="/avp/infer/overlay",
             description="Overlay output topic"
@@ -67,13 +62,14 @@ def generate_launch_description():
             description="Bounded queue size for encode/save stage",
         ),
         DeclareLaunchArgument(
-            "input_transport",
-            default_value="raw",
-        ),
-
-        DeclareLaunchArgument(
-            "compressed_image_topic",
+            "front_topic",
             default_value="/avp/camera/front/compressed",
+            description="front camera topic"
+        ),
+        DeclareLaunchArgument(
+            "rear_topic",
+            default_value="/avp/camera/rear/compressed",
+            description="rear camera topic"
         ),
 
         Node(
@@ -84,7 +80,6 @@ def generate_launch_description():
             parameters=[
                 {
                     "engine_path": engine_path,
-                    "image_topic": image_topic,
                     "overlay_topic": overlay_topic,
                     "csv_path": csv_path,
                     "preprocess_backend": preprocess_backend,
@@ -94,8 +89,8 @@ def generate_launch_description():
                     "encode_width": LaunchConfiguration("encode_width"),
                     "encode_height": LaunchConfiguration("encode_height"),
                     "encode_queue_size": LaunchConfiguration("encode_queue_size"),
-                    "input_transport": LaunchConfiguration("input_transport"),
-                    "compressed_image_topic": LaunchConfiguration("compressed_image_topic"),
+                    "front_topic": LaunchConfiguration("front_topic"),
+                    "rear_topic": LaunchConfiguration("rear_topic"),
                 }
             ]
             )
