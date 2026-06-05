@@ -18,6 +18,7 @@
 #include <vector>
 #include <filesystem>
 #include <iomanip>
+#include <unordered_map>
 
 namespace avp{
     void TrtLogger::log(Severity severity, const char* msg) noexcept
@@ -269,16 +270,12 @@ public:
             "models/trt/yolov5n_fp16.engine"
         );
         this->declare_parameter<std::string>(
-            "image_topic",
-            "/avp/camera/front"
-        );
-        this->declare_parameter<std::string>(
             "overlay_topic",
             "/avp/infer/overlay"
         );
         this->declare_parameter<std::string>(
             "csv_path",
-            "results/week12/GStreamer/compressed_on.csv"
+            "results/week13/output/multi_stream.csv"
         );
         this->declare_parameter<std::string>(
             "preprocess_backend", 
@@ -290,15 +287,19 @@ public:
         );
         output_video_path_ = this->declare_parameter<std::string>(
             "output_video_path", 
-            "results/week12/output/week12_overlay.mp4"
+            "results/week13/output/multi_stream.mp4"
         );
         this->declare_parameter<std::string>(
             "input_transport",
             "raw"
         );
         this->declare_parameter<std::string>(
-            "compressed_image_topic",
+            "front_topic",
             "/avp/camera/front/compressed"
+        );
+        this->declare_parameter<std::string>(
+            "rear_topic",
+            "/avp/camera/rear/compressed"
         );
         encode_fps_ = this->declare_parameter<int>("encode_fps", 30);
         encode_width_ = this->declare_parameter<int>("encode_width", 1280);
@@ -308,8 +309,6 @@ public:
         
         const auto engine_path = 
             this->get_parameter("engine_path").as_string();
-        const auto image_topic = 
-            this->get_parameter("image_topic").as_string();
         const auto overlay_topic =
             this->get_parameter("overlay_topic").as_string();
         const auto csv_path =
@@ -318,11 +317,10 @@ public:
             this->get_parameter("preprocess_backend").as_string();
         enable_encode_ =
             this->get_parameter("enable_encode").as_bool();
-        input_transport_ = this->get_parameter("input_transport").as_string();
-        compressed_image_topic_ = this->get_parameter("compressed_image_topic").as_string();
+        frontCam_image_topic_ = this->get_parameter("front_topic").as_string();
+        rearCam_image_topic_ = this->get_parameter("rear_topic").as_string();
 
         RCLCPP_INFO(this->get_logger(), "Engine path: %s", engine_path.c_str());
-        RCLCPP_INFO(this->get_logger(), "Image topic: %s", image_topic.c_str());
         RCLCPP_INFO(this->get_logger(), "overlay topic: %s", overlay_topic.c_str());
         RCLCPP_INFO(this->get_logger(), "csv path: %s", csv_path.c_str());
         RCLCPP_INFO(this->get_logger(), "preprocess_backend: %s", preprocess_backend_.c_str());
@@ -331,13 +329,13 @@ public:
         RCLCPP_INFO(this->get_logger(), "encode fps: %d", encode_fps_);
         RCLCPP_INFO(this->get_logger(), "encode size: %dx%d", encode_width_, encode_height_);
         RCLCPP_INFO(this->get_logger(), "encode queue size: %d", encode_queue_size_);
-        RCLCPP_INFO(this->get_logger(), "input_transport: %s", input_transport_.c_str());
-        RCLCPP_INFO(this->get_logger(), "compressed_image_topic: %s", compressed_image_topic_.c_str());
+        RCLCPP_INFO(this->get_logger(), "frontCam_image_topic_: %s", frontCam_image_topic_.c_str());
+        RCLCPP_INFO(this->get_logger(), "rearCam_image_topic_: %s", rearCam_image_topic_.c_str());
 
         if(enable_encode_){
             video_encoder_ = std::make_unique<avp_core_implementation::VideoEncoder>();
 
-            RCLCPP_INFO(this->get_logger(), "Week12 encoder is enabled. output=%s size=%dx%d fps=%d",
+            RCLCPP_INFO(this->get_logger(), "Week13 encoder is enabled. output=%s size=%dx%d fps=%d",
                         output_video_path_.c_str(), encode_width_, encode_height_, encode_fps_);
         }
         // to ready engine before images are comming 
@@ -353,29 +351,26 @@ public:
             return;
         }
 
-        // sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-        //     image_topic,
-        //     rclcpp::SensorDataQoS(),
-        //     std::bind(&TrtStreamInferNode::onImage, this, std::placeholders::_1)
-        // );
         auto camera_qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort().durability_volatile();
 
-        if(input_transport_ == "compressed"){
-            compressed_sub_ = this->create_subscription<sensor_msgs::msg::CompressedImage>(
-                compressed_image_topic_,
-                camera_qos,
-                std::bind(&TrtStreamInferNode::onCompressedImage, this, std::placeholders::_1)
-            );
-            RCLCPP_INFO(this->get_logger(), "Subscribed compressed image topic: %s", compressed_image_topic_.c_str());
-        }
-        else{
-            sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-                image_topic, camera_qos, std::bind(&TrtStreamInferNode::onImage, this, std::placeholders::_1)
-            );
-            RCLCPP_INFO(this->get_logger(), "Subscribed raw image topic: %s", image_topic.c_str());
-        }
+        frontCam_sub_ = this->create_subscription<sensor_msgs::msg::CompressedImage>(
+            frontCam_image_topic_,
+            camera_qos,
+            [this](sensor_msgs::msg::CompressedImage::SharedPtr msg){
+                this->onCompressedImage("front", msg);
+            }
+        );
 
-        
+        rearCam_sub_ = this->create_subscription<sensor_msgs::msg::CompressedImage>(
+            rearCam_image_topic_,
+            camera_qos,
+            [this](sensor_msgs::msg::CompressedImage::SharedPtr msg){
+                this->onCompressedImage("rear", msg);
+            }
+        );
+
+        RCLCPP_INFO(this->get_logger(), "Subscribed compressed image topic: %s", frontCam_image_topic_.c_str());
+        RCLCPP_INFO(this->get_logger(), "Subscribed compressed image topic: %s", rearCam_image_topic_.c_str());
 
         overlayPub_ = this->create_publisher<sensor_msgs::msg::Image>(
             overlay_topic,
@@ -394,7 +389,8 @@ public:
         }
 
         if(std::filesystem::exists(csv_fs_path) && std::filesystem::file_size(csv_fs_path) == 0){
-            csv_ << "frame_id,"
+            csv_ << "stream_id,"
+                 << "frame_id,"
                  << "transport,"
                  << "preprocess_backend,"
                  << "pre_ms,"
@@ -448,8 +444,8 @@ public:
     }
 
 private:
-    void onImage(const sensor_msgs::msg::Image::SharedPtr msg){
-        frameCnt++;
+    void onImage(const std::string& stream_id, const sensor_msgs::msg::Image::SharedPtr msg){
+        const uint32_t frame_id = ++frame_count_by_stream_[stream_id];
         const auto t_total_start = std::chrono::steady_clock::now();
 
         if (!current_frame_from_compressed_) {
@@ -503,7 +499,7 @@ private:
             {
                 RCLCPP_ERROR(this->get_logger(),
                              "ensure_cuda_preprocess_context failed. frame=%u",
-                             frameCnt);
+                             frame_id);
                 return;
             }
 
@@ -528,7 +524,7 @@ private:
 
         if(!ok){
             RCLCPP_ERROR(this->get_logger(), "preprocess failed. frame=%u backend=%s",
-                        frameCnt, preprocess_backend_.c_str());
+                        frame_id, preprocess_backend_.c_str());
             return;
         }
 
@@ -549,7 +545,7 @@ private:
         const auto infer_ms_for_text =
             std::chrono::duration_cast<std::chrono::milliseconds>(t_infer_end - t_infer_start).count();
         const std::string line1 = "infer=ok";
-        const std::string line2 = "frame=" + std::to_string(frameCnt);
+        const std::string line2 = "frame=" + std::to_string(frame_id);
         const std::string line3 = "infer_ms=" + std::to_string(infer_ms_for_text);
         
         //write text on the image
@@ -619,7 +615,8 @@ private:
 
         if (csv_.is_open())
         {
-            csv_ << frameCnt << ","
+            csv_ << stream_id << ","
+                 << frame_id << ","
                  << current_transport_ << ","
                  << preprocess_backend_ << ","
                  << std::fixed << std::setprecision(3)
@@ -641,17 +638,17 @@ private:
             csv_.flush();
         }
 
-        if ((frameCnt % 10) == 0)
+        if ((frame_id % 10) == 0)
         {
             const auto now = std::chrono::steady_clock::now();
             const double elapsed_sec = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time_).count() / 1000.0;
-            const double fps = (elapsed_sec > 0.0) ? (static_cast<double>(frameCnt) / elapsed_sec) : 0.0;
+            const double fps = (elapsed_sec > 0.0) ? (static_cast<double>(frame_id) / elapsed_sec) : 0.0;
 
             RCLCPP_INFO(
                 this->get_logger(),
                 "frames=%u elapsed=%.2f sec avg_fps=%.2f backend=%s pre=%.3f ms (h2d=%.3f kernel=%.3f d2h=%.3f) \
                 infer=%.3f ms post=%.3f ms encode_ms = %.3f ms encode_queue_depth = %d drop_count = %d drop_reason = %s total=%.3f ms",
-                frameCnt,
+                frame_id,
                 elapsed_sec,
                 fps,
                 preprocess_backend_.c_str(),
@@ -670,7 +667,7 @@ private:
 
     }
 
-    void onCompressedImage(const sensor_msgs::msg::CompressedImage::SharedPtr msg){
+    void onCompressedImage(const std::string& stream_id, const sensor_msgs::msg::CompressedImage::SharedPtr msg){
         const auto decode_start = std::chrono::steady_clock::now();
 
         if(msg->data.empty()){
@@ -712,15 +709,15 @@ private:
         }
 
         auto raw_msg = cv_bridge::CvImage(msg->header, "bgr8", decoded_bgr).toImageMsg();
-        onImage(raw_msg);
+        onImage(stream_id,raw_msg);
         current_frame_from_compressed_ = false;        
     }
 
     TrtInfer infer_;
-    rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
-    rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr compressed_sub_;
+    rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr frontCam_sub_;
+    rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr rearCam_sub_;
     rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr overlayPub_; 
-    uint32_t frameCnt = 0;
+    std::unordered_map<std::string, uint32_t> frame_count_by_stream_;
     std::chrono::steady_clock::time_point start_time_;
     std::ofstream csv_;
     bool csv_header_written_{false};
@@ -744,8 +741,8 @@ private:
     std::string drop_reason_ = "NONE";
     std::unique_ptr<avp_core_implementation::VideoEncoder> video_encoder_;
     bool encoder_opened_{false};
-    std::string input_transport_{"raw"};
-    std::string compressed_image_topic_{"/avp/camera/front/compressed"};
+    std::string frontCam_image_topic_{"/avp/camera/front/compressed"};
+    std::string rearCam_image_topic_{"/avp/camera/rear/compressed"};
     bool current_frame_from_compressed_{false};
     std::string current_transport_{"raw"};
     double decode_ms_{0.0};
