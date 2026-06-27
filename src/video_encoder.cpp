@@ -188,6 +188,29 @@ void VideoEncoder::close()
     gst_app_src_end_of_stream(GST_APP_SRC(appsrc_));
   }
 
+  // mp4mux wait for finishing moov atom is written
+  GstBus* bus = gst_element_get_bus(pipeline_);
+  if(bus){
+    GstMessage* msg = gst_bus_timed_pop_filtered(
+      bus,
+      10 * GST_SECOND,
+      static_cast<GstMessageType>(GST_MESSAGE_ERROR | GST_MESSAGE_EOS)
+    );
+    if(msg){
+      if(GST_MESSAGE_TYPE(msg) == GST_MESSAGE_ERROR){
+        GError* err = nullptr;
+        gchar* debug_info = nullptr;
+        gst_message_parse_error(msg, &err, &debug_info);
+        std::cerr << "[VideoEncoder] Pipeline error on close: "
+                  << (err ? err->message : "unknown") << std::endl;
+        g_clear_error(&err);
+        g_free(debug_info);
+      }
+      gst_message_unref(msg);
+    }
+    gst_object_unref(bus);
+  }
+
   gst_element_set_state(pipeline_, GST_STATE_NULL);
 
   if(appsrc_){

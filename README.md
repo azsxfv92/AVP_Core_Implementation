@@ -297,6 +297,71 @@ However, JPEG decode added about 4.63 ms on the Jetson.
 The raw path had lower p50 total latency, but the compressed path provided much lower network bandwidth usage.
 ```
 
+### 11) Week 13 - Multi-stream CARLA camera input + async video save queue
+
+### Week 13 Goal
+
+Week 13 focuses on extending the single-camera CARLA TensorRT pipeline into a multi-stream pipeline and separating video encode/save from the main inference callback.
+
+Main goals:
+- Add front/rear CARLA camera sensors.
+- Publish two compressed camera topics:
+    - /avp/camera/front/compressed
+    - /avp/camera/rear/compressed
+- Subscribe to both streams on Jetson.
+- Add stream_id and per-stream frame_id to the stage time CSV.
+- Separate video encode/save from the inference callback using a save queue and a dedicated save worker thread.
+- Save front/rear overlay videos independently.
+- Measure save queue behavior using save_wait_ms, encode_ms, queue_depth, and drop_reason.
+
+### Week 13 Execution flow
+
+#### 1. Start CARLA server(On PC)
+```bash
+cd ~/avp_core_implementation
+./scripts/run_CARLA_remote.sh
+```
+
+#### 2. Publish raw ROS2 image topic from CARLA callback(On PC)
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+python3 ./tools/week13_carla_multi_camera_pub.py
+```
+
+#### 3. Source environment(On Jetson)
+```bash
+cd ~/avp_core_implementation
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+```
+
+#### 4. Verify incoming front/rear compressed topics(On Jetson)
+```bash
+ros2 topic list | grep camera
+
+ros2 topic hz /avp/camera/front/compressed
+ros2 topic hz /avp/camera/rear/compressed
+
+ros2 topic bw /avp/camera/front/compressed
+ros2 topic bw /avp/camera/rear/compressed
+```
+
+#### 5. Run TensorRT multi-stream inference without video save(On Jetson)
+```bash
+ros2 launch avp_core_implementation trt_stream_infer.launch.py \
+  engine_path:=models/trt/yolov5n_fp16.engine \
+  front_topic:=/avp/camera/front/compressed \
+  rear_topic:=/avp/camera/rear/compressed \
+  overlay_topic:=/avp/infer/overlay \
+  preprocess_backend:=gpu \
+  enable_encode:=true \
+  encode_width:=640 \
+  encode_height:=360 \
+  encode_fps:=10
+```
+
+
 ## DDS Baseline
 This project uses **Fast DDS** via `rmw_fastrtps_cpp`.  
 A baseline DDS profile is provided for reproducible runs (future tuning starts later).

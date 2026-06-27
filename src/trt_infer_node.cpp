@@ -19,6 +19,11 @@
 #include <filesystem>
 #include <iomanip>
 #include <unordered_map>
+#include <deque>
+#include <mutex>
+#include <condition_variable>
+#include <thread>
+#include <atomic>
 
 namespace avp{
     void TrtLogger::log(Severity severity, const char* msg) noexcept
@@ -304,8 +309,7 @@ public:
         encode_fps_ = this->declare_parameter<int>("encode_fps", 30);
         encode_width_ = this->declare_parameter<int>("encode_width", 1280);
         encode_height_ = this->declare_parameter<int>("encode_height", 720);
-        encode_queue_size_ = this->declare_parameter<int>("encode_queue_size", 4);        
-        
+        save_queue_max_size_ = this->declare_parameter<int>("encode_queue_size", 30);           
         
         const auto engine_path = 
             this->get_parameter("engine_path").as_string();
@@ -332,8 +336,27 @@ public:
         RCLCPP_INFO(this->get_logger(), "frontCam_image_topic_: %s", frontCam_image_topic_.c_str());
         RCLCPP_INFO(this->get_logger(), "rearCam_image_topic_: %s", rearCam_image_topic_.c_str());
 
+        std::filesystem::path save_metrics_fs_path(save_metrics_path_);
+        std::filesystem::create_directories(save_metrics_fs_path.parent_path());
+    
         if(enable_encode_){
-            video_encoder_ = std::make_unique<avp_core_implementation::VideoEncoder>();
+            save_metrics_csv_.open(save_metrics_path_, std::ios::out | std::ios::app);
+            if(!save_metrics_csv_.is_open()){
+                RCLCPP_ERROR(this->get_logger(), "Failed to open save_metrics_csv file: %s", save_metrics_path_.c_str());
+                rclcpp::shutdown();
+                return;
+            }
+            save_metrics_csv_<< "stream_id,"
+                             << "frame_id,"
+                             << "save_wait_ms,"
+                             << "encode_ms,"
+                             << "queue_depth,"
+                             << "save_drop_count,"
+                             << "drop_reason\n";
+                             save_metrics_csv_.flush();
+            //add save thread
+            save_thread_running_ = true;
+            save_thread_ = std::thread(&TrtStreamInferNode::saveWorker, this);
 
             RCLCPP_INFO(this->get_logger(), "Week13 encoder is enabled. output=%s size=%dx%d fps=%d",
                         output_video_path_.c_str(), encode_width_, encode_height_, encode_fps_);
@@ -435,11 +458,19 @@ public:
     }
     ~TrtStreamInferNode()
     {
-        if(video_encoder_){
-            if(video_encoder_){
-                video_encoder_->close();
+        if(enable_encode_){
+            save_thread_running_ = false;
+            save_cv_.notify_all();
+
+            if(save_thread_.joinable()){
+                save_thread_.join();
             }
         }
+
+        if(save_metrics_csv_.is_open()){
+            save_metrics_csv_.close();
+        }
+
         avp::release_cuda_preprocess_context(cuda_pre_ctx_);
     }
 
@@ -571,41 +602,9 @@ private:
         drop_reason_ = "NONE";
         bool encode_ok = false; 
 
-        // encoding process
-        if (enable_encode_) {
-            const auto encode_start = std::chrono::steady_clock::now();
-            
-            // check if encoder open 
-            if (!encoder_opened_) {
-                // open encoder
-                encoder_opened_ = video_encoder_->open(output_video_path_, encode_width_, encode_height_, encode_fps_);
-
-                if (!encoder_opened_) {
-                    drop_reason_ = "ENCODER_OPEN_FAILED";
-                    RCLCPP_ERROR(this->get_logger(), "Failed to open video encoder: %s",output_video_path_.c_str());
-                }
-            }
-
-            if (encoder_opened_) {
-                cv::Mat encode_frame_bgr;
-                if(overlay.cols != encode_width_ || overlay.rows != encode_height_){
-                    cv::resize(overlay, encode_frame_bgr, cv::Size(encode_width_, encode_height_));
-                }
-                else{
-                    encode_frame_bgr = overlay;
-                }
-
-                encode_ok = video_encoder_->write_bgr(encode_frame_bgr);
-                
-                if (!encode_ok) {
-                    drop_reason_ = "ENCODE_WRITE_FAILED";
-                    drop_count_++;
-                    RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 2000, "Video encoder write failed");
-                }
-            }
-
-            const auto encode_end = std::chrono::steady_clock::now();
-            encode_ms_ = std::chrono::duration<double, std::milli>(encode_end - encode_start).count();
+        // push the frame into the queue
+        if(enable_encode_){
+            pushSaveFrame(stream_id, frame_id, overlay);
         }
 
         
@@ -713,6 +712,125 @@ private:
         current_frame_from_compressed_ = false;        
     }
 
+    void pushSaveFrame(const std::string& stream_id, uint32_t frame_id, const cv::Mat& overlay)
+    {
+        SaveFrame frame;
+        frame.stream_id = stream_id;
+        frame.frame_id = frame_id;
+        frame.overlay_bgr = overlay.clone();
+        frame.enqueue_time = std::chrono::steady_clock::now();
+        {
+            std::lock_guard<std::mutex> lock(save_mutex_);
+            
+            if(static_cast<int>(save_queue_.size()) >= save_queue_max_size_){
+                save_queue_.pop_front();
+                save_drop_count_++;
+                drop_count_++;
+                drop_reason_ = "SAVE_QUEUE_FULL_DROP_OLDEST";
+            }
+            // push the frame into the queue
+            save_queue_.push_back(std::move(frame));
+            encode_queue_depth_ = static_cast<int>(save_queue_.size());
+        }
+        save_cv_.notify_one();
+    }
+
+    void saveWorker()
+    {
+        std::unordered_map<std::string, std::unique_ptr<avp_core_implementation::VideoEncoder>> encoders;
+        std::unordered_map<std::string, bool> encoder_opened;
+
+        while(true){
+            SaveFrame frame;
+            {
+                std::unique_lock<std::mutex> lock(save_mutex_);
+
+                save_cv_.wait(lock, [this](){
+                    return !save_thread_running_ || !save_queue_.empty();
+                });
+
+                if(!save_thread_running_ && save_queue_.empty()){
+                    break;
+                }
+                
+                frame = std::move(save_queue_.front());
+                save_queue_.pop_front();
+                encode_queue_depth_ = static_cast<int>(save_queue_.size());
+            }
+
+            const auto save_start = std::chrono::steady_clock::now();
+            const double save_wait_ms = std::chrono::duration<double, std::milli>(
+                                            save_start - frame.enqueue_time).count();
+            
+            if(encoders.find(frame.stream_id) == encoders.end()){
+                encoders[frame.stream_id] = std::make_unique<avp_core_implementation::VideoEncoder>();
+
+                const std::string path = "results/week13/save_thread/" + frame.stream_id + "_overlay.mp4";
+                const bool opend = encoders[frame.stream_id]->open(path, encode_width_, encode_height_, encode_fps_);
+                
+                encoder_opened[frame.stream_id] = opend;
+
+                if(!opend){
+                    RCLCPP_ERROR(
+                        this->get_logger(),
+                        "[%s] failed to open encoder",
+                        frame.stream_id.c_str()
+                    );
+                    continue;
+                }
+            }
+
+            cv::Mat encode_frame_bgr;
+            if(frame.overlay_bgr.cols != encode_width_ || frame.overlay_bgr.rows != encode_height_){
+                cv::resize(frame.overlay_bgr, encode_frame_bgr, cv::Size(encode_width_, encode_height_));
+            }
+            else{
+                encode_frame_bgr = frame.overlay_bgr;
+            }
+
+            const auto encode_start = std::chrono::steady_clock::now();
+
+            bool encode_ok = false;
+            if(encoder_opened[frame.stream_id]){
+                encode_ok = encoders[frame.stream_id]->write_bgr(encode_frame_bgr);
+            }
+            
+            const auto encode_end = std::chrono::steady_clock::now();
+            const double encode_ms = std::chrono::duration<double, std::milli>(
+                encode_end - encode_start
+            ).count();
+
+            std::string reason = "NONE";
+            if(!encode_ok){
+                reason = "ENCODE_WRITE_FAILED";
+                save_drop_count_++;
+            }
+
+            if (save_metrics_csv_.is_open()) {
+                save_metrics_csv_
+                    << frame.stream_id << ","
+                    << frame.frame_id << ","
+                    << std::fixed << std::setprecision(3)
+                    << save_wait_ms << ","
+                    << encode_ms << ","
+                    << encode_queue_depth_ << ","
+                    << save_drop_count_ << ","
+                    << reason << "\n";
+                save_metrics_csv_.flush();
+            }
+            
+            if(enable_encode_){
+                
+            }
+        }
+        
+        for (auto& kv : encoders) {
+            if (kv.second) {
+                kv.second->close();
+            }
+        }
+    }
+
     TrtInfer infer_;
     rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr frontCam_sub_;
     rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr rearCam_sub_;
@@ -739,7 +857,7 @@ private:
     int encode_queue_depth_ = 0;
     int drop_count_ = 0;
     std::string drop_reason_ = "NONE";
-    std::unique_ptr<avp_core_implementation::VideoEncoder> video_encoder_;
+
     bool encoder_opened_{false};
     std::string frontCam_image_topic_{"/avp/camera/front/compressed"};
     std::string rearCam_image_topic_{"/avp/camera/rear/compressed"};
@@ -749,7 +867,23 @@ private:
     std::size_t compressed_size_bytes_{0};
     std::size_t raw_size_byte_est_{0};
     double compression_ratio_{1.0};
-    
+
+    struct SaveFrame{
+        std::string stream_id;
+        uint32_t frame_id;
+        cv::Mat overlay_bgr;
+        std::chrono::steady_clock::time_point enqueue_time;
+    };
+    std::deque<SaveFrame> save_queue_;
+    std::mutex save_mutex_;
+    std::condition_variable save_cv_;
+    std::thread save_thread_;
+    std::atomic<bool> save_thread_running_{false};
+
+    std::ofstream save_metrics_csv_;
+    std::string save_metrics_path_{"results/week13/save_thread/save_metrics.csv"};
+    int save_queue_max_size_{30};
+    int save_drop_count_{0};
 };
 }
 
