@@ -1,0 +1,174 @@
+Type: autoware_planning_msgs/msg/Trajectory
+
+Publisher count: 1
+
+Node name: planning_validator
+Node namespace: /planning
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: PUBLISHER
+GID: 01.10.15.61.ee.46.7e.e8.a7.62.2a.cd.00.00.25.03.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 11
+
+Node name: control_evaluator
+Node namespace: /control
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: SUBSCRIPTION
+GID: 01.10.35.77.53.8c.49.24.e2.0f.cf.c9.00.00.17.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: trajectory_relay
+Node namespace: /
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: SUBSCRIPTION
+GID: 01.10.3d.fa.82.3b.16.cd.d9.80.34.82.00.00.16.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: planning
+Node namespace: /adapi/node
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: SUBSCRIPTION
+GID: 01.10.58.7a.64.a3.10.24.cf.64.31.27.00.01.81.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: controller_node_exe
+Node namespace: /control/trajectory_follower
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: SUBSCRIPTION
+GID: 01.10.71.56.a7.90.fb.68.4b.9e.76.d9.00.00.31.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: autoware_operation_mode_transition_manager
+Node namespace: /control
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: SUBSCRIPTION
+GID: 01.10.71.56.a7.90.fb.68.4b.9e.76.d9.00.00.d8.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: simple_planning_simulator
+Node namespace: /simulation
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: SUBSCRIPTION
+GID: 01.10.7c.e1.0d.2e.dc.da.56.6d.bc.f5.00.00.21.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: planning_evaluator
+Node namespace: /planning
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: SUBSCRIPTION
+GID: 01.10.a6.63.e3.79.fc.09.17.d2.ef.b6.00.00.15.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: _NODE_NAME_UNKNOWN_
+Node namespace: _NODE_NAMESPACE_UNKNOWN_
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: SUBSCRIPTION
+GID: 01.10.bc.b0.15.49.af.70.10.6b.cf.a5.00.00.ba.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (5)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: topic_state_monitor_scenario_planning_trajectory
+Node namespace: /system
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: SUBSCRIPTION
+GID: 01.10.c0.3d.16.38.ba.9a.5a.b1.a2.58.00.00.60.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: lane_departure_checker_node
+Node namespace: /control/trajectory_follower
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: SUBSCRIPTION
+GID: 01.10.cb.82.c8.9e.b7.9d.a8.19.00.b7.00.00.20.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: control_validator
+Node namespace: /control
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: SUBSCRIPTION
+GID: 01.10.cb.82.c8.9e.b7.9d.a8.19.00.b7.00.00.3a.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+

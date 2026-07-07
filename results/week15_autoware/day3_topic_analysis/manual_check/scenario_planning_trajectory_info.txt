@@ -1,0 +1,20 @@
+Type: autoware_planning_msgs/msg/Trajectory
+
+Publisher count: 1
+
+Node name: trajectory_relay
+Node namespace: /
+Topic type: autoware_planning_msgs/msg/Trajectory
+Endpoint type: PUBLISHER
+GID: 01.10.3d.fa.82.3b.16.cd.d9.80.34.82.00.00.15.03.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 0
+

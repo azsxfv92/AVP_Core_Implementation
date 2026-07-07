@@ -1,0 +1,5 @@
+/control/command/control_cmd echo result:
+- A sample message was captured successfully.
+- 30second echo test captured only 1 message.
+- ros2 topic hz did not produce a valid rate in the current headless initial state.
+- Reason: no initial pose, no route, no engage state, and no continuous closed-loop command publication.

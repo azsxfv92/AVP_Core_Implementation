@@ -1,0 +1,66 @@
+/control/vehicle_cmd_gate
+  Subscribers:
+    /autoware/engage: autoware_vehicle_msgs/msg/Engage
+    /control/gate_mode_cmd: tier4_control_msgs/msg/GateMode
+    /control/shift_decider/gear_cmd: autoware_vehicle_msgs/msg/GearCommand
+    /control/trajectory_follower/control_cmd: autoware_control_msgs/msg/Control
+    /external/selected/control_cmd: autoware_control_msgs/msg/Control
+    /external/selected/gear_cmd: autoware_vehicle_msgs/msg/GearCommand
+    /external/selected/hazard_lights_cmd: autoware_vehicle_msgs/msg/HazardLightsCommand
+    /external/selected/heartbeat: autoware_adapi_v1_msgs/msg/ManualOperatorHeartbeat
+    /external/selected/turn_indicators_cmd: autoware_vehicle_msgs/msg/TurnIndicatorsCommand
+    /localization/acceleration: geometry_msgs/msg/AccelWithCovarianceStamped
+    /localization/kinematic_state: nav_msgs/msg/Odometry
+    /parameter_events: rcl_interfaces/msg/ParameterEvent
+    /planning/hazard_lights_cmd: autoware_vehicle_msgs/msg/HazardLightsCommand
+    /planning/turn_indicators_cmd: autoware_vehicle_msgs/msg/TurnIndicatorsCommand
+    /system/emergency/control_cmd: autoware_control_msgs/msg/Control
+    /system/emergency/gear_cmd: autoware_vehicle_msgs/msg/GearCommand
+    /system/emergency/hazard_lights_cmd: autoware_vehicle_msgs/msg/HazardLightsCommand
+    /system/emergency/turn_indicators_cmd: autoware_vehicle_msgs/msg/TurnIndicatorsCommand
+    /system/fail_safe/mrm_state: autoware_adapi_v1_msgs/msg/MrmState
+    /system/operation_mode/state: autoware_adapi_v1_msgs/msg/OperationModeState
+    /vehicle/status/steering_status: autoware_vehicle_msgs/msg/SteeringReport
+  Publishers:
+    /api/autoware/get/emergency: tier4_external_api_msgs/msg/Emergency
+    /api/autoware/get/engage: autoware_vehicle_msgs/msg/Engage
+    /control/command/control_cmd: autoware_control_msgs/msg/Control
+    /control/command/control_cmd/debug/published_time: autoware_internal_msgs/msg/PublishedTime
+    /control/command/emergency_cmd: tier4_vehicle_msgs/msg/VehicleEmergencyStamped
+    /control/command/gear_cmd: autoware_vehicle_msgs/msg/GearCommand
+    /control/command/hazard_lights_cmd: autoware_vehicle_msgs/msg/HazardLightsCommand
+    /control/command/turn_indicators_cmd: autoware_vehicle_msgs/msg/TurnIndicatorsCommand
+    /control/current_gate_mode: tier4_control_msgs/msg/GateMode
+    /control/vehicle_cmd_gate/debug/processing_time_ms: autoware_internal_debug_msgs/msg/Float64Stamped
+    /control/vehicle_cmd_gate/is_filter_activated: autoware_vehicle_cmd_gate/msg/IsFilterActivated
+    /control/vehicle_cmd_gate/is_filter_activated/flag: autoware_internal_debug_msgs/msg/BoolStamped
+    /control/vehicle_cmd_gate/is_filter_activated/marker: visualization_msgs/msg/MarkerArray
+    /control/vehicle_cmd_gate/is_filter_activated/marker_raw: visualization_msgs/msg/MarkerArray
+    /control/vehicle_cmd_gate/is_paused: tier4_control_msgs/msg/IsPaused
+    /control/vehicle_cmd_gate/is_start_requested: tier4_control_msgs/msg/IsStartRequested
+    /control/vehicle_cmd_gate/is_stopped: tier4_control_msgs/msg/IsStopped
+    /control/vehicle_cmd_gate/operation_mode: autoware_adapi_v1_msgs/msg/OperationModeState
+    /diagnostics: diagnostic_msgs/msg/DiagnosticArray
+    /parameter_events: rcl_interfaces/msg/ParameterEvent
+    /rosout: rcl_interfaces/msg/Log
+    /service_log: tier4_system_msgs/msg/ServiceLog
+  Service Servers:
+    /api/autoware/set/emergency: tier4_external_api_msgs/srv/SetEmergency
+    /api/autoware/set/engage: tier4_external_api_msgs/srv/Engage
+    /control/vehicle_cmd_gate/clear_external_emergency_stop: std_srvs/srv/Trigger
+    /control/vehicle_cmd_gate/config_logger: logging_demo/srv/ConfigLogger
+    /control/vehicle_cmd_gate/describe_parameters: rcl_interfaces/srv/DescribeParameters
+    /control/vehicle_cmd_gate/external_emergency_stop: std_srvs/srv/Trigger
+    /control/vehicle_cmd_gate/get_parameter_types: rcl_interfaces/srv/GetParameterTypes
+    /control/vehicle_cmd_gate/get_parameters: rcl_interfaces/srv/GetParameters
+    /control/vehicle_cmd_gate/list_parameters: rcl_interfaces/srv/ListParameters
+    /control/vehicle_cmd_gate/set_parameters: rcl_interfaces/srv/SetParameters
+    /control/vehicle_cmd_gate/set_parameters_atomically: rcl_interfaces/srv/SetParametersAtomically
+    /control/vehicle_cmd_gate/set_pause: tier4_control_msgs/srv/SetPause
+    /control/vehicle_cmd_gate/set_stop: tier4_control_msgs/srv/SetStop
+  Service Clients:
+
+  Action Servers:
+
+  Action Clients:
+

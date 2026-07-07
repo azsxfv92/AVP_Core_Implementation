@@ -1,0 +1,76 @@
+Type: autoware_control_msgs/msg/Control
+
+Publisher count: 1
+
+Node name: controller_node_exe
+Node namespace: /control/trajectory_follower
+Topic type: autoware_control_msgs/msg/Control
+Endpoint type: PUBLISHER
+GID: 01.10.71.56.a7.90.fb.68.4b.9e.76.d9.00.00.3e.03.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: TRANSIENT_LOCAL
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 4
+
+Node name: autoware_shift_decider
+Node namespace: /control
+Topic type: autoware_control_msgs/msg/Control
+Endpoint type: SUBSCRIPTION
+GID: 01.10.71.56.a7.90.fb.68.4b.9e.76.d9.00.00.1d.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: vehicle_cmd_gate
+Node namespace: /control
+Topic type: autoware_control_msgs/msg/Control
+Endpoint type: SUBSCRIPTION
+GID: 01.10.71.56.a7.90.fb.68.4b.9e.76.d9.00.00.b1.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: autoware_operation_mode_transition_manager
+Node namespace: /control
+Topic type: autoware_control_msgs/msg/Control
+Endpoint type: SUBSCRIPTION
+GID: 01.10.71.56.a7.90.fb.68.4b.9e.76.d9.00.00.d9.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: topic_state_monitor_trajectory_follower_control_cmd
+Node namespace: /system
+Topic type: autoware_control_msgs/msg/Control
+Endpoint type: SUBSCRIPTION
+GID: 01.10.c0.3d.16.38.ba.9a.5a.b1.a2.58.00.00.82.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
