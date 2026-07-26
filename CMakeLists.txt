@@ -132,8 +132,4 @@ install(TARGETS
 )
 
 
-add_executable(test_preprocess_compare src/tools/test_preprocess_compare.cpp)
-target_link_libraries(test_preprocess_compare PRIVATE avp_preprocess ${OpenCV_LIBS})
-
-
 ament_package()

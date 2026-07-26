@@ -2,23 +2,38 @@
 > **Autonomous Valet Parking System on Jetson Orin Nano**
 
 ## 🎯 Project Vision
-- A comprehensive 36-week AVP implementation roadmap for Jetson Orin Nano. It covers the full autonomous driving stack: Modern C++17, ROS 2, Yocto, and TensorRT/CUDA optimization. By integrating 10-sensor fusion and CARLA HILs, it targets <30ms E2E latency and a 94% success rate, demonstrating production-ready deployment skills.
+- Build an integrated autonomous vehicle software pipeline using CARLA, ROS 2, Jetson, TensorRT/CUDA, and Autoware.
+- Connect the existing CARLA multi-camera perception pipeline to Autoware-compatible interfaces.
+- Establish a closed-loop simulation architecture in which Autoware generates vehicle commands and CARLA returns ego-vehicle state feedback.
+- Measure end-to-end latency across perception, planning, and control.
+-  Add heartbeat monitoring, watchdog timeout detection, fault injection, and fail-safe transition handling.
+- Validate the integrated system through repeatable driving scenarios, quantitative response-time measurements, and documented test results.
 
 ## 🚀 Key Performance Indicators (Target)
-- **End-to-End Latency**: < 30ms
-- **Processing Speed**: > 30 FPS (with 10 Sensors)
-- **Parking Success Rate**: 94% (CARLA Simulation)
-- **Memory Footprint**: < 6.0GB / 8.0GB (Jetson Orin Nano) 
+- **Autoware Integration** : Complete CARLA → perception → Autoware planning/control → CARLA closed-loop connection
+- **Topic Interface Validation**: Verify command and feedback paths with reproducible ROS 2 publisher/subscriber analysis
+- **End-to-End Latency**: Measure perception → planning → control latency and identify major bottlenecks
+- **Runtime Monitoring**: Detect node timeout and heartbeat loss within a defined threshold
+- **Fail-Safe Response**: Trigger an emergency-stop or safe-state transition after injected faults
+- **Fault-Injection Evaluation**: Measure response-time distribution using repeated tests, including p50 and p99
+- **Scenario Reproducibility**: Reproduce basic route driving, stopping, and obstacle-related scenarios in CARLA
+- **Documentation**: Maintain architecture diagrams, experiment logs, result tables, and a technical report
 
 ## 🛠 Tech Stack
-- **Languages**: Modern C++17 (RAII, Move Semantics)
-- **Middleware**: ROS 2 Humble (DDS Tuning) 
-- **AI/Acceleration**: TensorRT 8.5 (INT8), CUDA 11.4 
-- **Infrastructure**: Yocto Project, Docker
+- **Languages**: Modern C++17, Python
+- **Middleware**: ROS 2 Humble, DDS, ROS 2 QoS
+- **Autonomous Driving Stack**: Autoware
+- **Simulation**: CARLA 0.9.15
+- **AI / Acceleration**: TensorRT, CUDA, OpenCV
+- **Edge Platform**: Jetson Orin Nano
+- **Profiling / Analysis**: Nsight Systems, CSV-based latency analysis
+- **Video / Transport**: GStreamer, ROS 2 Image and CompressedImage transport
+- **Safety / Validation**: Heartbeat monitoring, watchdog timeout detection, fault injection, fail-safe handling
+- **Build / Development**: CMake, colcon, Git, Docker
 
 ## 📈 Roadmap & Progress
 
-### Roadmap : ./docs/Roadmap.md
+### Roadmap : Stage 1 — Autoware Integration, Safety Monitoring, and Fault-Injection Validation
 ### Current : Week 15 — Autoware setup and Planning/Control topic analysis
 
 ---
@@ -377,10 +392,13 @@ In this week, I installed Autoware on the PC environment, launched the planning 
 - Identified the main planning trajectory topic.
 - Identified the trajectory follower control command topic.
 - Analyzed `vehicle_cmd_gate` input/output topics.
-- Captured one sample `/control/command/control_cmd` message using `ros2 topic echo`.
+- Identified the final Autoware control command for a future CARLA adapter.
+- Analyzed the localization and vehicle status feedback topics required by Planning and Control.
+- Identified /simulation/simple_planning_simulator as the current ego vehicle state provider.
+
 
 ### Key topic flow
-
+#### 1) Command path:
 ```text
 /planning/scenario_planning/trajectory
         ↓
@@ -389,6 +407,33 @@ In this week, I installed Autoware on the PC environment, launched the planning 
 /control/vehicle_cmd_gate
         ↓
 /control/command/control_cmd
+        ↓
+Future CARLA adapter
+```
+
+#### 2) Feedback path:
+```text
+CARLA ego vehicle state
+        ↓
+Future CARLA adapter
+        ↓
+/localization/kinematic_state
+/localization/acceleration
+/vehicle/status/steering_status
+/vehicle/status/velocity_status
+/vehicle/status/gear_status
+/vehicle/status/control_mode
+        ↓
+Autoware Planning and Control
+```
+
+### Key findings
+- /planning/scenario_planning/trajectory was identified as the main Planning output consumed by Control.
+- /control/command/control_cmd was identified as the final command candidate for the future CARLA adapter.
+- /localization/kinematic_state was identified as the highest-priority vehicle feedback topic.
+- /localization/acceleration and /vehicle/status/steering_status are also consumed by the trajectory follower and vehicle_cmd_gate.
+- The future CARLA adapter must work as both a control-command subscriber and a vehicle-state feedback publisher.
+
 
 
 
