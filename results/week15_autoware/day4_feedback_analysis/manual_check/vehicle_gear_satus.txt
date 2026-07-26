@@ -1,0 +1,48 @@
+Type: autoware_vehicle_msgs/msg/GearReport
+
+Publisher count: 1
+
+Node name: simple_planning_simulator
+Node namespace: /simulation
+Topic type: autoware_vehicle_msgs/msg/GearReport
+Endpoint type: PUBLISHER
+GID: 01.10.bf.25.82.47.b4.cd.8d.28.57.d0.00.00.27.03.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 2
+
+Node name: autoware_shift_decider
+Node namespace: /control
+Topic type: autoware_vehicle_msgs/msg/GearReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.a6.9c.2e.04.8d.f7.f1.e1.3c.b9.00.00.1f.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: vehicle_status
+Node namespace: /adapi/node
+Topic type: autoware_vehicle_msgs/msg/GearReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.f0.41.7e.fd.b8.97.1d.6d.81.78.00.01.97.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+

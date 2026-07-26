@@ -1,0 +1,118 @@
+Type: autoware_vehicle_msgs/msg/SteeringReport
+
+Publisher count: 1
+
+Node name: simple_planning_simulator
+Node namespace: /simulation
+Topic type: autoware_vehicle_msgs/msg/SteeringReport
+Endpoint type: PUBLISHER
+GID: 01.10.67.91.cf.f5.e4.14.07.b2.cb.15.00.00.31.03.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 7
+
+Node name: topic_state_monitor_vehicle_status_steering_status
+Node namespace: /system
+Topic type: autoware_vehicle_msgs/msg/SteeringReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.1e.81.29.3a.7b.5e.ff.0f.f2.e1.00.00.51.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: control_evaluator
+Node namespace: /control
+Topic type: autoware_vehicle_msgs/msg/SteeringReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.21.b6.95.a0.04.5f.22.f8.30.82.00.00.1b.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: motion_velocity_planner
+Node namespace: /planning/scenario_planning/lane_driving/motion_planning
+Topic type: autoware_vehicle_msgs/msg/SteeringReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.56.3e.83.5c.42.cb.52.0f.11.87.00.00.60.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: planning_evaluator
+Node namespace: /planning
+Topic type: autoware_vehicle_msgs/msg/SteeringReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.65.77.51.38.a1.c9.87.2a.da.12.00.00.1d.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: controller_node_exe
+Node namespace: /control/trajectory_follower
+Topic type: autoware_vehicle_msgs/msg/SteeringReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.67.5d.23.da.a8.8d.60.5f.20.eb.00.00.33.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: vehicle_cmd_gate
+Node namespace: /control
+Topic type: autoware_vehicle_msgs/msg/SteeringReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.67.5d.23.da.a8.8d.60.5f.20.eb.00.00.ae.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: vehicle_status
+Node namespace: /adapi/node
+Topic type: autoware_vehicle_msgs/msg/SteeringReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.b5.96.91.a5.d0.00.55.99.9d.53.00.01.96.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+

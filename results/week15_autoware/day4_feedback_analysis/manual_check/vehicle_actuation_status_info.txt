@@ -1,0 +1,20 @@
+Type: tier4_vehicle_msgs/msg/ActuationStatusStamped
+
+Publisher count: 1
+
+Node name: simple_planning_simulator
+Node namespace: /simulation
+Topic type: tier4_vehicle_msgs/msg/ActuationStatusStamped
+Endpoint type: PUBLISHER
+GID: 01.10.67.91.cf.f5.e4.14.07.b2.cb.15.00.00.30.03.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 0
+

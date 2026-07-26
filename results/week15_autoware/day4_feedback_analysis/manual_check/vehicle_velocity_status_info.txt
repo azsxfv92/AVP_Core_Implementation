@@ -1,0 +1,48 @@
+Type: autoware_vehicle_msgs/msg/VelocityReport
+
+Publisher count: 1
+
+Node name: simple_planning_simulator
+Node namespace: /simulation
+Topic type: autoware_vehicle_msgs/msg/VelocityReport
+Endpoint type: PUBLISHER
+GID: 01.10.bf.25.82.47.b4.cd.8d.28.57.d0.00.00.2b.03.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 2
+
+Node name: autonomous_emergency_braking
+Node namespace: /control
+Topic type: autoware_vehicle_msgs/msg/VelocityReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.24.6a.f5.4a.83.f6.25.59.f9.fe.00.00.52.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: topic_state_monitor_vehicle_status_velocity_status
+Node namespace: /system
+Topic type: autoware_vehicle_msgs/msg/VelocityReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.f7.71.83.2c.ee.82.6d.0e.30.a4.00.00.1e.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+

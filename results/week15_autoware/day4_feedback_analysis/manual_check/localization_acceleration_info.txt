@@ -1,0 +1,174 @@
+Type: geometry_msgs/msg/AccelWithCovarianceStamped
+
+Publisher count: 1
+
+Node name: simple_planning_simulator
+Node namespace: /simulation
+Topic type: geometry_msgs/msg/AccelWithCovarianceStamped
+Endpoint type: PUBLISHER
+GID: 01.10.2b.a0.e5.39.c0.8b.d1.5d.92.4e.00.00.2d.03.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 11
+
+Node name: planning_validator
+Node namespace: /planning
+Topic type: geometry_msgs/msg/AccelWithCovarianceStamped
+Endpoint type: SUBSCRIPTION
+GID: 01.10.05.a6.8d.de.f8.80.a2.d3.b0.ce.00.00.21.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: behavior_velocity_planner
+Node namespace: /planning/scenario_planning/lane_driving/behavior_planning
+Topic type: geometry_msgs/msg/AccelWithCovarianceStamped
+Endpoint type: SUBSCRIPTION
+GID: 01.10.14.97.99.a0.d2.61.60.0c.dd.c8.00.00.24.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: behavior_path_planner
+Node namespace: /planning/scenario_planning/lane_driving/behavior_planning
+Topic type: geometry_msgs/msg/AccelWithCovarianceStamped
+Endpoint type: SUBSCRIPTION
+GID: 01.10.14.97.99.a0.d2.61.60.0c.dd.c8.00.00.a0.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: vehicle_status
+Node namespace: /adapi/node
+Topic type: geometry_msgs/msg/AccelWithCovarianceStamped
+Endpoint type: SUBSCRIPTION
+GID: 01.10.6a.d9.ee.dc.e6.66.2d.57.6d.dd.00.01.95.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: controller_node_exe
+Node namespace: /control/trajectory_follower
+Topic type: geometry_msgs/msg/AccelWithCovarianceStamped
+Endpoint type: SUBSCRIPTION
+GID: 01.10.a4.7c.71.63.aa.fa.f8.1a.05.b3.00.00.34.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: vehicle_cmd_gate
+Node namespace: /control
+Topic type: geometry_msgs/msg/AccelWithCovarianceStamped
+Endpoint type: SUBSCRIPTION
+GID: 01.10.a4.7c.71.63.aa.fa.f8.1a.05.b3.00.00.ad.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: motion_velocity_planner
+Node namespace: /planning/scenario_planning/lane_driving/motion_planning
+Topic type: geometry_msgs/msg/AccelWithCovarianceStamped
+Endpoint type: SUBSCRIPTION
+GID: 01.10.a4.b3.1d.40.ad.6a.3a.55.c1.63.00.00.24.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: control_validator
+Node namespace: /control
+Topic type: geometry_msgs/msg/AccelWithCovarianceStamped
+Endpoint type: SUBSCRIPTION
+GID: 01.10.a4.e9.d0.87.84.e3.c4.d2.d8.e6.00.00.3c.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: control_evaluator
+Node namespace: /control
+Topic type: geometry_msgs/msg/AccelWithCovarianceStamped
+Endpoint type: SUBSCRIPTION
+GID: 01.10.ae.04.bc.1d.4f.88.3a.07.84.db.00.00.16.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: planning_evaluator
+Node namespace: /planning
+Topic type: geometry_msgs/msg/AccelWithCovarianceStamped
+Endpoint type: SUBSCRIPTION
+GID: 01.10.ca.1e.1f.20.61.26.54.c1.cc.c2.00.00.1c.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: velocity_smoother
+Node namespace: /planning/scenario_planning
+Topic type: geometry_msgs/msg/AccelWithCovarianceStamped
+Endpoint type: SUBSCRIPTION
+GID: 01.10.f2.8a.7d.c1.0d.e2.58.76.10.53.00.00.1e.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+

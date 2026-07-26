@@ -1,0 +1,62 @@
+Type: autoware_vehicle_msgs/msg/ControlModeReport
+
+Publisher count: 1
+
+Node name: simple_planning_simulator
+Node namespace: /simulation
+Topic type: autoware_vehicle_msgs/msg/ControlModeReport
+Endpoint type: PUBLISHER
+GID: 01.10.67.91.cf.f5.e4.14.07.b2.cb.15.00.00.26.03.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 3
+
+Node name: autoware_operation_mode_transition_manager
+Node namespace: /control
+Topic type: autoware_vehicle_msgs/msg/ControlModeReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.67.5d.23.da.a8.8d.60.5f.20.eb.00.00.db.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: lane_departure_checker_node
+Node namespace: /control/trajectory_follower
+Topic type: autoware_vehicle_msgs/msg/ControlModeReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.71.c7.f3.33.49.56.84.a8.e5.37.00.00.23.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Node name: mrm_handler
+Node namespace: /system
+Topic type: autoware_vehicle_msgs/msg/ControlModeReport
+Endpoint type: SUBSCRIPTION
+GID: 01.10.f5.19.4b.57.06.42.22.64.b2.9c.00.00.16.04.00.00.00.00.00.00.00.00
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
