@@ -26,6 +26,10 @@ public:
     bool allocateBuffers();
     bool runInference(const std::vector<float>& input_data);
     void printTensorInfo() const;
+    // add getter to publish the h_output_
+    const std::vector<float>&   output()     const { return h_output_; }
+    const std::vector<int64_t>& outputDims() const { return output_dims_; }
+
 
 private:
     

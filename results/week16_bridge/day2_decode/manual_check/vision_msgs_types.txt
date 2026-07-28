@@ -1,0 +1,145 @@
+########## Detection2DArray ##########
+# A list of 2D detections, for a multi-object 2D detector.
+
+std_msgs/Header header
+	builtin_interfaces/Time stamp
+		int32 sec
+		uint32 nanosec
+	string frame_id
+
+# A list of the detected proposals. A multi-proposal detector might generate
+#   this list with many candidate detections generated from a single input.
+Detection2D[] detections
+	#
+	std_msgs/Header header
+		builtin_interfaces/Time stamp
+			int32 sec
+			uint32 nanosec
+		string frame_id
+	ObjectHypothesisWithPose[] results
+		ObjectHypothesis hypothesis
+			string class_id
+			float64 score
+		geometry_msgs/PoseWithCovariance pose
+			Pose pose
+				Point position
+					float64 x
+					float64 y
+					float64 z
+				Quaternion orientation
+					float64 x 0
+					float64 y 0
+					float64 z 0
+					float64 w 1
+			float64[36] covariance
+	BoundingBox2D bbox
+		vision_msgs/Pose2D center
+			vision_msgs/Point2D position
+				float64 x
+				float64 y
+			float64 theta
+		float64 size_x
+		float64 size_y
+	string id
+
+########## Detection2D ##########
+# Defines a 2D detection result.
+#
+# This is similar to a 2D classification, but includes position information,
+#   allowing a classification result for a specific crop or image point to
+#   to be located in the larger image.
+
+std_msgs/Header header
+	builtin_interfaces/Time stamp
+		int32 sec
+		uint32 nanosec
+	string frame_id
+
+# Class probabilities
+ObjectHypothesisWithPose[] results
+	ObjectHypothesis hypothesis
+		string class_id
+		float64 score
+	geometry_msgs/PoseWithCovariance pose
+		Pose pose
+			Point position
+				float64 x
+				float64 y
+				float64 z
+			Quaternion orientation
+				float64 x 0
+				float64 y 0
+				float64 z 0
+				float64 w 1
+		float64[36] covariance
+
+# 2D bounding box surrounding the object.
+BoundingBox2D bbox
+	vision_msgs/Pose2D center
+		vision_msgs/Point2D position
+			float64 x
+			float64 y
+		float64 theta
+	float64 size_x
+	float64 size_y
+
+# ID used for consistency across multiple detection messages. Detections
+# of the same object in different detection messages should have the same id.
+# This field may be empty.
+string id
+
+# Source data that generated this detection are not a part of the message.
+# If you need to access them, use an exact or approximate time synchronizer in
+# your code, as this message's header should match the header of the source
+# data.
+
+########## BoundingBox2D ##########
+# A 2D bounding box that can be rotated about its center.
+# All dimensions are in pixels, but represented using floating-point
+#   values to allow sub-pixel precision. If an exact pixel crop is required
+#   for a rotated bounding box, it can be calculated using Bresenham's line
+#   algorithm.
+
+# The 2D position (in pixels) and orientation of the bounding box center.
+vision_msgs/Pose2D center
+	vision_msgs/Point2D position
+		float64 x
+		float64 y
+	float64 theta
+
+# The total size (in pixels) of the bounding box surrounding the object relative
+#   to the pose of its center.
+float64 size_x
+float64 size_y
+
+########## ObjectHypothesisWithPose ##########
+# An object hypothesis that contains pose information.
+# If you would like to define an array of ObjectHypothesisWithPose messages,
+#   please see the Detection2D or Detection3D message types.
+
+# The object hypothesis (ID and score).
+ObjectHypothesis hypothesis
+	string class_id
+	float64 score
+
+# The 6D pose of the object hypothesis. This pose should be
+#   defined as the pose of some fixed reference point on the object, such as
+#   the geometric center of the bounding box, the center of mass of the
+#   object or the origin of a reference mesh of the object.
+# Note that this pose is not stamped; frame information can be defined by
+#   parent messages.
+# Also note that different classes predicted for the same input data may have
+#   different predicted 6D poses.
+geometry_msgs/PoseWithCovariance pose
+	Pose pose
+		Point position
+			float64 x
+			float64 y
+			float64 z
+		Quaternion orientation
+			float64 x 0
+			float64 y 0
+			float64 z 0
+			float64 w 1
+	float64[36] covariance
+

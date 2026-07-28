@@ -7,6 +7,11 @@
 namespace avp_core_implementation
 {
 
+namespace
+{
+constexpr GstClockTime kEosTimeoutNs = 10 * GST_SECOND;
+}  // namespace
+
 VideoEncoder::VideoEncoder()
 {
     static bool gst_initialized = false;
@@ -186,6 +191,32 @@ void VideoEncoder::close()
 
   if(appsrc_){
     gst_app_src_end_of_stream(GST_APP_SRC(appsrc_));
+
+    GstBus * bus = gst_element_get_bus(pipeline_);
+    if(bus){
+      GstMessage * msg = gst_bus_timed_pop_filtered(
+        bus,
+        kEosTimeoutNs,
+        static_cast<GstMessageType>(GST_MESSAGE_EOS | GST_MESSAGE_ERROR));
+
+      if(!msg){
+        std::cerr << "[VideoEncoder] EOS timeout - output file may be incomplete"
+                  << std::endl;
+      }
+      else{
+        if(GST_MESSAGE_TYPE(msg) == GST_MESSAGE_ERROR){
+          GError * err = nullptr;
+          gchar * dbg = nullptr;
+          gst_message_parse_error(msg, &err, &dbg);
+          std::cerr << "[VideoEncoder] Pipeline error on EOS: "
+                    << (err ? err->message : "unknown") << std::endl;
+          if(err) g_error_free(err);
+          if(dbg) g_free(dbg);
+        }
+        gst_message_unref(msg);
+      }
+      gst_object_unref(bus);
+    }
   }
 
   gst_element_set_state(pipeline_, GST_STATE_NULL);

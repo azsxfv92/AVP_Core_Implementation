@@ -1,0 +1,73 @@
+header:
+  stamp:
+    sec: 1785250812
+    nanosec: 823143134
+  frame_id: carla_front_camera
+detections:
+- header:
+    stamp:
+      sec: 1785250812
+      nanosec: 823143134
+    frame_id: carla_front_camera
+  results:
+  - hypothesis:
+      class_id: '7'
+      score: 0.26743483543395996
+    pose:
+      pose:
+        position:
+          x: 0.0
+          y: 0.0
+          z: 0.0
+        orientation:
+          x: 0.0
+          y: 0.0
+          z: 0.0
+          w: 1.0
+      covariance:
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+  bbox:
+    center:
+      position:
+        x: 404.0
+        y: 464.0625
+      theta: 0.0
+    size_x: 344.0
+    size_y: 219.375
+  id: ''
+---

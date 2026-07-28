@@ -20,6 +20,7 @@ find_package(geometry_msgs REQUIRED)
 
 find_package(cv_bridge REQUIRED)
 find_package(OpenCV REQUIRED)
+find_package(vision_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
     "msg/VehicleState.msg"
@@ -79,16 +80,18 @@ install(DIRECTORY launch config
 add_executable(trt_infer_node
   src/trt_infer_node.cpp
   src/video_encoder.cpp
+  src/yolo_postprocess.cpp
 )
 
 ament_target_dependencies(trt_infer_node
   rclcpp
   sensor_msgs
   cv_bridge
+  vision_msgs
 )
 
 find_package(CUDAToolkit REQUIRED)
-
+find_package(vision_msgs REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0)
 pkg_check_modules(GSTREAMER_APP REQUIRED gstreamer-app-1.0)

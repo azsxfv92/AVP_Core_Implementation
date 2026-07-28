@@ -1,6 +1,7 @@
 #include "trt_infer.hpp"
 #include "preprocess.hpp"
 #include "video_encoder.hpp"
+#include "yolo_postprocess.hpp"
 
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/imgproc.hpp>
@@ -8,6 +9,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/compressed_image.hpp>
+#include <vision_msgs/msg/detection2_d_array.hpp>
 
 #include <chrono>
 #include <memory>
@@ -300,12 +302,14 @@ public:
             "compressed_image_topic",
             "/avp/camera/front/compressed"
         );
+        this->declare_parameter<double>("conf_threshold", 0.25);
+        this->declare_parameter<double>("nms_threshold", 0.45);
+
         encode_fps_ = this->declare_parameter<int>("encode_fps", 30);
         encode_width_ = this->declare_parameter<int>("encode_width", 1280);
         encode_height_ = this->declare_parameter<int>("encode_height", 720);
         encode_queue_size_ = this->declare_parameter<int>("encode_queue_size", 4);        
-        
-        
+                
         const auto engine_path = 
             this->get_parameter("engine_path").as_string();
         const auto image_topic = 
@@ -320,6 +324,8 @@ public:
             this->get_parameter("enable_encode").as_bool();
         input_transport_ = this->get_parameter("input_transport").as_string();
         compressed_image_topic_ = this->get_parameter("compressed_image_topic").as_string();
+        conf_threshold_ = this->get_parameter("conf_threshold").as_double();
+        nms_threshold_ = this->get_parameter("nms_threshold").as_double();
 
         RCLCPP_INFO(this->get_logger(), "Engine path: %s", engine_path.c_str());
         RCLCPP_INFO(this->get_logger(), "Image topic: %s", image_topic.c_str());
@@ -353,6 +359,8 @@ public:
             return;
         }
 
+        infer_.printTensorInfo();
+
         // sub_ = this->create_subscription<sensor_msgs::msg::Image>(
         //     image_topic,
         //     rclcpp::SensorDataQoS(),
@@ -375,12 +383,9 @@ public:
             RCLCPP_INFO(this->get_logger(), "Subscribed raw image topic: %s", image_topic.c_str());
         }
 
-        
-
-        overlayPub_ = this->create_publisher<sensor_msgs::msg::Image>(
-            overlay_topic,
-            10
-        );
+        auto detection_qos = rclcpp::QoS(rclcpp::KeepLast(10));
+        detectionPub_ = this->create_publisher<vision_msgs::msg::Detection2DArray>("/avp/detections", detection_qos);
+        overlayPub_ = this->create_publisher<sensor_msgs::msg::Image>(overlay_topic, 10);
 
         csv_path_ = csv_path;
         std::filesystem::path csv_fs_path(csv_path_);
@@ -437,6 +442,7 @@ public:
 
         start_time_ = std::chrono::steady_clock::now();
     }
+
     ~TrtStreamInferNode()
     {
         if(video_encoder_){
@@ -543,6 +549,18 @@ private:
         const auto t_infer_end = std::chrono::steady_clock::now();
 
         const auto t_post_start = std::chrono::steady_clock::now();
+
+        const auto& out = infer_.output();
+        const auto& dims = infer_.outputDims();
+        const int num_boxes = static_cast<int>(dims[1]); // 25200
+        const int num_attrs = static_cast<int>(dims[2]); // 85
+
+        auto dets = avp::decodeYolov5(out, num_boxes, num_attrs,
+                                    static_cast<float>(conf_threshold_), 
+                                    static_cast<float>(nms_threshold_),
+                                    cv_ptr->image.cols, cv_ptr->image.rows);
+        RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 1000, "detections=%zu", dets.size());
+
         //copy the original image to keep the original image
         cv::Mat overlay = cv_ptr->image.clone();
 
@@ -557,7 +575,38 @@ private:
         cv::putText(overlay, line2, cv::Point(30, 80), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
         cv::putText(overlay, line3, cv::Point(30, 120), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
 
-        // convert the OpenCV image to ROS2 image message 
+        for(const auto& d : dets){
+            cv::rectangle(overlay, d.box, cv::Scalar(0, 255, 0), 2);
+            char label[64];
+            snprintf(label, sizeof(label), "%d %.2f", d.class_id, d.score);
+            cv::putText(overlay, label, cv::Point(static_cast<int>(d.box.x), std::max(0, static_cast<int>(d.box.y)-5)),
+            cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 1);
+        }
+
+        vision_msgs::msg::Detection2DArray det_msg;
+        det_msg.header = msg->header;
+
+        for(const auto& d : dets){
+            vision_msgs::msg::Detection2D det;
+            det.header = det_msg.header;
+
+            det.bbox.center.position.x = d.box.x + d.box.width * 0.5;
+            det.bbox.center.position.y = d.box.y + d.box.height * 0.5;
+            det.bbox.center.theta = 0.0;
+            det.bbox.size_x = d.box.width;
+            det.bbox.size_y = d.box.height;
+
+            vision_msgs::msg::ObjectHypothesisWithPose hyp;
+            hyp.hypothesis.class_id = std::to_string(d.class_id);
+            hyp.hypothesis.score = d.score;
+            det.results.push_back(hyp);
+
+            det_msg.detections.push_back(det);
+        }
+
+        detectionPub_->publish(det_msg);
+
+        // convert the OpenCV image to ROS2 image message
         auto overlay_msg = cv_bridge::CvImage(msg->header, "bgr8", overlay).toImageMsg();
         overlayPub_->publish(*overlay_msg);
 
@@ -719,7 +768,8 @@ private:
     TrtInfer infer_;
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
     rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr compressed_sub_;
-    rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr overlayPub_; 
+    rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr overlayPub_;
+    rclcpp::Publisher<vision_msgs::msg::Detection2DArray>::SharedPtr detectionPub_; 
     uint32_t frameCnt = 0;
     std::chrono::steady_clock::time_point start_time_;
     std::ofstream csv_;
@@ -752,7 +802,8 @@ private:
     std::size_t compressed_size_bytes_{0};
     std::size_t raw_size_byte_est_{0};
     double compression_ratio_{1.0};
-    
+    double conf_threshold_{0.25};
+    double nms_threshold_{0.45};    
 };
 }
 
@@ -765,3 +816,4 @@ int main(int argc, char** argv)
   rclcpp::shutdown();
   return 0;
 }
+
