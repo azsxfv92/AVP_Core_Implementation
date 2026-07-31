@@ -1,0 +1,1 @@
+/perception/object_recognition/detection/objects [autoware_perception_msgs/msg/DetectedObjects]
