@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.22)
 project(avp_core_implementation VERSION 1.0)
 
-enable_language(CUDA)
+option(BUILD_INFERENCE "Build CUDA/TensorRT inference targets" ON)
+
+if(BUILD_INFERENCE)
+  enable_language(CUDA)
+endif()
 
 # C++ Standard
 set(CMAKE_CXX_STANDARD 17)
@@ -76,6 +80,8 @@ install(DIRECTORY launch config
   DESTINATION share/${PROJECT_NAME}
 )
 
+if(BUILD_INFERENCE)
+
 # add trt_infer_node
 add_executable(trt_infer_node
   src/trt_infer_node.cpp
@@ -133,6 +139,23 @@ install(TARGETS
   avp_preprocess
   DESTINATION lib
 )
+endif()
 
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(autoware_perception_msgs REQUIRED)
+
+add_executable(aeb_node src/aeb_node.cpp)
+ament_target_dependencies(aeb_node
+  rclcpp
+  std_msgs
+  geometry_msgs
+  autoware_perception_msgs
+  tf2_ros
+  tf2_geometry_msgs  
+)
+install(TARGETS aeb_node
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 ament_package()

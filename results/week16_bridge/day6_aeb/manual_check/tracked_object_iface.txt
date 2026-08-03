@@ -1,0 +1,75 @@
+unique_identifier_msgs/UUID object_id
+	#
+	uint8[16] uuid
+float32 existence_probability
+ObjectClassification[] classification
+	uint8 UNKNOWN = 0
+	uint8 CAR = 1
+	uint8 TRUCK = 2
+	uint8 BUS = 3
+	uint8 TRAILER = 4
+	uint8 MOTORCYCLE = 5
+	uint8 BICYCLE = 6
+	uint8 PEDESTRIAN = 7
+	uint8 ANIMAL = 8
+	uint8 HAZARD = 9 #
+	uint8 OVER_DRIVABLE = 10 #
+	uint8 UNDER_DRIVABLE = 11 #
+	uint8 label
+	float32 probability
+TrackedObjectKinematics kinematics
+	uint8 UNAVAILABLE=0
+	uint8 SIGN_UNKNOWN=1
+	uint8 AVAILABLE=2
+	geometry_msgs/PoseWithCovariance pose_with_covariance
+		Pose pose
+			Point position
+				float64 x
+				float64 y
+				float64 z
+			Quaternion orientation
+				float64 x 0
+				float64 y 0
+				float64 z 0
+				float64 w 1
+		float64[36] covariance
+	geometry_msgs/TwistWithCovariance twist_with_covariance
+		Twist twist
+			Vector3  linear
+				float64 x
+				float64 y
+				float64 z
+			Vector3  angular
+				float64 x
+				float64 y
+				float64 z
+		float64[36] covariance
+	geometry_msgs/AccelWithCovariance acceleration_with_covariance
+		Accel accel
+			Vector3  linear
+				float64 x
+				float64 y
+				float64 z
+			Vector3  angular
+				float64 x
+				float64 y
+				float64 z
+		float64[36] covariance
+	uint8 orientation_availability
+	bool is_stationary
+Shape shape
+	uint8 BOUNDING_BOX=0  #
+	uint8 CYLINDER=1      #
+	uint8 POLYGON=2       #
+	uint8 type
+	geometry_msgs/Polygon footprint
+		Point32[] points
+			#
+			#
+			float32 x
+			float32 y
+			float32 z
+	geometry_msgs/Vector3 dimensions
+		float64 x
+		float64 y
+		float64 z

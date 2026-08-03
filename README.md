@@ -1,6 +1,12 @@
 # AVP_Core_Implementation
 > **Autonomous Valet Parking System on Jetson Orin Nano**
 
+![AEB demo](/results/week16_bridge/day6_aeb/media/day6_overlay.gif)
+
+CARLA(Desktop) → Jetson Orin Nano(TensorRT FP16) → Autoware perception → AEB with fail-safe
+
+*Emergency braking triggered by Autoware tracking output, then resuming after the hazard clears*
+
 ## 🎯 Project Vision
 - Build an integrated autonomous vehicle software pipeline using CARLA, ROS 2, Jetson, TensorRT/CUDA, and Autoware.
 - Connect the existing CARLA multi-camera perception pipeline to Autoware-compatible interfaces.
@@ -34,7 +40,7 @@
 ## 📈 Roadmap & Progress
 
 ### Roadmap : Stage 1 — Autoware Integration, Safety Monitoring, and Fault-Injection Validation
-### Current : Week 15 — Autoware setup and Planning/Control topic analysis
+### Current : Week 16 Day 6 — AEB (Autonomous Emergency Braking) on Autoware tracking output
 
 ---
 
@@ -436,6 +442,61 @@ Autoware Planning and Control
 
 
 
+
+### 13) Week 16 Day 6 - AEB (Autonomous Emergency Braking) on Autoware tracking output
+
+### Week 16 Day 6 Goal
+
+Build a longitudinal AEB function that consumes Autoware `multi_object_tracker` output and brakes the CARLA ego vehicle, without the function node depending on the simulator.
+
+### What was done
+
+- Implemented `aeb_node` (C++): transforms tracked objects from `map` to `base_link` via TF, judges hazard by longitudinal distance/lateral offset/existence probability, and publishes `target_accel` + `aeb/status`.
+- Kept `aeb_node` simulator-agnostic (`import carla` free); all CARLA control lives in `tools/week16_carla_scenario.py`.
+- CARLA scenario node cruises under Traffic Manager autopilot and only takes manual control to brake when AEB engages, to avoid steering conflicts with the Traffic Manager.
+- Added a fail-safe input-timeout: brake if either the tracking topic or the raw per-frame detection topic goes stale, since `multi_object_tracker` can keep publishing extrapolated tracks for a while after the real perception source dies.
+- Recorded evidence with `tools/week16_record_aeb_evidence.py` (CSV/log of speed, target_accel, aeb_status, autopilot_active).
+
+### Week 16 Day 6 execution flow
+
+#### 1. Start CARLA server (On PC)
+```bash
+cd ~/avp_core_implementation
+./scripts/run_CARLA_remote.sh
+```
+
+#### 2. Launch Autoware planning simulator
+```bash
+./scripts/run_autoware_remote.sh
+./scripts/set_initial_pose.sh
+
+# planning_simulator.launch.xml spawns dummy_perception_publisher, which remaps onto
+# /perception/object_recognition/detection/objects and masks a dead perception source.
+pkill -9 -f autoware_dummy_perception_publisher_node
+```
+
+#### 3. Run CARLA scenario (spawns hero + front obstacle, publishes speed, applies target_accel)
+```bash
+source install/setup.bash
+python3 tools/week16_carla_scenario.py
+```
+
+#### 4. Run inference and Autoware bridge
+```bash
+ros2 run avp_core_implementation trt_infer_node        # On Jetson to perform inference and record video
+python3 tools/week16_detection_to_autoware_node.py      # On PC
+```
+
+#### 5. Run AEB node
+```bash
+ros2 run avp_core_implementation aeb_node
+```
+
+### Key findings
+
+- Reproduced obstacle-triggered braking multiple times: the ego vehicle stops cleanly behind the tracked obstacle with no chattering.
+- Reproduced the perception-timeout fail-safe: killing `trt_infer_node` latches `aeb/status = true` and holds the vehicle stopped.
+- Found that Autoware's own `dummy_perception_publisher` (from `planning_simulator.launch.xml`) remaps its output onto the same `/perception/object_recognition/detection/objects` topic used by this pipeline, which can silently mask a dead perception source — worth checking for before trusting a fail-safe test.
 
 ## DDS Baseline
 This project uses **Fast DDS** via `rmw_fastrtps_cpp`.  

@@ -1,0 +1,6 @@
+[2026-08-03T11:32:09.458] recording started -> results/week16_bridge/day6_aeb/manual_check/day6_evidence_20260803_113209.csv
+[2026-08-03T11:32:09.558] AEB status changed -> False (speed=5.78m/s, accel=1.14)
+[2026-08-03T11:32:09.558] autopilot_active changed -> True (speed=5.78m/s)
+[2026-08-03T11:32:16.258] AEB status changed -> True (speed=5.74m/s, accel=-5.00)
+[2026-08-03T11:32:16.358] autopilot_active changed -> False (speed=5.58m/s)
+[2026-08-03T11:32:39.408] recording stopped
