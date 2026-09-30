@@ -1,0 +1,18 @@
+column: per_switch_ns   unit: us   percentile: nearest-rank
+file                               n        min        p50        p90        p95        p99          max       mean         sd
+------------------------------------------------------------------------------------------------------------------------------
+ctxsw_idle_same.csv            49800        0.6        0.9        0.9        0.9        0.9          9.1        0.9        0.1
+ctxsw_idle_free.csv            49800        0.7        2.3        2.4        2.4        2.4         10.8        1.9        0.6
+ctxsw_load_same.csv            49800        0.6        0.9        0.9        0.9        0.9          9.2        0.9        0.1
+ctxsw_load_free.csv            49800        0.1        0.8        1.7        1.7        1.8       3227.6        2.6       56.0
+
+
+ Performance counter stats for 'taskset -c 3 ./rtmw/build/ctxsw_pingpong 50000':
+
+           100,001      context-switches                                                      
+                 2      cpu-migrations                                                        
+
+       0.113645050 seconds time elapsed
+
+       0.028169000 seconds user
+       0.085513000 seconds sys

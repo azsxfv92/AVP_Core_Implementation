@@ -1,0 +1,925 @@
+Linux 6.8.0-138-generic (minhyuk-System-Product-Name) 	2026년 09월 07일 	_x86_64_	(16 CPU)
+
+15시 35분 11초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 12초     0        17      7.92      0.00  rcu_preempt
+15시 35분 12초     0        23      0.99      0.00  migration/1
+15시 35분 12초     0        29      0.99      0.00  migration/2
+15시 35분 12초     0        41      1.98      0.00  migration/4
+15시 35분 12초     0        47      1.98      0.00  migration/5
+15시 35분 12초     0        53      0.99      0.00  migration/6
+15시 35분 12초     0       107      0.99      0.00  migration/15
+15시 35분 12초     0       118      1.98      0.00  kcompactd0
+15시 35분 12초     0       126      0.99      0.00  kworker/13:1-events
+15시 35분 12초     0       134      4.95      0.00  kworker/3:1-events
+15시 35분 12초     0       138      1.98      0.00  kworker/5:1-events
+15시 35분 12초     0       139      0.99      0.00  kworker/8:1-mm_percpu_wq
+15시 35분 12초     0       143      2.97      0.00  kworker/1:1-mm_percpu_wq
+15시 35분 12초     0       144      1.98      0.00  kworker/2:1-events
+15시 35분 12초     0       146      0.99      0.00  kworker/6:1-mm_percpu_wq
+15시 35분 12초     0       147      0.99      0.00  kworker/7:1-mm_percpu_wq
+15시 35분 12초     0       151      1.98      0.00  kworker/12:1-events
+15시 35분 12초     0       159      1.98      0.00  kworker/0:2-mm_percpu_wq
+15시 35분 12초     0       224      0.99      0.00  kworker/1:1H-kblockd
+15시 35분 12초     0       491      0.99      0.00  kworker/4:3-mm_percpu_wq
+15시 35분 12초   108       684      3.96      0.00  systemd-oomd
+15시 35분 12초   131       998      0.99      0.00  chronyd
+15시 35분 12초  1000      1952     38.61      0.00  sshd
+15시 35분 12초  1000      2014     20.79      0.00  code-a44adf7f53
+15시 35분 12초  1000      2108     36.63      0.00  MainThread
+15시 35분 12초  1000      2691     20.79      0.00  MainThread
+15시 35분 12초     0      2751      0.99      0.00  cifsd
+15시 35분 12초  1000      2911      3.96      0.00  MainThread
+15시 35분 12초  1000      3232     22.77      1.98  MainThread
+15시 35분 12초     0      4947      1.98      0.00  kworker/11:0-events
+15시 35분 12초     0     15406      0.99      0.00  kworker/9:2-mm_percpu_wq
+15시 35분 12초  1000     79972     17.82      0.00  claude
+15시 35분 12초     0     89445      2.97      0.00  kworker/u32:2-events_unbound
+15시 35분 12초  1000    104641      0.99      0.00  pidstat
+15시 35분 12초  1000    104642      0.99      0.00  tee
+15시 35분 12초  1000    104647      1.98      0.00  sh
+15시 35분 12초  1000    104648     10.89      0.00  cpuUsage.sh
+
+15시 35분 12초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 13초     0        17     59.00      0.00  rcu_preempt
+15시 35분 13초     0        23      5.00      0.00  migration/1
+15시 35분 13초     0        29      1.00      0.00  migration/2
+15시 35분 13초     0        36      1.00      0.00  ksoftirqd/3
+15시 35분 13초     0        41      2.00      0.00  migration/4
+15시 35분 13초     0        47      2.00      0.00  migration/5
+15시 35분 13초     0        48      1.00      0.00  ksoftirqd/5
+15시 35분 13초     0        53      2.00      0.00  migration/6
+15시 35분 13초     0        54      2.00      0.00  ksoftirqd/6
+15시 35분 13초     0        59      2.00      0.00  migration/7
+15시 35분 13초     0        60      1.00      0.00  ksoftirqd/7
+15시 35분 13초     0        65      1.00      0.00  migration/8
+15시 35분 13초     0        71      1.00      0.00  migration/9
+15시 35분 13초     0        79      1.00      0.00  kworker/10:0-mm_percpu_wq
+15시 35분 13초     0       118      2.00      0.00  kcompactd0
+15시 35분 13초     0       134      2.00      0.00  kworker/3:1-mm_percpu_wq
+15시 35분 13초     0       138      1.00      0.00  kworker/5:1-mm_percpu_wq
+15시 35분 13초     0       143      4.00      0.00  kworker/1:1-events
+15시 35분 13초     0       144      1.00      0.00  kworker/2:1-mm_percpu_wq
+15시 35분 13초     0       146      5.00      0.00  kworker/6:1-events
+15시 35분 13초     0       147      2.00      0.00  kworker/7:1-mm_percpu_wq
+15시 35분 13초     0       151      1.00      0.00  kworker/12:1-events
+15시 35분 13초     0       159      3.00      0.00  kworker/0:2-events
+15시 35분 13초     0       491      1.00      0.00  kworker/4:3-mm_percpu_wq
+15시 35분 13초   108       684      4.00      0.00  systemd-oomd
+15시 35분 13초     0       876      1.00      0.00  wpa_supplicant
+15시 35분 13초   131       998      1.00      0.00  chronyd
+15시 35분 13초   128      1262      6.00      0.00  pipewire-media-
+15시 35분 13초   128      1538      1.00      0.00  gsd-housekeepin
+15시 35분 13초  1000      1878      6.00      0.00  pipewire-media-
+15시 35분 13초  1000      1952     37.00      1.00  sshd
+15시 35분 13초  1000      2014     25.00      0.00  code-a44adf7f53
+15시 35분 13초  1000      2108     16.00      1.00  MainThread
+15시 35분 13초  1000      2349      1.00      0.00  MainThread
+15시 35분 13초  1000      2691   1052.00      3.00  MainThread
+15시 35분 13초  1000      2911      8.00      0.00  MainThread
+15시 35분 13초  1000      3232      9.00      1.00  MainThread
+15시 35분 13초     0      4947      1.00      0.00  kworker/11:0-mm_percpu_wq
+15시 35분 13초     0     15406      1.00      0.00  kworker/9:2-events
+15시 35분 13초  1000     79933      1.00      0.00  MainThread
+15시 35분 13초  1000     79972     16.00      0.00  claude
+15시 35분 13초     0     89445      9.00      0.00  kworker/u32:2-writeback
+15시 35분 13초     0    103184      3.00      0.00  kworker/u32:1-events_unbound
+15시 35분 13초  1000    104641      1.00      0.00  pidstat
+15시 35분 13초  1000    104642      1.00      0.00  tee
+15시 35분 13초  1000    104648      3.00      1.00  cpuUsage.sh
+
+15시 35분 13초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 14초     0        17      9.00      0.00  rcu_preempt
+15시 35분 14초     0        23      2.00      0.00  migration/1
+15시 35분 14초     0        29      1.00      0.00  migration/2
+15시 35분 14초     0        42      1.00      0.00  ksoftirqd/4
+15시 35분 14초     0        47      2.00      0.00  migration/5
+15시 35분 14초     0        53      1.00      0.00  migration/6
+15시 35분 14초     0        54      1.00      0.00  ksoftirqd/6
+15시 35분 14초     0        59      1.00      0.00  migration/7
+15시 35분 14초     0        79      1.00      0.00  kworker/10:0-mm_percpu_wq
+15시 35분 14초     0       118      2.00      0.00  kcompactd0
+15시 35분 14초     0       126      1.00      0.00  kworker/13:1-events
+15시 35분 14초     0       134      1.00      0.00  kworker/3:1-mm_percpu_wq
+15시 35분 14초     0       138      2.00      0.00  kworker/5:1-events
+15시 35분 14초     0       139      1.00      0.00  kworker/8:1-mm_percpu_wq
+15시 35분 14초     0       143      3.00      0.00  kworker/1:1-mm_percpu_wq
+15시 35분 14초     0       144      1.00      0.00  kworker/2:1-mm_percpu_wq
+15시 35분 14초     0       146      2.00      0.00  kworker/6:1-mm_percpu_wq
+15시 35분 14초     0       147      1.00      0.00  kworker/7:1-events
+15시 35분 14초     0       151      1.00      0.00  kworker/12:1-events
+15시 35분 14초     0       159      2.00      0.00  kworker/0:2-mm_percpu_wq
+15시 35분 14초     0       491      2.00      0.00  kworker/4:3-mm_percpu_wq
+15시 35분 14초   108       684      4.00      0.00  systemd-oomd
+15시 35분 14초   131       998      1.00      0.00  chronyd
+15시 35분 14초  1000      1952     22.00      2.00  sshd
+15시 35분 14초  1000      2014     13.00      0.00  code-a44adf7f53
+15시 35분 14초  1000      2108     28.00      1.00  MainThread
+15시 35분 14초  1000      2691     23.00      2.00  MainThread
+15시 35분 14초  1000      2911      4.00      0.00  MainThread
+15시 35분 14초  1000      3232     13.00      0.00  MainThread
+15시 35분 14초     0      4947      1.00      0.00  kworker/11:0-events
+15시 35분 14초     0     15406      1.00      0.00  kworker/9:2-mm_percpu_wq
+15시 35분 14초  1000     21904      1.00      0.00  MainThread
+15시 35분 14초  1000     21961      1.00      0.00  MainThread
+15시 35분 14초  1000     79972     14.00      0.00  claude
+15시 35분 14초     0     89445      8.00      0.00  kworker/u32:2-events_unbound
+15시 35분 14초     0    103184     10.00      0.00  kworker/u32:1-events_power_efficient
+15시 35분 14초  1000    104641      1.00      0.00  pidstat
+15시 35분 14초  1000    104642      1.00      0.00  tee
+
+15시 35분 14초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 15초     0        17     19.00      0.00  rcu_preempt
+15시 35분 15초     0        18      1.00      0.00  migration/0
+15시 35분 15초     0        23      1.00      0.00  migration/1
+15시 35분 15초     0        29      1.00      0.00  migration/2
+15시 35분 15초     0        35      1.00      0.00  migration/3
+15시 35분 15초     0        41      3.00      0.00  migration/4
+15시 35분 15초     0        47      1.00      0.00  migration/5
+15시 35분 15초     0        53      2.00      0.00  migration/6
+15시 35분 15초     0        59      1.00      0.00  migration/7
+15시 35분 15초     0        65      1.00      0.00  migration/8
+15시 35분 15초     0        71      1.00      0.00  migration/9
+15시 35분 15초     0        77      1.00      0.00  migration/10
+15시 35분 15초     0        83      1.00      0.00  migration/11
+15시 35분 15초     0        89      1.00      0.00  migration/12
+15시 35분 15초     0        95      1.00      0.00  migration/13
+15시 35분 15초     0       101      1.00      0.00  migration/14
+15시 35분 15초     0       107      4.00      0.00  migration/15
+15시 35분 15초     0       118      2.00      0.00  kcompactd0
+15시 35분 15초     0       134      2.00      0.00  kworker/3:1-mm_percpu_wq
+15시 35분 15초     0       139      1.00      0.00  kworker/8:1-mm_percpu_wq
+15시 35분 15초     0       143      2.00      0.00  kworker/1:1-events
+15시 35분 15초     0       144      1.00      0.00  kworker/2:1-mm_percpu_wq
+15시 35분 15초     0       146      1.00      0.00  kworker/6:1-events
+15시 35분 15초     0       151      1.00      0.00  kworker/12:1-events
+15시 35분 15초     0       153      1.00      0.00  kworker/15:1-events
+15시 35분 15초     0       159      4.00      0.00  kworker/0:2-events
+15시 35분 15초     0       491      2.00      0.00  kworker/4:3-events
+15시 35분 15초   108       684      4.00      0.00  systemd-oomd
+15시 35분 15초     0       850      1.00      0.00  irqbalance
+15시 35분 15초   131       998      1.00      0.00  chronyd
+15시 35분 15초  1000      1952     11.00      0.00  sshd
+15시 35분 15초  1000      2014      7.00      0.00  code-a44adf7f53
+15시 35분 15초  1000      2108      7.00      0.00  MainThread
+15시 35분 15초  1000      2691    994.00      0.00  MainThread
+15시 35분 15초  1000      2692      2.00      0.00  MainThread
+15시 35분 15초  1000      2911      5.00      0.00  MainThread
+15시 35분 15초  1000      3232      9.00      0.00  MainThread
+15시 35분 15초     0      4947      1.00      0.00  kworker/11:0-events
+15시 35분 15초  1000     79972     14.00      1.00  claude
+15시 35분 15초     0     89445      3.00      0.00  kworker/u32:2-events_unbound
+15시 35분 15초     0    103184      4.00      0.00  kworker/u32:1-events_unbound
+15시 35분 15초  1000    104641      1.00      0.00  pidstat
+15시 35분 15초  1000    104642      1.00      0.00  tee
+
+15시 35분 15초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 16초     0        17     13.00      0.00  rcu_preempt
+15시 35분 16초     0        29      2.00      0.00  migration/2
+15시 35분 16초     0        41      2.00      0.00  migration/4
+15시 35분 16초     0        47      1.00      0.00  migration/5
+15시 35분 16초     0        48      1.00      0.00  ksoftirqd/5
+15시 35분 16초     0        59      1.00      0.00  migration/7
+15시 35분 16초     0       118      2.00      0.00  kcompactd0
+15시 35분 16초     0       126      2.00      0.00  kworker/13:1-events
+15시 35분 16초     0       134      2.00      0.00  kworker/3:1-events
+15시 35분 16초     0       138      6.00      0.00  kworker/5:1-events
+15시 35분 16초     0       139      1.00      0.00  kworker/8:1-mm_percpu_wq
+15시 35분 16초     0       143      2.00      0.00  kworker/1:1-mm_percpu_wq
+15시 35분 16초     0       144      1.00      0.00  kworker/2:1-mm_percpu_wq
+15시 35분 16초     0       147      1.00      0.00  kworker/7:1-mm_percpu_wq
+15시 35분 16초     0       151      1.00      0.00  kworker/12:1-events
+15시 35분 16초     0       153      1.00      0.00  kworker/15:1-mm_percpu_wq
+15시 35분 16초     0       159      5.00      0.00  kworker/0:2-events
+15시 35분 16초     0       210      2.00      0.00  kworker/11:1H-kblockd
+15시 35분 16초     0       331      3.00      0.00  jbd2/nvme0n1p5-8
+15시 35분 16초     0       491      1.00      0.00  kworker/4:3-mm_percpu_wq
+15시 35분 16초   108       684      4.00      0.00  systemd-oomd
+15시 35분 16초   131       998      1.00      0.00  chronyd
+15시 35분 16초  1000      1952     20.00      0.00  sshd
+15시 35분 16초  1000      2014     12.00      1.00  code-a44adf7f53
+15시 35분 16초  1000      2108     17.00      0.00  MainThread
+15시 35분 16초  1000      2349      2.00      0.00  MainThread
+15시 35분 16초  1000      2691     18.00      0.00  MainThread
+15시 35분 16초  1000      2692      7.00      0.00  MainThread
+15시 35분 16초  1000      2911      8.00      0.00  MainThread
+15시 35분 16초  1000      3232     22.00      0.00  MainThread
+15시 35분 16초     0      4947      2.00      0.00  kworker/11:0-events
+15시 35분 16초     0     15406      1.00      0.00  kworker/9:2-mm_percpu_wq
+15시 35분 16초  1000     79933      1.00      0.00  MainThread
+15시 35분 16초  1000     79972     18.00      0.00  claude
+15시 35분 16초     0     89445      8.00      0.00  kworker/u32:2-events_unbound
+15시 35분 16초     0    103184      3.00      0.00  kworker/u32:1-events_power_efficient
+15시 35분 16초  1000    104641      1.00      0.00  pidstat
+15시 35분 16초  1000    104642      1.00      0.00  tee
+15시 35분 16초  1000    104683      2.00      0.00  sh
+15시 35분 16초  1000    104684     11.00      0.00  cpuUsage.sh
+15시 35분 16초  1000    104689      1.00      0.00  sleep
+
+15시 35분 16초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 17초     0        16      1.00      0.00  ksoftirqd/0
+15시 35분 17초     0        17     30.00      0.00  rcu_preempt
+15시 35분 17초     0        29      2.00      0.00  migration/2
+15시 35분 17초     0        41      3.00      0.00  migration/4
+15시 35분 17초     0        42      2.00      0.00  ksoftirqd/4
+15시 35분 17초     0        47      4.00      0.00  migration/5
+15시 35분 17초     0        53      2.00      0.00  migration/6
+15시 35분 17초     0        59      1.00      0.00  migration/7
+15시 35분 17초     0        71      1.00      0.00  migration/9
+15시 35분 17초     0       118      2.00      0.00  kcompactd0
+15시 35분 17초     0       126      1.00      0.00  kworker/13:1-events
+15시 35분 17초     0       146      1.00      0.00  kworker/6:1-events
+15시 35분 17초     0       147      1.00      0.00  kworker/7:1-events
+15시 35분 17초     0       151      2.00      0.00  kworker/12:1-events
+15시 35분 17초     0       159      4.00      0.00  kworker/0:2-events
+15시 35분 17초   108       684      4.00      0.00  systemd-oomd
+15시 35분 17초   131       998      1.00      1.00  chronyd
+15시 35분 17초     0      1485      1.00      0.00  packagekitd
+15시 35분 17초  1000      1952     13.00      0.00  sshd
+15시 35분 17초  1000      2014      8.00      0.00  code-a44adf7f53
+15시 35분 17초  1000      2108     10.00      0.00  MainThread
+15시 35분 17초  1000      2691   1006.00      3.00  MainThread
+15시 35분 17초  1000      2911      5.00      0.00  MainThread
+15시 35분 17초  1000      3232     13.00      0.00  MainThread
+15시 35분 17초  1000     21904      1.00      0.00  MainThread
+15시 35분 17초  1000     21961      1.00      0.00  MainThread
+15시 35분 17초  1000     79972     16.00      0.00  claude
+15시 35분 17초     0     89445      4.00      0.00  kworker/u32:2-events_unbound
+15시 35분 17초     0    103184      3.00      0.00  kworker/u32:1-flush-259:0
+15시 35분 17초  1000    104641      1.00      0.00  pidstat
+15시 35분 17초  1000    104642      1.00      0.00  tee
+
+15시 35분 17초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 18초     0         1      1.00      0.00  systemd
+15시 35분 18초     0        17     21.00      0.00  rcu_preempt
+15시 35분 18초     0        23      1.00      0.00  migration/1
+15시 35분 18초     0        29      1.00      0.00  migration/2
+15시 35분 18초     0        41      2.00      0.00  migration/4
+15시 35분 18초     0        47      2.00      0.00  migration/5
+15시 35분 18초     0        53      3.00      0.00  migration/6
+15시 35분 18초     0        59      1.00      0.00  migration/7
+15시 35분 18초     0        79      1.00      0.00  kworker/10:0-mm_percpu_wq
+15시 35분 18초     0       107      1.00      0.00  migration/15
+15시 35분 18초     0       118      2.00      0.00  kcompactd0
+15시 35분 18초     0       126      2.00      0.00  kworker/13:1-events
+15시 35분 18초     0       134      2.00      0.00  kworker/3:1-events
+15시 35분 18초     0       138      3.00      0.00  kworker/5:1-events
+15시 35분 18초     0       143      2.00      0.00  kworker/1:1-mm_percpu_wq
+15시 35분 18초     0       144      2.00      0.00  kworker/2:1-mm_percpu_wq
+15시 35분 18초     0       146      1.00      0.00  kworker/6:1-mm_percpu_wq
+15시 35분 18초     0       147      1.00      0.00  kworker/7:1-mm_percpu_wq
+15시 35분 18초     0       151      2.00      0.00  kworker/12:1-events
+15시 35분 18초     0       153      1.00      0.00  kworker/15:1-mm_percpu_wq
+15시 35분 18초     0       159      4.00      0.00  kworker/0:2-events
+15시 35분 18초     0       437      1.00      0.00  systemd-udevd
+15시 35분 18초     0       491      4.00      0.00  kworker/4:3-events
+15시 35분 18초   108       684      4.00      0.00  systemd-oomd
+15시 35분 18초   101       685      1.00      0.00  systemd-resolve
+15시 35분 18초   131       998      1.00      0.00  chronyd
+15시 35분 18초   128      1262      5.00      0.00  pipewire-media-
+15시 35분 18초  1000      1878      5.00      0.00  pipewire-media-
+15시 35분 18초  1000      1952     35.00      0.00  sshd
+15시 35분 18초  1000      2014     19.00      0.00  code-a44adf7f53
+15시 35분 18초  1000      2108     13.00      0.00  MainThread
+15시 35분 18초  1000      2691     56.00      2.00  MainThread
+15시 35분 18초  1000      2911      6.00      0.00  MainThread
+15시 35분 18초  1000      3232      9.00      0.00  MainThread
+15시 35분 18초     0      4947      2.00      0.00  kworker/11:0-events
+15시 35분 18초     0     15406      2.00      0.00  kworker/9:2-events
+15시 35분 18초  1000     79972     13.00      0.00  claude
+15시 35분 18초     0     89445      4.00      0.00  kworker/u32:2-writeback
+15시 35분 18초     0    103184      2.00      0.00  kworker/u32:1-events_unbound
+15시 35분 18초  1000    104641      1.00      0.00  pidstat
+15시 35분 18초  1000    104642      1.00      0.00  tee
+
+15시 35분 18초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 19초     0        16      1.00      0.00  ksoftirqd/0
+15시 35분 19초     0        17     21.00      0.00  rcu_preempt
+15시 35분 19초     0        18      1.00      0.00  migration/0
+15시 35분 19초     0        23      4.00      0.00  migration/1
+15시 35분 19초     0        29      3.00      0.00  migration/2
+15시 35분 19초     0        35      1.00      0.00  migration/3
+15시 35분 19초     0        41      5.00      0.00  migration/4
+15시 35분 19초     0        47      3.00      0.00  migration/5
+15시 35분 19초     0        53      1.00      0.00  migration/6
+15시 35분 19초     0        59      2.00      0.00  migration/7
+15시 35분 19초     0        65      1.00      0.00  migration/8
+15시 35분 19초     0        71      1.00      0.00  migration/9
+15시 35분 19초     0        77      1.00      0.00  migration/10
+15시 35분 19초     0        79      1.00      0.00  kworker/10:0-mm_percpu_wq
+15시 35분 19초     0        83      1.00      0.00  migration/11
+15시 35분 19초     0        89      1.00      0.00  migration/12
+15시 35분 19초     0        95      1.00      0.00  migration/13
+15시 35분 19초     0       101      1.00      0.00  migration/14
+15시 35분 19초     0       107      1.00      0.00  migration/15
+15시 35분 19초     0       118      2.00      0.00  kcompactd0
+15시 35분 19초     0       126      1.00      0.00  kworker/13:1-mm_percpu_wq
+15시 35분 19초     0       134      1.00      0.00  kworker/3:1-mm_percpu_wq
+15시 35분 19초     0       138      1.00      0.00  kworker/5:1-mm_percpu_wq
+15시 35분 19초     0       143      2.00      0.00  kworker/1:1-events
+15시 35분 19초     0       144      1.00      0.00  kworker/2:1-mm_percpu_wq
+15시 35분 19초     0       146      2.00      0.00  kworker/6:1-events
+15시 35분 19초     0       147      1.00      0.00  kworker/7:1-mm_percpu_wq
+15시 35분 19초     0       151      2.00      0.00  kworker/12:1-events
+15시 35분 19초     0       159      3.00      0.00  kworker/0:2-events
+15시 35분 19초     0       207      1.00      0.00  kworker/9:1H-kblockd
+15시 35분 19초     0       491      2.00      0.00  kworker/4:3-events
+15시 35분 19초   108       684      4.00      0.00  systemd-oomd
+15시 35분 19초     0       843      1.00      0.00  NetworkManager
+15시 35분 19초   131       998      1.00      1.00  chronyd
+15시 35분 19초  1000      1952     15.00      0.00  sshd
+15시 35분 19초  1000      2014      9.00      0.00  code-a44adf7f53
+15시 35분 19초  1000      2108     13.00      0.00  MainThread
+15시 35분 19초  1000      2691    988.00      2.00  MainThread
+15시 35분 19초     0      2751      2.00      0.00  cifsd
+15시 35분 19초  1000      2911      4.00      0.00  MainThread
+15시 35분 19초  1000      3232      9.00      1.00  MainThread
+15시 35분 19초     0      4947      1.00      0.00  kworker/11:0-events
+15시 35분 19초  1000     79933      2.00      0.00  MainThread
+15시 35분 19초  1000     79972     18.00      0.00  claude
+15시 35분 19초     0     89445      4.00      0.00  kworker/u32:2-events_unbound
+15시 35분 19초     0    103184      2.00      0.00  kworker/u32:1-events_unbound
+15시 35분 19초  1000    104641      1.00      0.00  pidstat
+15시 35분 19초  1000    104642      1.00      0.00  tee
+
+15시 35분 19초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 20초     0        17      2.00      0.00  rcu_preempt
+15시 35분 20초     0        29      2.00      0.00  migration/2
+15시 35분 20초     0        41      1.00      0.00  migration/4
+15시 35분 20초     0        47      1.00      0.00  migration/5
+15시 35분 20초     0       118      2.00      0.00  kcompactd0
+15시 35분 20초     0       126      1.00      0.00  kworker/13:1-events
+15시 35분 20초     0       134      2.00      0.00  kworker/3:1-events
+15시 35분 20초     0       138      1.00      0.00  kworker/5:1-mm_percpu_wq
+15시 35분 20초     0       143      1.00      0.00  kworker/1:1-mm_percpu_wq
+15시 35분 20초     0       144      1.00      0.00  kworker/2:1-mm_percpu_wq
+15시 35분 20초     0       146      2.00      0.00  kworker/6:1-events
+15시 35분 20초     0       151      1.00      0.00  kworker/12:1-events
+15시 35분 20초     0       153      1.00      0.00  kworker/15:1-mm_percpu_wq
+15시 35분 20초     0       159      2.00      0.00  kworker/0:2-events
+15시 35분 20초     0       491      2.00      0.00  kworker/4:3-events
+15시 35분 20초   108       684      4.00      0.00  systemd-oomd
+15시 35분 20초   131       998      1.00      0.00  chronyd
+15시 35분 20초  1000      1952     11.00      0.00  sshd
+15시 35분 20초  1000      2014      7.00      0.00  code-a44adf7f53
+15시 35분 20초  1000      2108      8.00      0.00  MainThread
+15시 35분 20초  1000      2691     14.00      0.00  MainThread
+15시 35분 20초  1000      2692      1.00      0.00  MainThread
+15시 35분 20초  1000      2911      5.00      0.00  MainThread
+15시 35분 20초  1000      3232      9.00      1.00  MainThread
+15시 35분 20초     0      4947      2.00      0.00  kworker/11:0-events
+15시 35분 20초  1000     21904      1.00      0.00  MainThread
+15시 35분 20초  1000     21961      1.00      0.00  MainThread
+15시 35분 20초  1000     79972     16.00      0.00  claude
+15시 35분 20초     0     89445      1.00      0.00  kworker/u32:2-events_unbound
+15시 35분 20초     0    103184     10.00      0.00  kworker/u32:1-events_unbound
+15시 35분 20초  1000    104641      1.00      0.00  pidstat
+15시 35분 20초  1000    104642      1.00      0.00  tee
+
+15시 35분 20초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 21초     0        17     32.00      0.00  rcu_preempt
+15시 35분 21초     0        23      3.00      0.00  migration/1
+15시 35분 21초     0        24      1.00      0.00  ksoftirqd/1
+15시 35분 21초     0        29      1.00      0.00  migration/2
+15시 35분 21초     0        35      1.00      0.00  migration/3
+15시 35분 21초     0        41      3.00      0.00  migration/4
+15시 35분 21초     0        47      3.00      0.00  migration/5
+15시 35분 21초     0        53      1.00      0.00  migration/6
+15시 35분 21초     0        59      1.00      0.00  migration/7
+15시 35분 21초     0        60      1.00      0.00  ksoftirqd/7
+15시 35분 21초     0        89      1.00      0.00  migration/12
+15시 35분 21초     0        95      1.00      0.00  migration/13
+15시 35분 21초     0       118      2.00      0.00  kcompactd0
+15시 35분 21초     0       126      1.00      0.00  kworker/13:1-events
+15시 35분 21초     0       134      1.00      0.00  kworker/3:1-mm_percpu_wq
+15시 35분 21초     0       143      2.00      0.00  kworker/1:1-events
+15시 35분 21초     0       144      1.00      0.00  kworker/2:1-events
+15시 35분 21초     0       146      1.00      0.00  kworker/6:1-mm_percpu_wq
+15시 35분 21초     0       147      4.00      0.00  kworker/7:1-events
+15시 35분 21초     0       151      1.00      0.00  kworker/12:1-events
+15시 35분 21초     0       159      2.00      0.00  kworker/0:2-events
+15시 35분 21초     0       210      2.00      0.00  kworker/11:1H-kblockd
+15시 35분 21초     0       331      3.00      0.00  jbd2/nvme0n1p5-8
+15시 35분 21초     0       491      3.00      0.00  kworker/4:3-events
+15시 35분 21초   108       684      4.00      0.00  systemd-oomd
+15시 35분 21초   131       998      1.00      0.00  chronyd
+15시 35분 21초  1000      1952     20.00      0.00  sshd
+15시 35분 21초  1000      2014     12.00      0.00  code-a44adf7f53
+15시 35분 21초  1000      2108     16.00      1.00  MainThread
+15시 35분 21초  1000      2349      2.00      0.00  MainThread
+15시 35분 21초  1000      2691    994.00      0.00  MainThread
+15시 35분 21초  1000      2692      7.00      0.00  MainThread
+15시 35분 21초  1000      2911      7.00      0.00  MainThread
+15시 35분 21초  1000      3232     22.00      2.00  MainThread
+15시 35분 21초     0     15406      1.00      0.00  kworker/9:2-mm_percpu_wq
+15시 35분 21초  1000     79972     14.00      0.00  claude
+15시 35분 21초     0     89445      5.00      0.00  kworker/u32:2-writeback
+15시 35분 21초     0    103184      2.00      0.00  kworker/u32:1-events_unbound
+15시 35분 21초  1000    104641      1.00      0.00  pidstat
+15시 35분 21초  1000    104642      1.00      0.00  tee
+15시 35분 21초  1000    104724      2.00      1.00  sh
+15시 35분 21초  1000    104725     12.00      0.00  cpuUsage.sh
+15시 35분 21초  1000    104730      1.00      0.00  sleep
+
+15시 35분 21초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 22초     0        17     12.00      0.00  rcu_preempt
+15시 35분 22초     0        60      1.00      0.00  ksoftirqd/7
+15시 35분 22초     0        79      1.00      0.00  kworker/10:0-events
+15시 35분 22초     0        95      1.00      0.00  migration/13
+15시 35분 22초     0       118      2.00      0.00  kcompactd0
+15시 35분 22초     0       126      4.00      0.00  kworker/13:1-events
+15시 35분 22초     0       134      1.00      0.00  kworker/3:1-mm_percpu_wq
+15시 35분 22초     0       138      2.00      0.00  kworker/5:1-events
+15시 35분 22초     0       139      1.00      0.00  kworker/8:1-mm_percpu_wq
+15시 35분 22초     0       143      2.00      0.00  kworker/1:1-events
+15시 35분 22초     0       144      1.00      0.00  kworker/2:1-mm_percpu_wq
+15시 35분 22초     0       146      2.00      0.00  kworker/6:1-events
+15시 35분 22초     0       147      2.00      0.00  kworker/7:1-events
+15시 35분 22초     0       151      2.00      0.00  kworker/12:1-events
+15시 35분 22초     0       159      3.00      0.00  kworker/0:2-events
+15시 35분 22초   108       684      4.00      0.00  systemd-oomd
+15시 35분 22초   131       998      1.00      0.00  chronyd
+15시 35분 22초  1000      1952     11.00      0.00  sshd
+15시 35분 22초  1000      2014      7.00      0.00  code-a44adf7f53
+15시 35분 22초  1000      2108      7.00      0.00  MainThread
+15시 35분 22초  1000      2691     15.00      0.00  MainThread
+15시 35분 22초  1000      2911      4.00      0.00  MainThread
+15시 35분 22초  1000      3232     12.00      0.00  MainThread
+15시 35분 22초     0      4947      2.00      0.00  kworker/11:0-events
+15시 35분 22초  1000     79933      1.00      0.00  MainThread
+15시 35분 22초  1000     79972     18.00      1.00  claude
+15시 35분 22초     0     89445      8.00      0.00  kworker/u32:2-events_power_efficient
+15시 35분 22초     0    103184      4.00      0.00  kworker/u32:1-events_power_efficient
+15시 35분 22초  1000    104641      1.00      0.00  pidstat
+15시 35분 22초  1000    104642      1.00      0.00  tee
+
+15시 35분 22초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 23초     0        17     21.00      0.00  rcu_preempt
+15시 35분 23초     0        18      1.00      0.00  migration/0
+15시 35분 23초     0        23      1.00      0.00  migration/1
+15시 35분 23초     0        24      1.00      0.00  ksoftirqd/1
+15시 35분 23초     0        29      2.00      0.00  migration/2
+15시 35분 23초     0        30      2.00      0.00  ksoftirqd/2
+15시 35분 23초     0        35      1.00      0.00  migration/3
+15시 35분 23초     0        41      3.00      0.00  migration/4
+15시 35분 23초     0        47      3.00      0.00  migration/5
+15시 35분 23초     0        53      2.00      0.00  migration/6
+15시 35분 23초     0        59      3.00      0.00  migration/7
+15시 35분 23초     0        65      1.00      0.00  migration/8
+15시 35분 23초     0        71      1.00      0.00  migration/9
+15시 35분 23초     0        77      1.00      0.00  migration/10
+15시 35분 23초     0        79      1.00      0.00  kworker/10:0-mm_percpu_wq
+15시 35분 23초     0        83      1.00      0.00  migration/11
+15시 35분 23초     0        89      1.00      0.00  migration/12
+15시 35분 23초     0        95      1.00      0.00  migration/13
+15시 35분 23초     0       101      1.00      0.00  migration/14
+15시 35분 23초     0       107      1.00      0.00  migration/15
+15시 35분 23초     0       118      2.00      0.00  kcompactd0
+15시 35분 23초     0       126      1.00      0.00  kworker/13:1-mm_percpu_wq
+15시 35분 23초     0       134      2.00      0.00  kworker/3:1-mm_percpu_wq
+15시 35분 23초     0       138      1.00      0.00  kworker/5:1-mm_percpu_wq
+15시 35분 23초     0       139      1.00      0.00  kworker/8:1-mm_percpu_wq
+15시 35분 23초     0       143      1.00      0.00  kworker/1:1-mm_percpu_wq
+15시 35분 23초     0       144      2.00      0.00  kworker/2:1-events
+15시 35분 23초     0       146      1.00      0.00  kworker/6:1-mm_percpu_wq
+15시 35분 23초     0       147      1.00      0.00  kworker/7:1-mm_percpu_wq
+15시 35분 23초     0       151      2.00      0.00  kworker/12:1-events
+15시 35분 23초     0       159      2.00      0.00  kworker/0:2-events
+15시 35분 23초     0       491      2.00      0.00  kworker/4:3-events
+15시 35분 23초   132       682      1.00      0.00  rpcbind
+15시 35분 23초   108       684      4.00      0.00  systemd-oomd
+15시 35분 23초     0       876      1.00      0.00  wpa_supplicant
+15시 35분 23초   131       998      1.00      0.00  chronyd
+15시 35분 23초  1000      1952     16.00      1.00  sshd
+15시 35분 23초  1000      2014     10.00      0.00  code-a44adf7f53
+15시 35분 23초  1000      2108     15.00      0.00  MainThread
+15시 35분 23초  1000      2691    694.00      0.00  MainThread
+15시 35분 23초  1000      2911      4.00      0.00  MainThread
+15시 35분 23초  1000      3232     10.00      1.00  MainThread
+15시 35분 23초     0      4947      1.00      0.00  kworker/11:0-mm_percpu_wq
+15시 35분 23초     0     15406      1.00      0.00  kworker/9:2-mm_percpu_wq
+15시 35분 23초  1000     21904      1.00      0.00  MainThread
+15시 35분 23초  1000     21961      1.00      0.00  MainThread
+15시 35분 23초  1000     79972     19.00      0.00  claude
+15시 35분 23초     0     89445      4.00      0.00  kworker/u32:2-events_unbound
+15시 35분 23초     0    103184      1.00      0.00  kworker/u32:1-events_power_efficient
+15시 35분 23초  1000    104641      1.00      0.00  pidstat
+15시 35분 23초  1000    104642      1.00      0.00  tee
+
+15시 35분 23초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 24초     0        17     22.00      0.00  rcu_preempt
+15시 35분 24초     0        23      1.00      0.00  migration/1
+15시 35분 24초     0        41      3.00      0.00  migration/4
+15시 35분 24초     0        47      3.00      0.00  migration/5
+15시 35분 24초     0        53      1.00      0.00  migration/6
+15시 35분 24초     0        54      1.00      0.00  ksoftirqd/6
+15시 35분 24초     0        71      2.00      0.00  migration/9
+15시 35분 24초     0        79      1.00      0.00  kworker/10:0-mm_percpu_wq
+15시 35분 24초     0       118      2.00      0.00  kcompactd0
+15시 35분 24초     0       126      1.00      0.00  kworker/13:1-events
+15시 35분 24초     0       134      2.00      0.00  kworker/3:1-events
+15시 35분 24초     0       138      1.00      0.00  kworker/5:1-events
+15시 35분 24초     0       139      1.00      0.00  kworker/8:1-mm_percpu_wq
+15시 35분 24초     0       143      2.00      0.00  kworker/1:1-events
+15시 35분 24초     0       144      4.00      0.00  kworker/2:1-events
+15시 35분 24초     0       146      1.00      0.00  kworker/6:1-mm_percpu_wq
+15시 35분 24초     0       151      2.00      0.00  kworker/12:1-events
+15시 35분 24초     0       159      3.00      0.00  kworker/0:2-events
+15시 35분 24초     0       491      4.00      0.00  kworker/4:3-events
+15시 35분 24초   108       684      4.00      0.00  systemd-oomd
+15시 35분 24초   131       998      1.00      0.00  chronyd
+15시 35분 24초   128      1262      5.00      0.00  pipewire-media-
+15시 35분 24초  1000      1878      5.00      0.00  pipewire-media-
+15시 35분 24초  1000      1952     33.00      2.00  sshd
+15시 35분 24초  1000      2014     19.00      0.00  code-a44adf7f53
+15시 35분 24초  1000      2108     12.00      1.00  MainThread
+15시 35분 24초  1000      2691     55.00      0.00  MainThread
+15시 35분 24초  1000      2911      7.00      0.00  MainThread
+15시 35분 24초  1000      3232      8.00      0.00  MainThread
+15시 35분 24초     0      4947      1.00      0.00  kworker/11:0-events
+15시 35분 24초  1000     79972     15.00      1.00  claude
+15시 35분 24초     0     89445      9.00      0.00  kworker/u32:2-writeback
+15시 35분 24초     0    103184      8.00      0.00  kworker/u32:1-events_unbound
+15시 35분 24초  1000    104641      1.00      0.00  pidstat
+15시 35분 24초  1000    104642      1.00      1.00  tee
+
+15시 35분 24초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 25초     0        17     21.00      0.00  rcu_preempt
+15시 35분 25초     0        23      1.00      0.00  migration/1
+15시 35분 25초     0        29      1.00      0.00  migration/2
+15시 35분 25초     0        30      1.00      0.00  ksoftirqd/2
+15시 35분 25초     0        41      2.00      0.00  migration/4
+15시 35분 25초     0        47      1.00      0.00  migration/5
+15시 35분 25초     0        79      2.00      0.00  kworker/10:0-events
+15시 35분 25초     0       118      2.00      0.00  kcompactd0
+15시 35분 25초     0       134      1.00      0.00  kworker/3:1-mm_percpu_wq
+15시 35분 25초     0       138      1.00      0.00  kworker/5:1-mm_percpu_wq
+15시 35분 25초     0       139      1.00      0.00  kworker/8:1-mm_percpu_wq
+15시 35분 25초     0       143      1.00      0.00  kworker/1:1-mm_percpu_wq
+15시 35분 25초     0       144      2.00      0.00  kworker/2:1-events
+15시 35분 25초     0       146      3.00      0.00  kworker/6:1-events
+15시 35분 25초     0       147      2.00      0.00  kworker/7:1-events
+15시 35분 25초     0       151      1.00      0.00  kworker/12:1-events
+15시 35분 25초     0       159      2.00      0.00  kworker/0:2-events
+15시 35분 25초     0       491      1.00      0.00  kworker/4:3-mm_percpu_wq
+15시 35분 25초   108       684      4.00      0.00  systemd-oomd
+15시 35분 25초     0       850      1.00      0.00  irqbalance
+15시 35분 25초   131       998      1.00      0.00  chronyd
+15시 35분 25초  1000      1952     13.00      0.00  sshd
+15시 35분 25초  1000      2014      8.00      0.00  code-a44adf7f53
+15시 35분 25초  1000      2108     11.00      1.00  MainThread
+15시 35분 25초  1000      2691    973.00      0.00  MainThread
+15시 35분 25초  1000      2692      1.00      0.00  MainThread
+15시 35분 25초  1000      2911      5.00      0.00  MainThread
+15시 35분 25초  1000      3232     10.00      1.00  MainThread
+15시 35분 25초     0      4947      1.00      0.00  kworker/11:0-mm_percpu_wq
+15시 35분 25초     0     15406      1.00      0.00  kworker/9:2-mm_percpu_wq
+15시 35분 25초  1000     79933      1.00      0.00  MainThread
+15시 35분 25초  1000     79972     15.00      0.00  claude
+15시 35분 25초     0     89445      2.00      0.00  kworker/u32:2-events_unbound
+15시 35분 25초     0    103184      1.00      0.00  kworker/u32:1-events_unbound
+15시 35분 25초  1000    104641      1.00      0.00  pidstat
+15시 35분 25초  1000    104642      1.00      0.00  tee
+
+15시 35분 25초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 26초     0        17     13.00      0.00  rcu_preempt
+15시 35분 26초     0        23      2.00      0.00  migration/1
+15시 35분 26초     0        29      1.00      0.00  migration/2
+15시 35분 26초     0        42      1.00      0.00  ksoftirqd/4
+15시 35분 26초     0        60      3.00      0.00  ksoftirqd/7
+15시 35분 26초     0        79      1.00      0.00  kworker/10:0-mm_percpu_wq
+15시 35분 26초     0       118      2.00      0.00  kcompactd0
+15시 35분 26초     0       126      1.00      0.00  kworker/13:1-events
+15시 35분 26초     0       134      2.00      0.00  kworker/3:1-events
+15시 35분 26초     0       138      1.00      0.00  kworker/5:1-events
+15시 35분 26초     0       139      1.00      0.00  kworker/8:1-mm_percpu_wq
+15시 35분 26초     0       143      1.00      0.00  kworker/1:1-events
+15시 35분 26초     0       144      3.00      0.00  kworker/2:1-events
+15시 35분 26초     0       146      2.00      0.00  kworker/6:1-events
+15시 35분 26초     0       147      3.00      0.00  kworker/7:1-events
+15시 35분 26초     0       151      1.00      0.00  kworker/12:1-events
+15시 35분 26초     0       153      1.00      0.00  kworker/15:1-events
+15시 35분 26초     0       159      2.00      0.00  kworker/0:2-events_freezable
+15시 35분 26초     0       210      2.00      0.00  kworker/11:1H-kblockd
+15시 35분 26초     0       331      3.00      0.00  jbd2/nvme0n1p5-8
+15시 35분 26초     0       491      2.00      0.00  kworker/4:3-events
+15시 35분 26초   108       684      4.00      0.00  systemd-oomd
+15시 35분 26초   131       998      1.00      0.00  chronyd
+15시 35분 26초   128      1515      1.00      0.00  gsd-color
+15시 35분 26초  1000      1952     16.00      0.00  sshd
+15시 35분 26초  1000      2014     10.00      0.00  code-a44adf7f53
+15시 35분 26초  1000      2108     12.00      0.00  MainThread
+15시 35분 26초  1000      2349      2.00      0.00  MainThread
+15시 35분 26초  1000      2691     17.00      0.00  MainThread
+15시 35분 26초  1000      2692      7.00      0.00  MainThread
+15시 35분 26초     0      2751      2.00      0.00  cifsd
+15시 35분 26초  1000      2911      6.00      0.00  MainThread
+15시 35분 26초  1000      3232     22.00      1.00  MainThread
+15시 35분 26초     0      4947      2.00      0.00  kworker/11:0-events
+15시 35분 26초  1000     21904      1.00      0.00  MainThread
+15시 35분 26초  1000     21961      1.00      0.00  MainThread
+15시 35분 26초  1000     79972     16.00      0.00  claude
+15시 35분 26초     0     89445      5.00      0.00  kworker/u32:2-writeback
+15시 35분 26초     0    103184      3.00      0.00  kworker/u32:1-events_unbound
+15시 35분 26초  1000    104641      1.00      0.00  pidstat
+15시 35분 26초  1000    104642      1.00      0.00  tee
+15시 35분 26초  1000    104759      2.00      0.00  sh
+15시 35분 26초  1000    104760     11.00      0.00  cpuUsage.sh
+15시 35분 26초  1000    104765      1.00      0.00  sleep
+
+15시 35분 26초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 27초     0        17     28.00      0.00  rcu_preempt
+15시 35분 27초     0        18      1.00      0.00  migration/0
+15시 35분 27초     0        23      2.00      0.00  migration/1
+15시 35분 27초     0        29      2.00      0.00  migration/2
+15시 35분 27초     0        35      1.00      0.00  migration/3
+15시 35분 27초     0        41      1.00      0.00  migration/4
+15시 35분 27초     0        47      1.00      0.00  migration/5
+15시 35분 27초     0        53      1.00      0.00  migration/6
+15시 35분 27초     0        59      2.00      0.00  migration/7
+15시 35분 27초     0        65      1.00      0.00  migration/8
+15시 35분 27초     0        71      1.00      0.00  migration/9
+15시 35분 27초     0        77      1.00      0.00  migration/10
+15시 35분 27초     0        79      1.00      0.00  kworker/10:0-mm_percpu_wq
+15시 35분 27초     0        83      1.00      0.00  migration/11
+15시 35분 27초     0        89      2.00      0.00  migration/12
+15시 35분 27초     0        95      2.00      0.00  migration/13
+15시 35분 27초     0       101      3.00      0.00  migration/14
+15시 35분 27초     0       107      1.00      0.00  migration/15
+15시 35분 27초     0       108      1.00      0.00  ksoftirqd/15
+15시 35분 27초     0       118      2.00      0.00  kcompactd0
+15시 35분 27초     0       126      1.00      0.00  kworker/13:1-mm_percpu_wq
+15시 35분 27초     0       134      1.00      0.00  kworker/3:1-mm_percpu_wq
+15시 35분 27초     0       139      2.00      0.00  kworker/8:1-events
+15시 35분 27초     0       143      1.00      0.00  kworker/1:1-mm_percpu_wq
+15시 35분 27초     0       144      2.00      0.00  kworker/2:1-events
+15시 35분 27초     0       146      1.00      0.00  kworker/6:1-mm_percpu_wq
+15시 35분 27초     0       147      1.00      0.00  kworker/7:1-mm_percpu_wq
+15시 35분 27초     0       151      1.00      0.00  kworker/12:1-events
+15시 35분 27초     0       152      2.00      0.00  kworker/14:1-events
+15시 35분 27초     0       153      1.00      0.00  kworker/15:1-events
+15시 35분 27초     0       159      3.00      0.00  kworker/0:2-events
+15시 35분 27초     0       224      1.00      0.00  kworker/1:1H-kblockd
+15시 35분 27초     0       491      2.00      0.00  kworker/4:3-events
+15시 35분 27초   108       684      4.00      0.00  systemd-oomd
+15시 35분 27초   131       998      1.00      0.00  chronyd
+15시 35분 27초   128      1272      1.00      0.00  Xorg
+15시 35분 27초     0      1485      1.00      0.00  packagekitd
+15시 35분 27초   128      1541      2.00      0.00  gsd-power
+15시 35분 27초  1000      1952     13.00      0.00  sshd
+15시 35분 27초  1000      2014      8.00      1.00  code-a44adf7f53
+15시 35분 27초  1000      2108     10.00      0.00  MainThread
+15시 35분 27초  1000      2691   1010.00      1.00  MainThread
+15시 35분 27초  1000      2911      4.00      0.00  MainThread
+15시 35분 27초  1000      3232     13.00      0.00  MainThread
+15시 35분 27초     0      4947      1.00      0.00  kworker/11:0-events
+15시 35분 27초     0     15406      1.00      0.00  kworker/9:2-mm_percpu_wq
+15시 35분 27초  1000     79933      1.00      0.00  MainThread
+15시 35분 27초  1000     79972     15.00      0.00  claude
+15시 35분 27초     0     89445      5.00      0.00  kworker/u32:2-events_unbound
+15시 35분 27초     0    103184      3.00      0.00  kworker/u32:1-flush-259:0
+15시 35분 27초  1000    104641      1.00      0.00  pidstat
+15시 35분 27초  1000    104642      1.00      1.00  tee
+
+15시 35분 27초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 28초     0        29      2.00      0.00  migration/2
+15시 35분 28초     0        41      2.00      0.00  migration/4
+15시 35분 28초     0        79      1.00      0.00  kworker/10:0-mm_percpu_wq
+15시 35분 28초     0       118      2.00      0.00  kcompactd0
+15시 35분 28초     0       126      1.00      0.00  kworker/13:1-mm_percpu_wq
+15시 35분 28초     0       134      2.00      0.00  kworker/3:1-events
+15시 35분 28초     0       138      1.00      0.00  kworker/5:1-events
+15시 35분 28초     0       139      2.00      0.00  kworker/8:1-mm_percpu_wq
+15시 35분 28초     0       143      2.00      0.00  kworker/1:1-mm_percpu_wq
+15시 35분 28초     0       144      2.00      0.00  kworker/2:1-events
+15시 35분 28초     0       151      2.00      0.00  kworker/12:1-events
+15시 35분 28초     0       153      3.00      0.00  kworker/15:1-events
+15시 35분 28초     0       159      2.00      0.00  kworker/0:2-events_freezable
+15시 35분 28초     0       491      1.00      0.00  kworker/4:3-mm_percpu_wq
+15시 35분 28초   108       684      4.00      0.00  systemd-oomd
+15시 35분 28초   131       998      1.00      0.00  chronyd
+15시 35분 28초  1000      1952     12.00      1.00  sshd
+15시 35분 28초  1000      2014      8.00      0.00  code-a44adf7f53
+15시 35분 28초  1000      2108     11.00      1.00  MainThread
+15시 35분 28초  1000      2691     18.00      1.00  MainThread
+15시 35분 28초  1000      2911      4.00      0.00  MainThread
+15시 35분 28초  1000      3232      9.00      0.00  MainThread
+15시 35분 28초     0      4947      1.00      0.00  kworker/11:0-mm_percpu_wq
+15시 35분 28초  1000     79933      1.00      0.00  MainThread
+15시 35분 28초  1000     79972     15.00      0.00  claude
+15시 35분 28초     0     89445      2.00      0.00  kworker/u32:2-events_unbound
+15시 35분 28초     0    103184      4.00      0.00  kworker/u32:1-events_unbound
+15시 35분 28초  1000    104641      1.00      0.00  pidstat
+15시 35분 28초  1000    104642      1.00      0.00  tee
+
+15시 35분 28초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 29초     0        17     41.00      1.00  rcu_preempt
+15시 35분 29초     0        23      3.00      0.00  migration/1
+15시 35분 29초     0        29      3.00      0.00  migration/2
+15시 35분 29초     0        36      1.00      0.00  ksoftirqd/3
+15시 35분 29초     0        41      4.00      0.00  migration/4
+15시 35분 29초     0        47      3.00      0.00  migration/5
+15시 35분 29초     0        53      1.00      0.00  migration/6
+15시 35분 29초     0        59      1.00      0.00  migration/7
+15시 35분 29초     0        71      1.00      0.00  migration/9
+15시 35분 29초     0        79      1.00      0.00  kworker/10:0-mm_percpu_wq
+15시 35분 29초     0       101      4.00      0.00  migration/14
+15시 35분 29초     0       118      2.00      0.00  kcompactd0
+15시 35분 29초     0       134      1.00      0.00  kworker/3:1-mm_percpu_wq
+15시 35분 29초     0       139      1.00      0.00  kworker/8:1-mm_percpu_wq
+15시 35분 29초     0       143      1.00      0.00  kworker/1:1-mm_percpu_wq
+15시 35분 29초     0       144      2.00      0.00  kworker/2:1-events
+15시 35분 29초     0       146      2.00      0.00  kworker/6:1-events
+15시 35분 29초     0       147      3.00      0.00  kworker/7:1-events
+15시 35분 29초     0       151      2.00      0.00  kworker/12:1-events
+15시 35분 29초     0       152      1.00      0.00  kworker/14:1-mm_percpu_wq
+15시 35분 29초     0       159      3.00      0.00  kworker/0:2-events
+15시 35분 29초     0       491      1.00      0.00  kworker/4:3-mm_percpu_wq
+15시 35분 29초   108       684      4.00      1.00  systemd-oomd
+15시 35분 29초   131       998      1.00      0.00  chronyd
+15시 35분 29초   128      1262      5.00      0.00  pipewire-media-
+15시 35분 29초  1000      1878      5.00      0.00  pipewire-media-
+15시 35분 29초  1000      1952     34.00      0.00  sshd
+15시 35분 29초  1000      2014     21.00      0.00  code-a44adf7f53
+15시 35분 29초  1000      2108     15.00      1.00  MainThread
+15시 35분 29초  1000      2691   1029.00      2.00  MainThread
+15시 35분 29초  1000      2911      6.00      0.00  MainThread
+15시 35분 29초  1000      3232      9.00      0.00  MainThread
+15시 35분 29초  1000     21904      1.00      0.00  MainThread
+15시 35분 29초  1000     21961      1.00      0.00  MainThread
+15시 35분 29초  1000     79972     15.00      0.00  claude
+15시 35분 29초     0     89445      3.00      0.00  kworker/u32:2-events_unbound
+15시 35분 29초     0    103184      4.00      0.00  kworker/u32:1-events_power_efficient
+15시 35분 29초  1000    104641      1.00      0.00  pidstat
+15시 35분 29초  1000    104642      1.00      0.00  tee
+
+15시 35분 29초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 30초     0        23      1.00      0.00  migration/1
+15시 35분 30초     0        41      3.00      0.00  migration/4
+15시 35분 30초     0        59      1.00      0.00  migration/7
+15시 35분 30초     0       118      2.00      0.00  kcompactd0
+15시 35분 30초     0       126      1.00      0.00  kworker/13:1-events
+15시 35분 30초     0       134      2.00      0.00  kworker/3:1-events
+15시 35분 30초     0       138      1.00      0.00  kworker/5:1-events
+15시 35분 30초     0       139      1.00      0.00  kworker/8:1-mm_percpu_wq
+15시 35분 30초     0       143      2.00      0.00  kworker/1:1-mm_percpu_wq
+15시 35분 30초     0       144      3.00      0.00  kworker/2:1-events
+15시 35분 30초     0       146      1.00      0.00  kworker/6:1-mm_percpu_wq
+15시 35분 30초     0       147      1.00      0.00  kworker/7:1-mm_percpu_wq
+15시 35분 30초     0       151      1.00      0.00  kworker/12:1-events
+15시 35분 30초     0       152      1.00      0.00  kworker/14:1-mm_percpu_wq
+15시 35분 30초     0       159      1.00      0.00  kworker/0:2-mm_percpu_wq
+15시 35분 30초     0       491      1.00      0.00  kworker/4:3-mm_percpu_wq
+15시 35분 30초   108       684      4.00      0.00  systemd-oomd
+15시 35분 30초   131       998      1.00      0.00  chronyd
+15시 35분 30초  1000      1952     11.00      0.00  sshd
+15시 35분 30초  1000      2014      7.00      0.00  code-a44adf7f53
+15시 35분 30초  1000      2108      7.00      1.00  MainThread
+15시 35분 30초  1000      2691     14.00      0.00  MainThread
+15시 35분 30초  1000      2692      1.00      0.00  MainThread
+15시 35분 30초  1000      2911      5.00      1.00  MainThread
+15시 35분 30초  1000      3232      9.00      0.00  MainThread
+15시 35분 30초     0      4947      1.00      0.00  kworker/11:0-events
+15시 35분 30초     0     15406      1.00      0.00  kworker/9:2-mm_percpu_wq
+15시 35분 30초  1000     79972     19.00      0.00  claude
+15시 35분 30초     0     89445      1.00      0.00  kworker/u32:2-events_unbound
+15시 35분 30초     0    103184      4.00      0.00  kworker/u32:1-events_unbound
+15시 35분 30초  1000    104641      1.00      0.00  pidstat
+15시 35분 30초  1000    104642      1.00      1.00  tee
+
+15시 35분 30초   UID       PID   cswch/s nvcswch/s  Command
+15시 35분 31초     0        17     23.00      0.00  rcu_preempt
+15시 35분 31초     0        18      1.00      0.00  migration/0
+15시 35분 31초     0        23      2.00      0.00  migration/1
+15시 35분 31초     0        29      2.00      0.00  migration/2
+15시 35분 31초     0        35      1.00      0.00  migration/3
+15시 35분 31초     0        41      2.00      0.00  migration/4
+15시 35분 31초     0        47      1.00      0.00  migration/5
+15시 35분 31초     0        48      1.00      0.00  ksoftirqd/5
+15시 35분 31초     0        53      1.00      0.00  migration/6
+15시 35분 31초     0        59      2.00      0.00  migration/7
+15시 35분 31초     0        65      1.00      0.00  migration/8
+15시 35분 31초     0        71      1.00      0.00  migration/9
+15시 35분 31초     0        77      1.00      0.00  migration/10
+15시 35분 31초     0        79      1.00      0.00  kworker/10:0-mm_percpu_wq
+15시 35분 31초     0        83      1.00      0.00  migration/11
+15시 35분 31초     0        89      1.00      0.00  migration/12
+15시 35분 31초     0        95      1.00      0.00  migration/13
+15시 35분 31초     0       101      2.00      0.00  migration/14
+15시 35분 31초     0       107      2.00      0.00  migration/15
+15시 35분 31초     0       118      2.00      0.00  kcompactd0
+15시 35분 31초     0       138      1.00      0.00  kworker/5:1-events
+15시 35분 31초     0       144      3.00      0.00  kworker/2:1-events
+15시 35분 31초     0       146      1.00      0.00  kworker/6:1-events
+15시 35분 31초     0       147      1.00      0.00  kworker/7:1-events
+15시 35분 31초     0       151      1.00      0.00  kworker/12:1-events
+15시 35분 31초     0       152      1.00      0.00  kworker/14:1-events
+15시 35분 31초     0       153      2.00      0.00  kworker/15:1-events
+15시 35분 31초     0       159      3.00      0.00  kworker/0:2-events
+15시 35분 31초     0       210      2.00      0.00  kworker/11:1H-kblockd
+15시 35분 31초     0       331      3.00      0.00  jbd2/nvme0n1p5-8
+15시 35분 31초     0       491      1.00      0.00  kworker/4:3-events
+15시 35분 31초   108       684      4.00      0.00  systemd-oomd
+15시 35분 31초   131       998      1.00      0.00  chronyd
+15시 35분 31초  1000      1952     15.00      0.00  sshd
+15시 35분 31초  1000      2014      9.00      0.00  code-a44adf7f53
+15시 35분 31초  1000      2108     13.00      1.00  MainThread
+15시 35분 31초  1000      2349      2.00      0.00  MainThread
+15시 35분 31초  1000      2691   1013.00      0.00  MainThread
+15시 35분 31초  1000      2692      7.00      0.00  MainThread
+15시 35분 31초  1000      2911      5.00      0.00  MainThread
+15시 35분 31초  1000      3232     22.00      0.00  MainThread
+15시 35분 31초     0      4947      1.00      0.00  kworker/11:0-events
+15시 35분 31초  1000     79933      1.00      0.00  MainThread
+15시 35분 31초  1000     79972     16.00      0.00  claude
+15시 35분 31초     0     89445      4.00      0.00  kworker/u32:2-writeback
+15시 35분 31초     0    103184      3.00      0.00  kworker/u32:1-events_unbound
+15시 35분 31초  1000    104641      1.00      0.00  pidstat
+15시 35분 31초  1000    104642      1.00      0.00  tee
+15시 35분 31초  1000    104794      2.00      0.00  sh
+15시 35분 31초  1000    104795     12.00      0.00  cpuUsage.sh
+15시 35분 31초  1000    104800      1.00      0.00  sleep
+
+평균:       UID       PID   cswch/s nvcswch/s  Command
+평균:         0         1      0.05      0.00  systemd
+평균:         0        16      0.10      0.00  ksoftirqd/0
+평균:         0        17     19.74      0.05  rcu_preempt
+평균:         0        18      0.25      0.00  migration/0
+평균:         0        23      1.50      0.00  migration/1
+평균:         0        24      0.10      0.00  ksoftirqd/1
+평균:         0        29      1.40      0.00  migration/2
+평균:         0        30      0.15      0.00  ksoftirqd/2
+평균:         0        35      0.30      0.00  migration/3
+평균:         0        36      0.10      0.00  ksoftirqd/3
+평균:         0        41      2.15      0.00  migration/4
+평균:         0        42      0.20      0.00  ksoftirqd/4
+평균:         0        47      1.65      0.00  migration/5
+평균:         0        48      0.15      0.00  ksoftirqd/5
+평균:         0        53      0.95      0.00  migration/6
+평균:         0        54      0.20      0.00  ksoftirqd/6
+평균:         0        59      0.95      0.00  migration/7
+평균:         0        60      0.30      0.00  ksoftirqd/7
+평균:         0        65      0.30      0.00  migration/8
+평균:         0        71      0.50      0.00  migration/9
+평균:         0        77      0.25      0.00  migration/10
+평균:         0        79      0.70      0.00  kworker/10:0-mm_percpu_wq
+평균:         0        83      0.25      0.00  migration/11
+평균:         0        89      0.35      0.00  migration/12
+평균:         0        95      0.40      0.00  migration/13
+평균:         0       101      0.60      0.00  migration/14
+평균:         0       107      0.55      0.00  migration/15
+평균:         0       108      0.05      0.00  ksoftirqd/15
+평균:         0       118      2.00      0.00  kcompactd0
+평균:         0       126      1.00      0.00  kworker/13:1-events
+평균:         0       134      1.60      0.00  kworker/3:1-events
+평균:         0       138      1.25      0.00  kworker/5:1-events
+평균:         0       139      0.75      0.00  kworker/8:1-mm_percpu_wq
+평균:         0       143      1.70      0.00  kworker/1:1-mm_percpu_wq
+평균:         0       144      1.75      0.00  kworker/2:1-events
+평균:         0       146      1.50      0.00  kworker/6:1-events
+평균:         0       147      1.30      0.00  kworker/7:1-events
+평균:         0       151      1.45      0.00  kworker/12:1-events
+평균:         0       152      0.25      0.00  kworker/14:1-events
+평균:         0       153      0.55      0.00  kworker/15:1-events
+평균:         0       159      2.75      0.00  kworker/0:2-events
+평균:         0       207      0.05      0.00  kworker/9:1H-kblockd
+평균:         0       210      0.40      0.00  kworker/11:1H-kblockd
+평균:         0       224      0.10      0.00  kworker/1:1H-kblockd
+평균:         0       331      0.60      0.00  jbd2/nvme0n1p5-8
+평균:         0       437      0.05      0.00  systemd-udevd
+평균:         0       491      1.65      0.00  kworker/4:3-events
+평균:       132       682      0.05      0.00  rpcbind
+평균:       108       684      4.00      0.05  systemd-oomd
+평균:       101       685      0.05      0.00  systemd-resolve
+평균:         0       843      0.05      0.00  NetworkManager
+평균:         0       850      0.10      0.00  irqbalance
+평균:         0       876      0.10      0.00  wpa_supplicant
+평균:       131       998      1.00      0.10  chronyd
+평균:       128      1262      1.05      0.00  pipewire-media-
+평균:       128      1272      0.05      0.00  Xorg
+평균:         0      1485      0.10      0.00  packagekitd
+평균:       128      1515      0.05      0.00  gsd-color
+평균:       128      1538      0.05      0.00  gsd-housekeepin
+평균:       128      1541      0.10      0.00  gsd-power
+평균:      1000      1878      1.05      0.00  pipewire-media-
+평균:      1000      1952     19.84      0.35  sshd
+평균:      1000      2014     11.99      0.10  code-a44adf7f53
+평균:      1000      2108     13.89      0.45  MainThread
+평균:      1000      2349      0.45      0.00  MainThread
+평균:      1000      2691    499.95      0.80  MainThread
+평균:      1000      2692      1.65      0.00  MainThread
+평균:         0      2751      0.25      0.00  cifsd
+평균:      1000      2911      5.30      0.05  MainThread
+평균:      1000      3232     13.09      0.50  MainThread
+평균:         0      4947      1.15      0.00  kworker/11:0-events
+평균:         0     15406      0.55      0.00  kworker/9:2-mm_percpu_wq
+평균:      1000     21904      0.30      0.00  MainThread
+평균:      1000     21961      0.30      0.00  MainThread
+평균:      1000     79933      0.45      0.00  MainThread
+평균:      1000     79972     15.99      0.15  claude
+평균:         0     89445      4.60      0.00  kworker/u32:2-writeback
+평균:         0    103184      3.70      0.00  kworker/u32:1-events_unbound
+평균:      1000    104641      1.00      0.00  pidstat
+평균:      1000    104642      1.00      0.15  tee
+평균:      1000    104794      0.10      0.00  sh
+평균:      1000    104795      0.60      0.00  cpuUsage.sh
+평균:      1000    104800      0.05      0.00  sleep

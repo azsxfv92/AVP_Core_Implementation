@@ -1,0 +1,27 @@
+]633;E;date -Is;e2751b17-6b2d-40e3-b4db-e8a0256073e5]633;C2026-09-03T08:50:38+09:00
+Linux ubuntu 5.15.148-tegra #1 SMP PREEMPT Mon Jun 16 08:24:48 PDT 2025 aarch64 aarch64 aarch64 GNU/Linux
+Reference ID    : C0A80038 (192.168.0.56)
+Stratum         : 4
+Ref time (UTC)  : Wed Sep 02 23:50:06 2026
+System time     : 0.000000002 seconds slow of NTP time
+Last offset     : +0.000002585 seconds
+RMS offset      : 0.000030412 seconds
+Frequency       : 36.448 ppm slow
+Residual freq   : +0.001 ppm
+Skew            : 0.140 ppm
+Root delay      : 0.005107748 seconds
+Root dispersion : 0.000558524 seconds
+Update interval : 8.1 seconds
+Leap status     : Normal
+
+  .-- Source mode  '^' = server, '=' = peer, '#' = local clock.
+ / .- Source state '*' = current best, '+' = combined, '-' = not combined,
+| /             'x' = may be in error, '~' = too variable, '?' = unusable.
+||                                                 .- xxxx [ yyyy ] +/- zzzz
+||      Reachability register (octal) -.           |  xxxx = adjusted offset,
+||      Log2(Polling interval) --.      |          |  yyyy = measured offset,
+||                                \     |          |  zzzz = estimated error.
+||                                 |    |           \
+MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+===============================================================================
+^* 192.168.0.56                  3   3   377    31    -11us[-8054ns] +/- 3363us

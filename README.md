@@ -40,7 +40,8 @@ CARLA(Desktop) → Jetson Orin Nano(TensorRT FP16) → Autoware perception → A
 ## 📈 Roadmap & Progress
 
 ### Roadmap : Stage 1 — Autoware Integration, Safety Monitoring, and Fault-Injection Validation
-### Current : Week 16 Day 6 — AEB (Autonomous Emergency Braking) on Autoware tracking output
+### Roadmap : Stage 2 — Real-time middleware (RT-MW) replacing the DDS transport, with latency budgets and SoC measurements
+### Current : Week 17 — Linux scheduling observation, context switch cost, RAII ScopedTimer (Stage 2 start)
 
 ---
 
@@ -497,6 +498,98 @@ ros2 run avp_core_implementation aeb_node
 - Reproduced obstacle-triggered braking multiple times: the ego vehicle stops cleanly behind the tracked obstacle with no chattering.
 - Reproduced the perception-timeout fail-safe: killing `trt_infer_node` latches `aeb/status = true` and holds the vehicle stopped.
 - Found that Autoware's own `dummy_perception_publisher` (from `planning_simulator.launch.xml`) remaps its output onto the same `/perception/object_recognition/detection/objects` topic used by this pipeline, which can silently mask a dead perception source — worth checking for before trusting a fail-safe test.
+
+### 14) Week 17 - Linux scheduling, context switch cost, and RAII ScopedTimer
+
+Start of Stage 2: building a real-time middleware (RT-MW) to replace the DDS transport on the RT-MW segments of this pipeline. Week 17 sets up the Linux/C++ baseline and the measurement tools every later week reuses.
+
+Full notes (Korean): [`docs/week17/week17_summary.html`](docs/week17/week17_summary.html)
+
+### Week 17 Goal
+
+- Observe what runs when on Linux: processes vs threads, voluntary vs involuntary context switches, scheduling classes.
+- Measure the cost of a thread-to-thread context switch, and how CPU load and core placement change its tail.
+- Build reusable measurement tools: a C++ RAII timer, a percentile summarizer, and a plotter.
+
+### What was done
+
+- Observed `/proc`, `pidstat`, and `htop` under `stress-ng` load; confirmed that `ps` nlwp, `/proc/<pid>/task/`, and `Threads:` always agree because they read the same kernel task list.
+- Compared `SCHED_OTHER` and `SCHED_FIFO` on a pinned core with a periodic victim process (`chrt`, `taskset`).
+- Implemented `rtmw::ScopedTimer` (C++17 RAII): copy deleted, move allowed with source invalidation, verified on normal, early-return, and exception paths.
+- Implemented `tools/stats.py` (p50/p90/p95/p99/max, nearest-rank). It uses only the Python standard library so it runs on the Jetson target without pip. `tools/plot.py` (matplotlib) runs on the desktop only.
+- Measured context switch cost with a two-thread semaphore ping-pong in a 2×2 design (load × core placement), then cross-checked it with `perf stat` and `perf sched`.
+
+### Week 17 execution flow
+
+#### 1. Build
+```bash
+g++ -std=c++17 -Wall -Wextra -O2 -g -pthread -Irtmw/include rtmw/test/ctxsw_pingpong.cpp -o rtmw/build/ctxsw_pingpong
+g++ -std=c++17 -Wall -Wextra -O2 -g -Irtmw/include rtmw/test/latency_sample.cpp -o rtmw/build/latency_sample
+g++ -std=c++17 -Wall -Wextra -O0 -g -Irtmw/include rtmw/test/scoped_timer_test.cpp -o rtmw/build/scoped_timer_test
+```
+
+#### 2. Context switch cost (idle / load × same core / any core)
+```bash
+mkdir -p results/week17/day6
+taskset -c 3 ./rtmw/build/ctxsw_pingpong 50000 > results/week17/day6/ctxsw_idle_same.csv
+./rtmw/build/ctxsw_pingpong 50000 > results/week17/day6/ctxsw_idle_free.csv
+
+stress-ng --cpu 16 --timeout 90s > /dev/null 2>&1 & sleep 3
+taskset -c 3 ./rtmw/build/ctxsw_pingpong 50000 > results/week17/day6/ctxsw_load_same.csv
+./rtmw/build/ctxsw_pingpong 50000 > results/week17/day6/ctxsw_load_free.csv
+wait
+```
+
+#### 3. Summarize and plot
+```bash
+python3 tools/stats.py results/week17/day6/ctxsw_{idle_same,idle_free,load_same,load_free}.csv --col per_switch_ns --unit us
+python3 tools/plot.py  results/week17/day6/ctxsw_{idle_same,idle_free,load_same,load_free}.csv --col per_switch_ns --unit us \
+    --out docs/week17/figures/ctxsw_load.png
+```
+
+#### 4. Cross-check with the kernel
+```bash
+sudo sysctl -w kernel.perf_event_paranoid=1
+perf stat -e context-switches,cpu-migrations taskset -c 3 ./rtmw/build/ctxsw_pingpong 50000 > /dev/null
+```
+
+#### 5. Scheduling policy vs periodic wake-up (1 ms period, 0.5 ms work)
+```bash
+sudo -v
+bash tools/d2_sched_experiment.sh
+```
+
+### Week 17 Result
+
+![Context switch cost: load vs core placement](docs/week17/figures/ctxsw_load.png)
+
+Context switch cost per switch (round trip ÷ 2), 49,800 samples per case, nearest-rank, in µs:
+
+| Case | p50 | p99 | max |
+|---|---:|---:|---:|
+| Idle, same core | 0.9 | 0.9 | 9.1 |
+| Idle, any core | 2.3 | 2.4 | 10.8 |
+| Load, same core | 0.9 | 0.9 | 9.2 |
+| Load, any core | 0.8 | 1.8 | 3227.6 |
+
+Cross-check: `perf stat` counted 100,001 context switches for 50,000 round trips (expected 100,000); `perf sched latency` reported an average wake-up delay of 1.0 µs.
+
+1 ms periodic task, overshoot beyond the ideal period:
+
+| Policy | Load on the same core | Overshoot |
+|---|---|---:|
+| `SCHED_OTHER` | none | 52 µs |
+| `SCHED_OTHER` | 2 × `stress-ng` workers | 1054 µs |
+| `SCHED_FIFO` 80 | 2 × `stress-ng` workers | 9 µs |
+
+### Key findings
+
+- Pinning the two threads to one core made them immune to load: p50, p99, and max were unchanged with `stress-ng --cpu 16` on all 16 cores.
+- Without pinning, 46 of 49,800 samples (0.09%) took 2–3 ms and accounted for 60% of total time; the mean (2.6 µs) exceeded p99 (1.8 µs).
+- The 52 µs baseline overshoot under `SCHED_OTHER` is the kernel timer slack (`/proc/<pid>/timerslack_ns` = 50000), not contention — the distribution was packed within 0.6 µs from p50 to p99. Real-time tasks get zero slack.
+- On an idle system, cross-core wake-up was slower than under load (p50 2.3 vs 0.8 µs), most likely C-state exit latency (C1 = 1 µs). To be verified in Week 19.
+- Round trip ÷ 2 holds for central values but not for the worst case: `perf sched` max delay (18 µs) matched the whole round-trip max (18.2 µs), so the outlier sits on one side.
+- The last sample of every run overlaps thread teardown and is ~10× slower; measurement tools should drop a cool-down tail as well as a warm-up head.
 
 ## DDS Baseline
 This project uses **Fast DDS** via `rmw_fastrtps_cpp`.  
