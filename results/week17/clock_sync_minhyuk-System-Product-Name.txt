@@ -1,0 +1,34 @@
+2026-09-03T08:15:36+09:00
+Linux minhyuk-System-Product-Name 6.8.0-138-generic #138~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Aug  7 13:43:15 UTC  x86_64 x86_64 x86_64 GNU/Linux
+Reference ID    : D36C75D3 (211.108.117.211)
+Stratum         : 3
+Ref time (UTC)  : Wed Sep 02 23:14:53 2026
+System time     : 0.000071842 seconds fast of NTP time
+Last offset     : -0.000012139 seconds
+RMS offset      : 0.001561816 seconds
+Frequency       : 7.941 ppm fast
+Residual freq   : -0.005 ppm
+Skew            : 1.098 ppm
+Root delay      : 0.006338796 seconds
+Root dispersion : 0.000832581 seconds
+Update interval : 129.3 seconds
+Leap status     : Normal
+
+  .-- Source mode  '^' = server, '=' = peer, '#' = local clock.
+ / .- Source state '*' = current best, '+' = combined, '-' = not combined,
+| /             'x' = may be in error, '~' = too variable, '?' = unusable.
+||                                                 .- xxxx [ yyyy ] +/- zzzz
+||      Reachability register (octal) -.           |  xxxx = adjusted offset,
+||      Log2(Polling interval) --.      |          |  yyyy = measured offset,
+||                                \     |          |  zzzz = estimated error.
+||                                 |    |           \
+MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+===============================================================================
+^- prod-ntp-4.ntp4.ps5.cano>     2   7   377   100  +8867us[+8856us] +/-  133ms
+^- alphyn.canonical.com          2   7   377   102  -3420us[-3431us] +/-  128ms
+^- prod-ntp-5.ntp1.ps5.cano>     2   7   377   101  +8944us[+8933us] +/-  131ms
+^- prod-ntp-3.ntp1.ps5.cano>     2   6   377    37  +4696us[+4696us] +/-  138ms
+^+ ec2-3-39-176-65.ap-north>     2   7   377   109  -1263us[-1274us] +/- 6822us
+^- time.ravnus.com               2   7    27   239   +918us[+1034us] +/- 3637us
+^- any.time.nl                   2   7   377   108   +935us[ +924us] +/-   19ms
+^* 211.108.117.211               2   6   375    44   +751us[ +739us] +/- 4184us
