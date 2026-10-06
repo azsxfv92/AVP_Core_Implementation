@@ -1,0 +1,245 @@
+##### W18 D1 memory snapshot #####
+boot: 2026-09-11 22:38:10   now: 2026-09-11 22:54:22   kernel: 6.8.0-138-generic
+===== A-1 page size =====
+4096
+===== A-2 this bash /proc/PID/status =====
+VmSize:	   17068 kB
+VmRSS:	    9984 kB
+RssAnon:	    6032 kB
+RssFile:	    3952 kB
+RssShmem:	       0 kB
+===== A-3 this bash ps =====
+    PID    VSZ   RSS COMMAND
+   3617  17068  9984 bash
+===== B-1 top VSZ =====
+    PID    VSZ   RSS COMMAND
+   1252 26137088 159048 Xorg
+   2721 20362848 752616 MainThread
+   3813 5577968 267168 claude
+   6362 5577968 318128 claude
+   5978 5573868 277116 claude
+===== B-2 top RSS =====
+    PID    VSZ   RSS COMMAND
+   2333 3411564 1849764 MainThread
+   2721 20362848 752616 MainThread
+   6362 5577968 318128 claude
+   5978 5573868 277116 claude
+   3813 5577968 267168 claude
+===== B-3 free =====
+               총계         사용        여분      공유    버퍼/캐시    가용
+메모리:       60Gi       4.2Gi        48Gi       5.0Mi       7.7Gi        55Gi
+스  왑:      2.0Gi          0B       2.0Gi
+===== B-4 top RSS with command line =====
+    PID   RSS COMMAND         COMMAND
+   2333 1849764 MainThread    /home/minhyuk/.vscode-server/cli/servers/Stable-110a328ea54b42367b803ec53ee0bf52ef26b419/server/node /home/minhyuk/.vscode-server/cli/servers/Stable-110a328ea54b42367b803
+   2721 752616 MainThread     /home/minhyuk/.vscode-server/cli/servers/Stable-110a328ea54b42367b803ec53ee0bf52ef26b419/server/node --dns-result-order=ipv4first /home/minhyuk/.vscode-server/cli/servers
+   6362 318128 claude         /home/minhyuk/.vscode-server/extensions/anthropic.claude-code-2.1.267-linux-x64/resources/native-binary/claude --output-format stream-json --verbose --input-format stream
+===== C-1 this bash /proc/PID/maps =====
+5d2026d4f000-5d2026d7e000 r--p 00000000 103:05 26607712                  /usr/bin/bash
+5d2026d7e000-5d2026e5d000 r-xp 0002f000 103:05 26607712                  /usr/bin/bash
+5d2026e5d000-5d2026e97000 r--p 0010e000 103:05 26607712                  /usr/bin/bash
+5d2026e98000-5d2026e9c000 r--p 00148000 103:05 26607712                  /usr/bin/bash
+5d2026e9c000-5d2026ea5000 rw-p 0014c000 103:05 26607712                  /usr/bin/bash
+5d2026ea5000-5d2026eb0000 rw-p 00000000 00:00 0 
+5d203e0f4000-5d203e664000 rw-p 00000000 00:00 0                          [heap]
+7f543e400000-7f543eabb000 r--p 00000000 103:05 26610175                  /usr/lib/locale/locale-archive
+7f543ec00000-7f543ec28000 r--p 00000000 103:05 26609635                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f543ec28000-7f543edbd000 r-xp 00028000 103:05 26609635                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f543edbd000-7f543ee15000 r--p 001bd000 103:05 26609635                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f543ee15000-7f543ee16000 ---p 00215000 103:05 26609635                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f543ee16000-7f543ee1a000 r--p 00215000 103:05 26609635                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f543ee1a000-7f543ee1c000 rw-p 00219000 103:05 26609635                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f543ee1c000-7f543ee29000 rw-p 00000000 00:00 0 
+7f543eec4000-7f543eef0000 r--p 00000000 103:05 27550719                  /usr/share/locale-langpack/ko/LC_MESSAGES/bash.mo
+7f543ef14000-7f543ef16000 rw-p 00000000 00:00 0 
+7f543ef16000-7f543ef24000 r--p 00000000 103:05 26616943                  /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3
+7f543ef24000-7f543ef35000 r-xp 0000e000 103:05 26616943                  /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3
+7f543ef35000-7f543ef43000 r--p 0001f000 103:05 26616943                  /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3
+7f543ef43000-7f543ef47000 r--p 0002c000 103:05 26616943                  /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3
+7f543ef47000-7f543ef48000 rw-p 00030000 103:05 26616943                  /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3
+7f543ef69000-7f543ef70000 r--s 00000000 103:05 26637923                  /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+7f543ef70000-7f543ef88000 rw-p 00000000 00:00 0 
+7f543ef88000-7f543ef8c000 r--p 00000000 00:00 0                          [vvar]
+7f543ef8c000-7f543ef8e000 r-xp 00000000 00:00 0                          [vdso]
+7f543ef8e000-7f543ef90000 r--p 00000000 103:05 26607743                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f543ef90000-7f543efba000 r-xp 00002000 103:05 26607743                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f543efba000-7f543efc5000 r--p 0002c000 103:05 26607743                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f543efc6000-7f543efc8000 r--p 00037000 103:05 26607743                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f543efc8000-7f543efca000 rw-p 00039000 103:05 26607743                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7fffd59f8000-7fffd5a2f000 rw-p 00000000 00:00 0                          [stack]
+ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
+===== C-2 this bash pmap -x =====
+3617:   /bin/bash --init-file /home/minhyuk/.vscode-server/cli/servers/Stable-110a328ea54b42367b803ec53ee0bf52ef26b419/server/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+주  소          Kbytes     RSS   Dirty 모  드 매  핑
+00005d2026d4f000     188     184       0    r---- bash
+00005d2026d7e000     892     888       0    r-x-- bash
+00005d2026e5d000     232     136       0    r---- bash
+00005d2026e98000      16      16      16    r---- bash
+00005d2026e9c000      36      36      36    rw--- bash
+00005d2026ea5000      44      28      28    rw---   [ anon ]
+00005d203e0f4000    5568    5564    5564    rw---   [ anon ]
+00007f543e400000    6892     364       0    r---- locale-archive
+00007f543ec00000     160     160       0    r---- libc.so.6
+00007f543ec28000    1620    1488       0    r-x-- libc.so.6
+00007f543edbd000     352     188       0    r---- libc.so.6
+00007f543ee15000       4       0       0    ----- libc.so.6
+00007f543ee16000      16      16      16    r---- libc.so.6
+00007f543ee1a000       8       8       8    rw--- libc.so.6
+00007f543ee1c000      52      24      24    rw---   [ anon ]
+00007f543eec4000     176     112       0    r---- bash.mo
+00007f543ef14000       8       8       8    rw---   [ anon ]
+00007f543ef16000      56      56       0    r---- libtinfo.so.6.3
+00007f543ef24000      68      68       0    r-x-- libtinfo.so.6.3
+00007f543ef35000      56      56       0    r---- libtinfo.so.6.3
+00007f543ef43000      16      16      16    r---- libtinfo.so.6.3
+00007f543ef47000       4       4       4    rw--- libtinfo.so.6.3
+00007f543ef69000      28      28       0    r--s- gconv-modules.cache
+00007f543ef70000      96      96      96    rw---   [ anon ]
+00007f543ef88000      16       0       0    r----   [ anon ]
+00007f543ef8c000       8       4       0    r-x--   [ anon ]
+00007f543ef8e000       8       8       0    r---- ld-linux-x86-64.so.2
+00007f543ef90000     168     168       0    r-x-- ld-linux-x86-64.so.2
+00007f543efba000      44      44       0    r---- ld-linux-x86-64.so.2
+00007f543efc6000       8       8       8    r---- ld-linux-x86-64.so.2
+00007f543efc8000       8       8       8    rw--- ld-linux-x86-64.so.2
+00007fffd59f8000     220     200     200    rw---   [ stack ]
+ffffffffff600000       4       0       0    --x--   [ anon ]
+---------------- ------- ------- ------- 
+총계  kB         17072    9984    6032
+===== C-3 this bash biggest regions =====
+00007f543e400000    6892     364       0    r---- locale-archive
+00005d203e0f4000    5568    5564    5564    rw---   [ anon ]
+00007f543ec28000    1620    1488       0    r-x-- libc.so.6
+00005d2026d7e000     892     888       0    r-x-- bash
+00007f543edbd000     352     188       0    r---- libc.so.6
+00005d2026e5d000     232     136       0    r---- bash
+===== C-4 Xorg biggest regions =====
+0000752548000000 25165824       0       0    -----   [ anon ]
+0000752b6ec00000  105544   38424       0    r-x-- libLLVM-15.so.1
+0000752b7815b000   71284   16620       0    r-x-- libnvidia-gpucomp.so.610.43.02
+0000752b48021000   65404       0       0    -----   [ anon ]
+0000752b4c021000   65404       0       0    -----   [ anon ]
+0000752b50021000   65404       0       0    -----   [ anon ]
+===== Q2 overcommit =====
+0
+MemTotal:       63421060 kB
+MemAvailable:   58262808 kB
+CommitLimit:    33807676 kB
+Committed_AS:    4274196 kB
+===== D-1 this bash smaps_rollup (boot: 2026-09-11 22:38:10, now: 23:29:07) =====
+5d2026d4f000-7fffd5a2f000 ---p 00000000 00:00 0                          [rollup]
+Rss:                9992 kB
+Pss:                3865 kB
+Pss_Dirty:          3196 kB
+Pss_Anon:           3196 kB
+Pss_File:            669 kB
+Pss_Shmem:             0 kB
+Shared_Clean:       3820 kB
+Shared_Dirty:       5680 kB
+Private_Clean:       136 kB
+Private_Dirty:       356 kB
+Referenced:         9992 kB
+Anonymous:          6036 kB
+KSM:                   0 kB
+LazyFree:              0 kB
+AnonHugePages:         0 kB
+ShmemPmdMapped:        0 kB
+FilePmdMapped:         0 kB
+Shared_Hugetlb:        0 kB
+Private_Hugetlb:       0 kB
+Swap:                  0 kB
+SwapPss:               0 kB
+Locked:                0 kB
+===== D-2 sum of RSS vs sum of PSS (all processes) =====
+RSS sum: 4.95 GiB
+PSS sum: 3.79 GiB
+               총계         사용        여분      공유    버퍼/캐시    가용
+메모리:       60Gi       4.2Gi        48Gi       5.0Mi       7.7Gi        55Gi
+스  왑:      2.0Gi          0B       2.0Gi
+===== E pagefault_demo (boot: 2026-09-19 09:11:45, now: 09:34:30) =====
+# pagefault_demo: 256 MiB = 65536 pages of 4096 bytes
+stage,pages_touched,minflt_delta,majflt_delta,rss_kb,rss_delta_kb
+# alloc ptr=0x7496fedff010
+alloc,0,14,0,3752,68
+touch_half,32768,32767,0,134820,131068
+touch_rest,32768,32768,0,265892,131072
+touch_again,65536,0,0,265892,0
+free,0,0,0,3748,-262144
+# alloc_zeroed ptr=(nil)
+alloc_zeroed,0,0,0,3748,0
+===== F-1 /usr/bin/time -v =====
+# pagefault_demo: 256 MiB = 65536 pages of 4096 bytes
+stage,pages_touched,minflt_delta,majflt_delta,rss_kb,rss_delta_kb
+# alloc ptr=0x71659cbff010
+alloc,0,14,0,3772,68
+touch_half,32768,32767,0,134840,131068
+touch_rest,32768,32768,0,265912,131072
+touch_again,65536,0,0,265912,0
+free,0,0,0,3768,-262144
+# alloc_zeroed ptr=(nil)
+alloc_zeroed,0,0,0,3768,0
+	Command being timed: "./rtmw/build/pagefault_demo 256"
+	User time (seconds): 0.00
+	System time (seconds): 0.03
+	Percent of CPU this job got: 100%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.04
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 265856
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 65727
+	Voluntary context switches: 1
+	Involuntary context switches: 0
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+===== F-2 perf stat =====
+# pagefault_demo: 256 MiB = 65536 pages of 4096 bytes
+stage,pages_touched,minflt_delta,majflt_delta,rss_kb,rss_delta_kb
+# alloc ptr=0x7b2d057ff010
+alloc,0,14,0,3548,68
+touch_half,32768,32767,0,134616,131068
+touch_rest,32768,32768,0,265688,131072
+touch_again,65536,0,0,265688,0
+free,0,0,0,3544,-262144
+# alloc_zeroed ptr=(nil)
+alloc_zeroed,0,0,0,3544,0
+
+ Performance counter stats for './rtmw/build/pagefault_demo 256':
+
+            65,666      page-faults                                                           
+            65,666      minor-faults                                                          
+                 0      major-faults                                                          
+
+       0.039712193 seconds time elapsed
+
+       0.002035000 seconds user
+       0.037658000 seconds sys
+
+
+===== F-3 D-1 again, no { } and no pipe =====
+Rss:               10004 kB
+Pss:                6598 kB
+Pss_Anon:           6036 kB
+Shared_Dirty:          0 kB
+Private_Dirty:      6036 kB
+Anonymous:          6036 kB
+===== E2 pagefault_demo, size_t fix + TODO 5 (boot: 2026-09-19 09:11:45, now: 10:10:34) =====
+# pagefault_demo: 256 MiB = 65536 pages of 4096 bytes
+stage,pages_touched,minflt_delta,majflt_delta,rss_kb,rss_delta_kb
+# alloc ptr=0x78a5ebbff010
+alloc,0,14,0,3780,68
+touch_half,32768,32767,0,134848,131068
+touch_rest,32768,32768,0,265920,131072
+touch_again,65536,0,0,265920,0
+free,0,0,0,3776,-262144
+# alloc_zeroed ptr=0x78a5ebbff010
+alloc_zeroed,0,65537,0,265924,262148

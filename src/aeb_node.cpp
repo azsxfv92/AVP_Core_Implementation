@@ -8,6 +8,8 @@
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "autoware_perception_msgs/msg/tracked_objects.hpp"
 #include "autoware_perception_msgs/msg/detected_objects.hpp"
+#include "probe/probe.hpp"
+#include "shm_channel.hpp"
 
 #include "tf2_ros/buffer.h"
 #include "tf2_ros/transform_listener.h"
@@ -53,10 +55,17 @@ public:
             [this](const std_msgs::msg::Float32::SharedPtr m){current_speed_ = m->data;}
         );
         
+        // open channel for shared memory
+        accel_ch_ = rtmw::open_accel_channel(true);
+        if(!accel_ch_.valid()){
+            RCLCPP_WARN(get_logger(), "shm accel channel open failed - ROS2 path only");
+        }
         pub_accel_ = create_publisher<std_msgs::msg::Float32>("/avp/vehicle/target_accel", 10);
         pub_status_ = create_publisher<std_msgs::msg::Bool>("/avp/aeb/status", 10);
 
         timer_ = create_wall_timer(50ms, std::bind(&AebNode::onControlTick, this));
+
+        rclcpp::on_shutdown([this]{probe_.flush();});
 
         RCLCPP_INFO(get_logger(), "aeb_node up | brake_dist=%.1fm lane_half=%.1fm", brake_dist_, lane_half_);
     }
@@ -64,12 +73,15 @@ public:
 private:
     void onTracked(const autoware_perception_msgs::msg::TrackedObjects::SharedPtr msg)
     {
+        last_key_ = rtmw::frame_key(msg->header.stamp);
+        probe_.mark(last_key_, 4);
+
         geometry_msgs::msg::TransformStamped tf;
         try{
             tf = tf_buffer_->lookupTransform(
                 vehicle_frame_, msg->header.frame_id, tf2::TimePointZero);
         } catch(const tf2::TransformException & ex){
-            RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000, "TF 실패: %s", ex.what());
+            RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000, "TF Fail: %s", ex.what());
             return;
         }
 
@@ -144,7 +156,14 @@ private:
 
         std_msgs::msg::Float32 a;
         a.data = static_cast<float>(accel);
-        pub_accel_->publish(a);
+        if(last_key_ != 0){
+            probe_.mark(last_key_, 5);
+        }
+        pub_accel_->publish(a); // ROS2 topic is also published 
+
+        if(accel_ch_.valid()){
+            rtmw::write_accel(accel_ch_.slot, a.data); // write the accel data 
+        }
 
         std_msgs::msg::Bool s;
         s.data = (hazard_ || timed_out);
@@ -166,7 +185,9 @@ private:
     rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr sub_speed_;
     rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr pub_accel_;
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_status_;
+    rtmw::AccelChannel accel_ch_;
     rclcpp::TimerBase::SharedPtr timer_;
+
 
     double brake_dist_, lane_half_, min_exist_, brake_accel_, target_speed_, timeout_sec_;
     double release_hold_time_;
@@ -180,6 +201,8 @@ private:
     int heartbeat_tick_{0};
     bool have_seen_hazard_{false};
     rclcpp::Time last_hazard_seen_time_;
+    rtmw::Probe probe_{"planner", "/home/minhyuk/probe_local/probe_planner.csv"};
+    uint64_t last_key_ = 0;
 };
 
 int main(int argc, char ** argv)

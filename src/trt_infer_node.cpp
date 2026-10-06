@@ -2,6 +2,7 @@
 #include "preprocess.hpp"
 #include "video_encoder.hpp"
 #include "yolo_postprocess.hpp"
+#include "probe/probe.hpp"
 
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/imgproc.hpp>
@@ -441,6 +442,8 @@ public:
         preprocess_buffer_.resize(preprocess_tensor_count, 0.0f);
 
         start_time_ = std::chrono::steady_clock::now();
+
+        rclcpp::on_shutdown([this]{ probe_.flush(); });
     }
 
     ~TrtStreamInferNode()
@@ -604,6 +607,8 @@ private:
             det_msg.detections.push_back(det);
         }
 
+        probe_.mark(rtmw::frame_key(det_msg.header.stamp), 3);
+
         detectionPub_->publish(det_msg);
 
         // convert the OpenCV image to ROS2 image message
@@ -718,8 +723,10 @@ private:
         }
 
     }
-
+    
     void onCompressedImage(const sensor_msgs::msg::CompressedImage::SharedPtr msg){
+        probe_.mark(rtmw::frame_key(msg->header.stamp), 2);
+
         const auto decode_start = std::chrono::steady_clock::now();
 
         if(msg->data.empty()){
@@ -804,6 +811,8 @@ private:
     double compression_ratio_{1.0};
     double conf_threshold_{0.25};
     double nms_threshold_{0.45};    
+
+    rtmw::Probe probe_{"perception", "/home/orin_nano_mh/probe_local/probe_perception.csv"};
 };
 }
 

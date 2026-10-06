@@ -1,0 +1,64 @@
+VmSize:	   17068 kB
+VmRSS:	    9964 kB
+RssAnon:	    6032 kB
+RssFile:	    3932 kB
+RssShmem:	       0 kB
+=====B-1=====
+    PID    VSZ   RSS COMMAND
+   1250 26137088 159028 Xorg
+   2714 20241380 615864 MainThread
+   2759 13633720 264572 MainThread
+   2715 10145528 115956 MainThread
+=====B-2=====
+    PID    VSZ   RSS COMMAND
+   2845 3430052 1801344 MainThread
+   2714 20242468 626940 MainThread
+   3758 5573868 294980 claude
+   3886 5569704 284736 claude
+   2759 13633720 264572 MainThread
+===== B-3 =====
+               총계         사용        여분      공유    버퍼/캐시    가용
+메모리:       60Gi       4.2Gi        48Gi       5.0Mi       7.7Gi        55Gi
+스  왑:      2.0Gi          0B       2.0Gi
+===== A-1 =====
+4096
+===== C-2 ====
+3384:   /bin/bash --init-file /home/minhyuk/.vscode-server/cli/servers/Stable-645f29cc3176500b4b5762ba887cf2a7f0ffdf2c/server/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+주  소          Kbytes     RSS   Dirty 모  드 매  핑
+00005898a598f000     188     184       0    r---- bash
+00005898a59be000     892     888       0    r-x-- bash
+00005898a5a9d000     232     136       0    r---- bash
+00005898a5ad8000      16      16      16    r---- bash
+00005898a5adc000      36      36      36    rw--- bash
+00005898a5ae5000      44      28      28    rw---   [ anon ]
+00005898b640a000    5568    5564    5564    rw---   [ anon ]
+00007aa76fe00000    6892     364       0    r---- locale-archive
+00007aa770600000     160     160       0    r---- libc.so.6
+00007aa770628000    1620    1488       0    r-x-- libc.so.6
+00007aa7707bd000     352     192       0    r---- libc.so.6
+00007aa770815000       4       0       0    ----- libc.so.6
+00007aa770816000      16      16      16    r---- libc.so.6
+00007aa77081a000       8       8       8    rw--- libc.so.6
+00007aa77081c000      52      24      24    rw---   [ anon ]
+00007aa77087b000     176     124       0    r---- bash.mo
+00007aa7708cb000       8       8       8    rw---   [ anon ]
+00007aa7708cd000      56      56       0    r---- libtinfo.so.6.3
+00007aa7708db000      68      68       0    r-x-- libtinfo.so.6.3
+00007aa7708ec000      56      56       0    r---- libtinfo.so.6.3
+00007aa7708fa000      16      16      16    r---- libtinfo.so.6.3
+00007aa7708fe000       4       4       4    rw--- libtinfo.so.6.3
+00007aa770920000      28      28       0    r--s- gconv-modules.cache
+00007aa770927000      96      96      96    rw---   [ anon ]
+00007aa77093f000       8       8       0    r---- ld-linux-x86-64.so.2
+00007aa770941000     168     168       0    r-x-- ld-linux-x86-64.so.2
+00007aa77096b000      44      44       0    r---- ld-linux-x86-64.so.2
+00007aa770977000       8       8       8    r---- ld-linux-x86-64.so.2
+00007aa770979000       8       8       8    rw--- ld-linux-x86-64.so.2
+00007ffedb2f9000     220     200     200    rw---   [ stack ]
+00007ffedb3e8000      16       0       0    r----   [ anon ]
+00007ffedb3ec000       8       4       0    r-x--   [ anon ]
+ffffffffff600000       4       0       0    --x--   [ anon ]
+---------------- ------- ------- ------- 
+총계  kB         17072   10000    6032
+VmSize:	   17068 kB
+VmRSS:	   10000 kB

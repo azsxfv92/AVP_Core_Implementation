@@ -1,0 +1,158 @@
+===== A-1 ls /dev/shm (en) =====
+total 0
+===== A-2 df =====
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs            31G     0   31G   0% /dev/shm
+===== A-3 findmnt =====
+TARGET   SOURCE FSTYPE OPTIONS
+/dev/shm tmpfs  tmpfs  rw,nosuid,nodev,inode64
+===== C writer =====
+# writer pid=14400 name=/avp_d2_int size=8 mapped_at=0x774b907e0000
+writer: counter=76
+writer: counter=77
+writer: counter=78
+writer: counter=79
+writer: counter=80
+writer: counter=81
+writer: counter=82
+writer: counter=83
+writer: counter=84
+writer: counter=85
+===== C writer =====
+# writer pid=14621 name=/avp_d2_int size=8 mapped_at=0x79264ed68000
+writer: counter=86
+writer: counter=87
+===== C writer =====
+# reader pid=14635 name=/avp_d2_int size=8 mapped_at=0x74ee52c7c000
+reader: counter=87
+writer: counter=88
+reader: counter=88
+writer: counter=89
+reader: counter=89
+writer: counter=90
+reader: counter=90
+writer: counter=91
+reader: counter=91
+writer: counter=92
+reader: counter=92
+writer: counter=93
+reader: counter=93
+writer: counter=94
+reader: counter=94
+writer: counter=95
+reader: counter=95
+reader: counter=95
+===== D rerun 2026-09-28 08:17:38 =====
+--- who is running ---
+10050 ./rtmw/build/shm_int writer
+10113 ./rtmw/build/shm_int reader
+12411 ./rtmw/build/shm_int writer
+12412 ./rtmw/build/shm_int reader
+--- D-1 maps ---
+pid 10050
+7e1e1e5a3000-7e1e1e5a4000 rw-s 00000000 00:1b 2                          /dev/shm/avp_d2_int
+pid 10113
+7a8185196000-7a8185197000 rw-s 00000000 00:1b 2                          /dev/shm/avp_d2_int
+pid 12411
+715767d22000-715767d23000 rw-s 00000000 00:1b 2                          /dev/shm/avp_d2_int
+pid 12412
+7c8ec6269000-7c8ec626a000 rw-s 00000000 00:1b 2                          /dev/shm/avp_d2_int
+--- D-2 status ---
+pid 10050
+VmRSS:	    1812 kB
+RssAnon:	     304 kB
+RssFile:	    1504 kB
+RssShmem:	       4 kB
+pid 10113
+VmRSS:	    1812 kB
+RssAnon:	     304 kB
+RssFile:	    1504 kB
+RssShmem:	       4 kB
+pid 12411
+VmRSS:	    1736 kB
+RssAnon:	     304 kB
+RssFile:	    1428 kB
+RssShmem:	       4 kB
+pid 12412
+VmRSS:	    1728 kB
+RssAnon:	     304 kB
+RssFile:	    1420 kB
+RssShmem:	       4 kB
+--- D-3 segment and system ---
+-rw------- 1 minhyuk minhyuk 8 Sep 28 08:17 /dev/shm/avp_d2_int
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs            31G  4.0K   31G   1% /dev/shm
+               total        used        free      shared  buff/cache   available
+Mem:            60Gi       3.8Gi        48Gi       5.0Mi       8.0Gi        55Gi
+Swap:          2.0Gi          0B       2.0Gi
+--- D-4 pss ---
+pid 10050
+Rss:                1812 kB
+Pss:                 321 kB
+Pss_Shmem:             1 kB
+Shared_Clean:       1504 kB
+Shared_Dirty:          4 kB
+pid 10113
+Rss:                1812 kB
+Pss:                 321 kB
+Pss_Shmem:             1 kB
+Shared_Clean:       1504 kB
+Shared_Dirty:          4 kB
+pid 12411
+Rss:                1736 kB
+Pss:                 320 kB
+Pss_Shmem:             1 kB
+Shared_Clean:       1428 kB
+Shared_Dirty:          4 kB
+pid 12412
+Rss:                1728 kB
+Pss:                 320 kB
+Pss_Shmem:             1 kB
+Shared_Clean:       1420 kB
+Shared_Dirty:          4 kB
+--- last lines of each program ---
+tail: option used in invalid context -- 3
+===== E-A 2026-09-28 08:30:15 =====
+--- E-1 writer + reader (2s) ---
+==> /tmp/e_w.log <==
+writer: counter=6
+writer: counter=7
+
+==> /tmp/e_r.log <==
+reader: counter=6
+reader: counter=7
+--- E-2 kill ONLY the writer, reader keeps going (2s) ---
+reader: counter=7
+reader: counter=7
+reader: counter=7
+--- E-3 start a NEW writer (2s) ---
+==> /tmp/e_w2.log <==
+writer: counter=11
+writer: counter=12
+
+==> /tmp/e_r.log <==
+reader: counter=10
+reader: counter=11
+--- E-4 kill everything: does the segment survive? ---
+-rw------- 1 minhyuk minhyuk 8 Sep 28 08:30 /dev/shm/avp_d2_int
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs            31G  4.0K   31G   1% /dev/shm
+--- E-5 a brand new reader, no writer alive ---
+# reader pid=15419 name=/avp_d2_int size=8 mapped_at=0x7a2316f88000
+reader: counter=12
+reader: counter=12
+reader: counter=12
+reader: counter=12
+===== E-B MAP_PRIVATE 2026-09-28 08:32:31 =====
+--- private process (3s) ---
+usage: ./rtmw/build/shm_int writer|reader|unlink
+--- what the writer saw meanwhile ---
+writer: counter=13
+writer: counter=14
+writer: counter=15
+--- what a SHARED reader sees now ---
+# reader pid=15972 name=/avp_d2_int size=8 mapped_at=0x738c8a39f000
+reader: counter=15
+reader: counter=16
+reader: counter=17
+reader: counter=18
