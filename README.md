@@ -41,7 +41,7 @@ CARLA(Desktop) → Jetson Orin Nano(TensorRT FP16) → Autoware perception → A
 
 ### Roadmap : Stage 1 — Autoware Integration, Safety Monitoring, and Fault-Injection Validation
 ### Roadmap : Stage 2 — Real-time middleware (RT-MW) replacing the DDS transport, with latency budgets and SoC measurements
-### Current : Week 17 — Linux scheduling observation, context switch cost, RAII ScopedTimer (Stage 2 start)
+### Current : Week 18 — Shared-memory transport (seqlock channel + RAII handle) replacing DDS on one AVP segment, with measured A/B
 
 ---
 
@@ -605,3 +605,56 @@ source scripts/env_dds.sh
 echo $RMW_IMPLEMENTATION
 echo $FASTRTPS_DEFAULT_PROFILES_FILE
 ```
+### 15) Week 18 - Shared-memory transport: replacing DDS on one real AVP segment
+
+Week 18 turns the RT-MW idea into a transport that actually carries AVP data. One segment of the pipeline -
+`aeb_node` (C++) to `week16_carla_scenario.py` (Python), topic `/avp/vehicle/target_accel` - now runs over POSIX
+shared memory instead of DDS, switchable at runtime. The week ends with a measured comparison and a decision
+record that contradicts the assumption it started from.
+
+Full notes (Korean): [`docs/week18/week18_summary.html`](docs/week18/week18_summary.html) ·
+Decision record: [`docs/decisions/ADR-002-shm-transport.md`](docs/decisions/ADR-002-shm-transport.md)
+
+### Week 18 Goal
+
+- Understand how Linux hands out memory: virtual addresses, page faults, VSZ vs RSS vs Pss.
+- Build the two C++ pieces a shared-memory transport needs: an RAII handle (`ShmPtr`) and a lock-free
+  latest-value channel (`shm_channel.hpp`, seqlock with acquire/release ordering).
+- Replace one real AVP segment with it, keeping the ROS 2 path intact and switchable.
+- Measure both paths on the running pipeline and write down what the numbers actually justify.
+
+### What was done
+
+- **D1 - memory model.** Measured VSZ vs RSS vs Pss on live processes; wrote `pagefault_demo` to show that
+  allocating 256 MiB adds 68 KB of RSS until pages are touched (one minor fault per 4 KiB page, zero on re-touch).
+- **D2 - shared memory basics.** `shm_open` + `ftruncate` + `mmap(MAP_SHARED)`; confirmed two processes map the
+  same inode at different virtual addresses, that the segment outlives both processes, and that `RssShmem` 4 kB
+  shows up as `Pss_Shmem` 1 kB when four processes share one page.
+- **D3 - `ShmPtr`.** `std::unique_ptr<void, ShmDeleter>` with a size-carrying custom deleter; move-only, so a
+  double `munmap` is a compile error. Verified the fd can be closed right after `mmap` while the mapping stays live.
+- **D4 - the real replacement.** `shm_channel.hpp` (seqlock: odd seq while writing, two reads to detect tearing),
+  `aeb_node` publishing to both paths, a Python reader (`tools/rtmw_shm.py`, same 24-byte layout via `struct`),
+  and `accel_latency_probe` measuring both paths in one process against one clock.
+
+### Week 18 Result
+
+| Measurement | n | p50 | p99 | max | what it measures |
+|---|---|---|---|---|---|
+| ROS 2 (DDS) transport | 597 | 34.0 us | 58.4 | 70.7 | callback delivery |
+| RT-MW (shm) transport | 597 | **0.1 us** | 0.2 | 0.6 | busy-wait receive |
+| RT-MW + 5 ms polling | 601 | 2,947.6 us | 5,400 | 28,293 | cost of how you read |
+| End-to-end (50 ms control tick) | 1,094 | 45,648.9 us | 47,520 | 48,520 | age of the value actually used |
+
+### Key findings
+
+- Transport got **340x faster at the median** (34.0 us -> 0.1 us) and the tail essentially disappeared (sd 0.0 us).
+- **The win does not reach the application.** The consumer samples at 50 ms, so the value it acts on is ~45.6 ms
+  old and transport accounts for 0.07% of that. Replacing the transport on this segment buys nothing measurable.
+- That 45.6 ms is **phase, not latency**: two independent 20 Hz timers lock into a fixed offset decided at startup.
+  Two runs gave 41.7 ms and 45.6 ms, each stable to within 0.8% (sd 381 us).
+- **How you read dominates what you gain.** The same channel read by a 5 ms poller has a p50 of 2.9 ms - 84x worse
+  than DDS - because the poller sleeps through most of the window.
+- Busy-waiting is not free either: p99 was 0.2 us but one sample hit 2.7 ms, the CFS scheduler preempting the
+  thread that used the most CPU.
+- Measurement artifacts found and fixed: the first shm sample reports the age of a pre-existing value (warm-up,
+  42.8 ms), and buffered stdout loses data when `timeout` kills the process (line buffering required).

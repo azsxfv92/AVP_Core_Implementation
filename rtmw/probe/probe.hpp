@@ -8,14 +8,10 @@
 #include <utility>
 #include <builtin_interfaces/msg/time.hpp>
 
+#include "../include/time_ns.hpp"   // rtmw::mono_ns()
+
 namespace rtmw{
 
-inline uint64_t mono_ns(){
-    timespec ts;
-    // to measure specific period
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return static_cast<uint64_t>(ts.tv_sec)*1000000000ULL + static_cast<uint64_t>(ts.tv_nsec);
-}
 
 inline uint64_t real_ns(){
     timespec ts;

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import random
 import sys
 from pathlib import Path
@@ -11,6 +12,7 @@ from sensor_msgs.msg import CompressedImage
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPolicy
 import math 
 from std_msgs.msg import Float32, Bool
+import rtmw_shm
 
 try:
     import carla
@@ -91,6 +93,16 @@ class CarlaImagePublisher(Node):
         self.obstacle_distance = 25.0
         self.autopilot_active = False
         self.control_timer = self.create_timer(0.05, self.on_control_tick)
+        
+        self.use_shm = os.environ.get("RTMW_ACCEL", "0") == "1"
+        self.shm = rtmw_shm.open_channel() if self.use_shm else None
+        self.shm_last_seq = 0
+        self.shm_age_ns = 0
+        if self.use_shm and self.shm is None:
+            self.get_logger().warn("RTMW_ACCEL=1 but shm not found - using ROS2 path")
+        self.tick_count = 0
+        self.get_logger().info(f"accel path = {'RT-MW shm' if self.shm is not None else 'ROS2'}")
+        
 
     def destroy_existing_hero(self):
         actors = self.world.get_actors()
@@ -380,13 +392,34 @@ class CarlaImagePublisher(Node):
                 f"published_count={self.received_count[stream_id]}"
             )
 
-    def on_target_accle(self, msg):
+    def on_target_accle(self, msg): # ROS2 callback
+        if self.use_shm and self.shm is not None:
+            return # use shm mode and ignore ROS2 message
+        
         self.target_accel = float(msg.data)
         self.last_accel_time = self.get_clock().now()
 
     def on_control_tick(self):
         if self.vehicle is None:
             return
+
+        if self.shm is not None:
+            got = rtmw_shm.read_accel(self.shm) # read seq lock status
+            if got is not None:
+                seq, stamp_ns, accel = got
+                if seq != 0 and seq != self.shm_last_seq:
+                    self.shm_last_seq = seq
+                    self.target_accel = float(accel)
+                    self.last_accel_time = self.get_clock().now()
+                    self.shm_age_ns = rtmw_shm.age_ns(stamp_ns) 
+        self.tick_count += 1
+        if self.shm is not None:
+            self.get_logger().info(
+                f"[shm] accel={self.target_accel:.2f} age_ns={self.shm_age_ns}")
+        else:
+            self.get_logger().info(f"[ros2] accel={self.target_accel:.2f}")
+
+        
 
         # publish vehicle status
         v = self.vehicle.get_velocity()

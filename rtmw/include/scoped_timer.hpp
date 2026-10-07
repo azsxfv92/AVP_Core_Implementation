@@ -2,16 +2,10 @@
 
 #include <cstdint>
 #include <cstdio>
-#include <ctime>
+
+#include "time_ns.hpp"   // rtmw::mono_ns() — 정의는 여기 한 곳에만 있다
 
 namespace rtmw {
-
-inline uint64_t mono_ns() {
-    timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return static_cast<uint64_t>(ts.tv_sec) * 1000000000ULL
-         + static_cast<uint64_t>(ts.tv_nsec);
-}
 
 class ScopedTimer {
 

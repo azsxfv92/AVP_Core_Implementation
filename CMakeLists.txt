@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 project(avp_core_implementation VERSION 1.0)
 
 option(BUILD_INFERENCE "Build CUDA/TensorRT inference targets" ON)
-
+option(BUILD_AEB "Build aeb_node (needs Autoware msgs, desktop only)" ON)
 if(BUILD_INFERENCE)
   enable_language(CUDA)
 endif()
@@ -89,6 +89,8 @@ add_executable(trt_infer_node
   src/yolo_postprocess.cpp
 )
 
+target_include_directories(trt_infer_node PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/rtmw)
+
 ament_target_dependencies(trt_infer_node
   rclcpp
   sensor_msgs
@@ -141,11 +143,14 @@ install(TARGETS
 )
 endif()
 
+if(BUILD_AEB)
+
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(autoware_perception_msgs REQUIRED)
 
 add_executable(aeb_node src/aeb_node.cpp)
+target_include_directories(aeb_node PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/rtmw ${CMAKE_CURRENT_SOURCE_DIR}/rtmw/include)
 ament_target_dependencies(aeb_node
   rclcpp
   std_msgs
@@ -155,6 +160,19 @@ ament_target_dependencies(aeb_node
   tf2_geometry_msgs  
 )
 install(TARGETS aeb_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+endif()
+
+# RT-MW : ROS2 경로와 shm 경로의 지연을 한 프로세스에서 비교하는 측정 노드
+add_executable(accel_latency_probe src/accel_latency_probe.cpp)
+target_include_directories(accel_latency_probe PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/rtmw
+  ${CMAKE_CURRENT_SOURCE_DIR}/rtmw/include
+)
+ament_target_dependencies(accel_latency_probe rclcpp std_msgs)
+install(TARGETS accel_latency_probe
   DESTINATION lib/${PROJECT_NAME}
 )
 
