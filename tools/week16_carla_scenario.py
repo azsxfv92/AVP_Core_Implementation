@@ -2,6 +2,7 @@
 import os
 import random
 import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -98,6 +99,14 @@ class CarlaImagePublisher(Node):
         self.shm = rtmw_shm.open_channel() if self.use_shm else None
         self.shm_last_seq = 0
         self.shm_age_ns = 0
+        self.tag_shm = None
+        self.tag_last_seq = 0
+        self.ros_stamp_ns = 0
+        self.ros_fresh = False
+        self.tag_stale = 0
+        self.event_driven = os.environ.get("RTMW_EVENT", "0") == "1"
+        self.get_logger().info(f"control mode = {'event' if self.event_driven else 'tick'}")
+        
         if self.use_shm and self.shm is None:
             self.get_logger().warn("RTMW_ACCEL=1 but shm not found - using ROS2 path")
         self.tick_count = 0
@@ -392,13 +401,47 @@ class CarlaImagePublisher(Node):
                 f"published_count={self.received_count[stream_id]}"
             )
 
+    def read_tag_stamp(self):        
+        if self.tag_shm is None:
+            self.tag_shm = rtmw_shm.open_channel()
+            if self.tag_shm is None:
+                return 0
+        
+        got = rtmw_shm.read_accel(self.tag_shm)
+        if  got is None:
+            return 0
+        
+        seq, stamp_ns, _ = got
+        
+        if seq == self.tag_last_seq:
+            self.tag_stale += 1
+            return 0
+        else:
+            self.tag_last_seq = seq
+            return stamp_ns 
+
+
     def on_target_accle(self, msg): # ROS2 callback
         if self.use_shm and self.shm is not None:
             return # use shm mode and ignore ROS2 message
-        
+
         self.target_accel = float(msg.data)
         self.last_accel_time = self.get_clock().now()
+        stamp_ns = self.read_tag_stamp()
 
+        if not self.event_driven:
+            self.ros_stamp_ns = stamp_ns
+            self.ros_fresh = stamp_ns != 0
+            return
+        
+        if self.vehicle is None:
+            return
+        age = rtmw_shm.age_ns(stamp_ns) if stamp_ns != 0 else "NA"
+        t_now = time.monotonic_ns()
+        self.apply_accel(self.target_accel)
+        apply_ns = time.monotonic_ns() - t_now
+        self.get_logger().info(f"[ros2-event] accel={self.target_accel:.2f} age_ns={age} apply_ns={apply_ns} stale={self.tag_stale}")
+    
     def on_control_tick(self):
         if self.vehicle is None:
             return
@@ -417,10 +460,14 @@ class CarlaImagePublisher(Node):
             self.get_logger().info(
                 f"[shm] accel={self.target_accel:.2f} age_ns={self.shm_age_ns}")
         else:
-            self.get_logger().info(f"[ros2] accel={self.target_accel:.2f}")
+            if self.ros_fresh == True and self.ros_stamp_ns != 0:
+                age = rtmw_shm.age_ns(self.ros_stamp_ns)
+                self.ros_fresh = False
+                self.get_logger().info(f"[ros2] accel={self.target_accel:.2f} age_ns={age} stale={self.tag_stale}")
+            else:
+                self.get_logger().info(f"[ros2] accel={self.target_accel:.2f} age_ns=NA")
 
         
-
         # publish vehicle status
         v = self.vehicle.get_velocity()
         speed = math.sqrt(v.x**2 + v.y**2 + v.z**2)
@@ -435,10 +482,19 @@ class CarlaImagePublisher(Node):
         # stop when the parent command times out
         if self.last_accel_time is None:
             accel = 0.0
+            watchdog = True
         else:
             dt = (self.get_clock().now() - self.last_accel_time).nanoseconds * 1e-9
-            accel = -5.0 if dt > 0.5 else self.target_accel
+            watchdog = dt > 0.5 # no command for over 0.5 s
+            accel = -5.0 if watchdog else self.target_accel
 
+        if self.event_driven and not watchdog:
+            return # call apply_accel in on_target_accle
+        else:
+            self.apply_accel(accel)
+
+
+    def apply_accel(self, accel):
         hazard = accel < 0.0
 
         if not self.hero_autopilot:
